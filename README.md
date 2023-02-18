@@ -1,5 +1,5 @@
 # Order-System-Plus
-The Order System is builded by front-end and back-end separation. The frontend is Vue3 with Typescript, and the backend is .NET Core API.
+The Order System is builded by front-end and back-end separation. The frontend is Vue3 with Typescript, and the backend is .NET Core API, which contains unit test to assist system work correctly.
 
 Backend Dev:
 ```
