@@ -27,4 +27,8 @@
     <ProjectReference Include="..\OrderSystemPlus\OrderSystemPlus.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="BusinessActor\_UserManage\Queries\" />
+  </ItemGroup>
+
 </Project>
