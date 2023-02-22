@@ -3,14 +3,14 @@
 using Dapper;
 
 using System.Data.SqlClient;
-using System.Transactions;
 
 namespace OrderSystemPlus.DataAccessor.Commands
 {
     public class UserCommand :
         IInsertCommand<IEnumerable<UserCommandModel>>,
         IRefreshCommand<IEnumerable<UserCommandModel>>,
-        IDeleteCommand<IEnumerable<UserCommandModel>>
+        IDeleteCommand<IEnumerable<UserCommandModel>>,
+        IUpdateCommand<IEnumerable<UserCommandModel>>
     {
         private readonly string _connectStr;
         public UserCommand()
@@ -111,6 +111,28 @@ namespace OrderSystemPlus.DataAccessor.Commands
                     await conn.ExecuteAsync(insertSql, commands, trans);
                     trans.Commit();
                 }
+            }
+        }
+
+        public async Task UpdateAsync(IEnumerable<UserCommandModel> commands)
+        {
+            var sql = @"
+                UPDATE [dbo].[User]
+                SET 
+                  [Name] = @Name,
+                  [Salt] = @Salt,
+                  [Email] = @Email,
+                  [Account] = @Account,
+                  [Password] = @Password,
+                  [RoleId] = @RoleId,
+                  [UpdatedOn] = @UpdatedOn,
+                  [IsValid] = @IsValid
+                WHERE
+                    [Id] = @Id
+                ";
+            using (SqlConnection conn = new SqlConnection(_connectStr))
+            {
+                await conn.ExecuteAsync(sql, commands);
             }
         }
     }

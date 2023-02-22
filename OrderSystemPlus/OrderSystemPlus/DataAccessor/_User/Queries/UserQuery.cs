@@ -32,7 +32,8 @@ namespace OrderSystemPlus.DataAccessor.Queries
             {
                 "[IsValid] = @IsValid",
             };
-
+            if (id.HasValue)
+                conditions.Add("[Id] = @Id");
             if (!string.IsNullOrEmpty(email))
                 conditions.Add("[Email] = @Email");
             if (!string.IsNullOrEmpty(account))
