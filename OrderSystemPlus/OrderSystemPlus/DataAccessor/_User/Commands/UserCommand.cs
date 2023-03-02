@@ -120,13 +120,8 @@ namespace OrderSystemPlus.DataAccessor.Commands
                 UPDATE [dbo].[User]
                 SET 
                   [Name] = @Name,
-                  [Salt] = @Salt,
                   [Email] = @Email,
-                  [Account] = @Account,
-                  [Password] = @Password,
-                  [RoleId] = @RoleId,
-                  [UpdatedOn] = @UpdatedOn,
-                  [IsValid] = @IsValid
+                  [UpdatedOn] = @UpdatedOn
                 WHERE
                     [Id] = @Id
                 ";

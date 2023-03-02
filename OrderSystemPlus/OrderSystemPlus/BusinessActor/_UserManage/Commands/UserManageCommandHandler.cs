@@ -10,9 +10,11 @@ namespace OrderSystemPlus.BusinessActor.Commands
 {
     public class UserManageCommandHandler :
         ICommandHandler<ReqUserManageCreate>,
-        ICommandHandler<ReqSignInUser, RspSignInUser>
+        ICommandHandler<ReqSignInUser, RspSignInUser>,
+        ICommandHandler<ReqUserUpdate>
     {
         private readonly IInsertCommand<IEnumerable<UserCommandModel>> _insertCommand;
+        private readonly IUpdateCommand<IEnumerable<UserCommandModel>> _updateCommand;
         private readonly IUserQuery _query;
         private readonly IJwtHelper _jwtHelper;
 
@@ -23,10 +25,12 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// <param name="query"></param>
         public UserManageCommandHandler(
             IInsertCommand<IEnumerable<UserCommandModel>> insertCommand,
+            IUpdateCommand<IEnumerable<UserCommandModel>> updateCommand,
             IUserQuery query,
             IJwtHelper jwtHelper)
         {
             _insertCommand = insertCommand;
+            _updateCommand = updateCommand;
             _query = query;
             _jwtHelper = jwtHelper;
         }
@@ -93,6 +97,30 @@ namespace OrderSystemPlus.BusinessActor.Commands
                 {
                     Token = String.Empty,
                 };
+            }
+        }
+
+        /// <summary>
+        /// Update User
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        public async Task HandleAsync(ReqUserUpdate command)
+        {
+            var hasUser = (await _query.FindByOptionsAsync(command.Id, null, null))
+                .Any();
+            if (hasUser)
+            {
+                await _updateCommand.UpdateAsync(new List<UserCommandModel>
+                {
+                    new UserCommandModel
+                    {
+                        Id = command.Id,
+                        Name = command.Name,
+                        Email = command.Email,
+                        UpdatedOn = DateTime.Now,
+                    }
+                });
             }
         }
     }

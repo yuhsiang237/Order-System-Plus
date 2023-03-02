@@ -27,5 +27,12 @@ namespace OrderSystemPlus.Controllers
         [HttpPost("SignIn")]
         public async Task<RspSignInUser> SignInUser([FromBody] ReqSignInUser req)
             => await _handler.HandleAsync(req);
+
+        [HttpPost("UpdateUser")]
+        public async Task<IActionResult> UpdateUser([FromBody] ReqUserUpdate req)
+        {
+            await _handler.HandleAsync(req);
+            return StatusCode(200);
+        }
     }
 }

@@ -21,10 +21,12 @@ namespace OrderSystemPlusTest.DataAccessor
         private readonly Mock<IUserQuery> _query;
         private readonly Mock<IJwtHelper> _jwtHelp;
         private readonly Mock<IInsertCommand<IEnumerable<UserCommandModel>>> _insertMock;
+        private readonly Mock<IUpdateCommand<IEnumerable<UserCommandModel>>> _updateMock;
 
         public UserManageCommandHandlerTest()
         {
             _insertMock = new Mock<IInsertCommand<IEnumerable<UserCommandModel>>>();
+            _updateMock = new Mock<IUpdateCommand<IEnumerable<UserCommandModel>>>();
             _query = new Mock<IUserQuery>();
             _jwtHelp = new Mock<IJwtHelper>();
         }
@@ -47,6 +49,7 @@ namespace OrderSystemPlusTest.DataAccessor
 
             _handler = new UserManageCommandHandler(
                _insertMock.Object,
+               _updateMock.Object,
                _query.Object,
                _jwtHelp.Object);
 
@@ -67,6 +70,7 @@ namespace OrderSystemPlusTest.DataAccessor
         {
             _handler = new UserManageCommandHandler(
                 _insertMock.Object,
+                _updateMock.Object,
                 _query.Object,
                 _jwtHelp.Object);
 
@@ -85,6 +89,30 @@ namespace OrderSystemPlusTest.DataAccessor
             });
             _query.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once);
             _insertMock.Verify(x => x.InsertAsync(It.IsAny<IEnumerable<UserCommandModel>>()), Times.Once());
+        }
+
+        [Fact]
+        public async Task UserUpdate()
+        {
+            _handler = new UserManageCommandHandler(
+                _insertMock.Object,
+                _updateMock.Object,
+                _query.Object,
+                _jwtHelp.Object);
+            _query
+                .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
+                .ReturnsAsync(new List<UserQueryModel> { new UserQueryModel() });
+
+            _updateMock.Setup(x => x.UpdateAsync(It.IsAny<IEnumerable<UserCommandModel>>()));
+
+            await _handler.HandleAsync(new ReqUserUpdate
+            {
+                Id = 1,
+                Name = "LIN",
+                Email = "test@mail.com",
+            });
+            _query.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once);
+            _updateMock.Verify(x => x.UpdateAsync(It.IsAny<IEnumerable<UserCommandModel>>()), Times.Once());
         }
     }
 }
