@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderSystemPlus", "OrderSys
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "Database\Database.sqlproj", "{C8A252DB-30DC-4494-94E6-3337A3A62076}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderSystemPlusTest", "OrderSystemPlusTest\OrderSystemPlusTest.csproj", "{F2CE37AF-94E1-4615-B7BE-4E2A684B138A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderSystemPlusTest", "OrderSystemPlusTest\OrderSystemPlusTest.csproj", "{F2CE37AF-94E1-4615-B7BE-4E2A684B138A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{924E9A2C-E509-44C7-B68A-63D2D8A039CE}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

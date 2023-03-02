@@ -8,8 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="BusinessActor\_UserManage\Queries\**" />
+    <EmbeddedResource Remove="BusinessActor\_UserManage\Queries\**" />
+    <None Remove="BusinessActor\_UserManage\Queries\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.10.0" />
     <PackageReference Include="FluentValidation" Version="11.5.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="Moq" Version="4.18.4" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -25,10 +32,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OrderSystemPlus\OrderSystemPlus.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="BusinessActor\_UserManage\Queries\" />
   </ItemGroup>
 
 </Project>
