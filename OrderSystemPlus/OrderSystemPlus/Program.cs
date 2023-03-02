@@ -23,6 +23,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 #pragma warning restore CS0618 // Type or member is obsolete
 builder.Services.AddTransient<IValidator<ReqUserManageCreate>, ReqUserManageCreateValidator>();
+builder.Services.AddTransient<IValidator<ReqSignInUser>, ReqSignInUserValidator>();
 
 // Add custom
 builder.Services
