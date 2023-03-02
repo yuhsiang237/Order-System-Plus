@@ -72,6 +72,6 @@
     <Build Include="dbo\Tables\Roles.sql" />
     <Build Include="dbo\Tables\ShipmentOrderDetails.sql" />
     <Build Include="dbo\Tables\ShipmentOrders.sql" />
-    <Build Include="dbo\Tables\Users.sql" />
+    <Build Include="dbo\Tables\User.sql" />
   </ItemGroup>
 </Project>
