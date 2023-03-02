@@ -1,0 +1,7 @@
+################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/OrderSystemPlus/.vs/OrderSystemPlus/v17/TestStore/0/001.testlog
+/OrderSystemPlus/.vs/OrderSystemPlus/v17/TestStore/0/testlog.manifest
+/OrderSystemPlus/.vs/
