@@ -23,8 +23,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 #pragma warning restore CS0618 // Type or member is obsolete
 builder.Services
-    .AddTransient<IValidator<ReqUserManageCreate>, ReqUserManageCreateValidator>()
-    .AddTransient<IValidator<ReqSignInUser>, ReqSignInUserValidator>()
+    .AddTransient<IValidator<ReqUserCreate>, ReqUserCreateValidator>()
+    .AddTransient<IValidator<ReqUserSignIn>, ReqUserSignInValidator>()
     .AddTransient<IValidator<ReqUserUpdate>, ReqUserUpdateValidator>();
 
 // Add custom
@@ -35,8 +35,8 @@ builder.Services
     .AddSingleton<IUserQuery, UserQuery>();
 
 builder.Services
-    .AddSingleton<ICommandHandler<ReqUserManageCreate>, UserManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqSignInUser, RspSignInUser>, UserManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqUserCreate>, UserManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqUserSignIn, RspUserSignIn>, UserManageCommandHandler>()
     .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>();
 
 // Add JWT

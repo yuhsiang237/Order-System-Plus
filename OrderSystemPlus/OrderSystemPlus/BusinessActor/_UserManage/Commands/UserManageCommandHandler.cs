@@ -9,12 +9,12 @@ using OrderSystemPlus.Utils.JwtHelper;
 namespace OrderSystemPlus.BusinessActor.Commands
 {
     public class UserManageCommandHandler :
-        ICommandHandler<ReqUserManageCreate>,
-        ICommandHandler<ReqSignInUser, RspSignInUser>,
+        ICommandHandler<ReqUserCreate>,
+        ICommandHandler<ReqUserSignIn, RspUserSignIn>,
         ICommandHandler<ReqUserUpdate>
     {
-        private readonly IInsertCommand<IEnumerable<UserCommandModel>> _insertCommand;
-        private readonly IUpdateCommand<IEnumerable<UserCommandModel>> _updateCommand;
+        private readonly IInsertCommand<IEnumerable<UserCommandModel>> _insert;
+        private readonly IUpdateCommand<IEnumerable<UserCommandModel>> _update;
         private readonly IUserQuery _query;
         private readonly IJwtHelper _jwtHelper;
 
@@ -24,13 +24,13 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// <param name="insertCommand"></param>
         /// <param name="query"></param>
         public UserManageCommandHandler(
-            IInsertCommand<IEnumerable<UserCommandModel>> insertCommand,
-            IUpdateCommand<IEnumerable<UserCommandModel>> updateCommand,
+            IInsertCommand<IEnumerable<UserCommandModel>> insert,
+            IUpdateCommand<IEnumerable<UserCommandModel>> update,
             IUserQuery query,
             IJwtHelper jwtHelper)
         {
-            _insertCommand = insertCommand;
-            _updateCommand = updateCommand;
+            _insert = insert;
+            _update = update;
             _query = query;
             _jwtHelper = jwtHelper;
         }
@@ -40,7 +40,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task HandleAsync(ReqUserManageCreate req)
+        public async Task HandleAsync(ReqUserCreate req)
         {
             var now = DateTime.Now;
             var hashSalt = HashSaltTool.Generate(req.Password);
@@ -49,7 +49,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
                         .Any();
             if (!isExist)
             {
-                await _insertCommand.InsertAsync(new List<UserCommandModel>
+                await _insert.InsertAsync(new List<UserCommandModel>
                 {
                     new UserCommandModel
                     {
@@ -76,7 +76,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task<RspSignInUser> HandleAsync(ReqSignInUser command)
+        public async Task<RspUserSignIn> HandleAsync(ReqUserSignIn command)
         {
             var user = (await _query.FindByOptionsAsync(null, null, command.Account)).FirstOrDefault();
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
@@ -86,14 +86,14 @@ namespace OrderSystemPlus.BusinessActor.Commands
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             if (isValid)
             {
-                return new RspSignInUser
+                return new RspUserSignIn
                 {
                     Token = _jwtHelper.GenerateToken(user.Account),
                 };
             }
             else
             {
-                return new RspSignInUser
+                return new RspUserSignIn
                 {
                     Token = String.Empty,
                 };
@@ -111,7 +111,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
                 .Any();
             if (hasUser)
             {
-                await _updateCommand.UpdateAsync(new List<UserCommandModel>
+                await _update.UpdateAsync(new List<UserCommandModel>
                 {
                     new UserCommandModel
                     {

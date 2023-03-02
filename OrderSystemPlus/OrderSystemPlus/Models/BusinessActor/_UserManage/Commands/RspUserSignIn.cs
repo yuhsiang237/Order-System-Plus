@@ -1,6 +1,6 @@
 ﻿namespace OrderSystemPlus.Models.BusinessActor.Commands
 {
-    public class RspSignInUser
+    public class RspUserSignIn
     {
         public string Token { get; set; }
     }

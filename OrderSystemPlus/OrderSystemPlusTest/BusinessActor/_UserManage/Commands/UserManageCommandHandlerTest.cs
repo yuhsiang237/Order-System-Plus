@@ -53,7 +53,7 @@ namespace OrderSystemPlusTest.DataAccessor
                _query.Object,
                _jwtHelp.Object);
 
-            var rsp = await _handler.HandleAsync(new ReqSignInUser
+            var rsp = await _handler.HandleAsync(new ReqUserSignIn
             {
                 Password = "testpwd605",
                 Account = "testAccount",
@@ -80,7 +80,7 @@ namespace OrderSystemPlusTest.DataAccessor
 
             _insertMock.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<UserCommandModel>>()));
 
-            await _handler.HandleAsync(new ReqUserManageCreate
+            await _handler.HandleAsync(new ReqUserCreate
             {
                 Name = "LIN",
                 Email = "test@mail.com",
