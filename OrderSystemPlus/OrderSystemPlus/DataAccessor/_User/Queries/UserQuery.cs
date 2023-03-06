@@ -2,19 +2,13 @@
 
 using Dapper;
 
+using OrderSystemPlus.Models;
 using OrderSystemPlus.Models.DataAccessor.Queries;
 
 namespace OrderSystemPlus.DataAccessor.Queries
 {
     public class UserQuery : IUserQuery
     {
-        private readonly string _connectStr;
-
-        public UserQuery()
-        {
-            _connectStr = @"Server=.\SQLExpress;Database=OrderSystemDB;Trusted_Connection=True;ConnectRetryCount=0";
-        }
-
         public async Task<List<UserQueryModel>> FindByOptionsAsync(int? id, string? email, string? account)
         {
             string sql = @"
@@ -43,7 +37,7 @@ namespace OrderSystemPlus.DataAccessor.Queries
                 sql = string.Concat(sql, $" WHERE {string.Join(" AND ", conditions)}");
 
             var result = default(List<UserQueryModel>);
-            using (SqlConnection conn = new SqlConnection(_connectStr))
+            using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
                 result = (await conn.QueryAsync<UserQueryModel>(sql,new {
                     IsValid = true,
