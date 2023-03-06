@@ -1,6 +1,6 @@
-﻿namespace OrderSystemPlus.Models.BusinessActor.Commands
+﻿namespace OrderSystemPlus.Models.BusinessActor.Queries
 {
-    public class ReqUserList
+    public class ReqGetUserInfo
     {
         /// <summary>
         /// ID

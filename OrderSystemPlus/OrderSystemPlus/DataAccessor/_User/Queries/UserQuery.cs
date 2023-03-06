@@ -9,7 +9,7 @@ namespace OrderSystemPlus.DataAccessor.Queries
 {
     public class UserQuery : IUserQuery
     {
-        public async Task<List<UserQueryModel>> FindByOptionsAsync(int? id, string? email, string? account)
+        public async Task<List<UserQueryModel>> FindByOptionsAsync(int? id = null, string? email = null, string? account = null)
         {
             string sql = @"
                            SELECT

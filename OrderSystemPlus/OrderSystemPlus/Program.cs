@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.BusinessActor.Commands;
+using OrderSystemPlus.BusinessActor.Queries;
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.DataAccessor.Commands;
 using OrderSystemPlus.DataAccessor.Queries;
@@ -37,7 +38,8 @@ builder.Services
 builder.Services
     .AddSingleton<ICommandHandler<ReqUserCreate>, UserManageCommandHandler>()
     .AddSingleton<ICommandHandler<ReqUserSignIn, RspUserSignIn>, UserManageCommandHandler>()
-    .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>();
+    .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
+    .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>();
 
 // Add JWT
 builder.Services.AddSingleton<IJwtHelper, JwtHelper>();
