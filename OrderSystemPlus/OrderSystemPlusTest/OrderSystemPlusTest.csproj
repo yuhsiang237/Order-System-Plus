@@ -8,12 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="BusinessActor\_UserManage\Queries\**" />
-    <EmbeddedResource Remove="BusinessActor\_UserManage\Queries\**" />
-    <None Remove="BusinessActor\_UserManage\Queries\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.10.0" />
     <PackageReference Include="FluentValidation" Version="11.5.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.2.2" />

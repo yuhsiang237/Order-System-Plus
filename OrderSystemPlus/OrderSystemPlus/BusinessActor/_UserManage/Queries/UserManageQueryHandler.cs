@@ -22,6 +22,7 @@ namespace OrderSystemPlus.BusinessActor.Queries
 
             return new RspGetUserInfo
             {
+                Id = rsp.Id,
                 Name = rsp.Name,
                 Account = rsp.Account,
                 Email = rsp.Email,
@@ -34,6 +35,7 @@ namespace OrderSystemPlus.BusinessActor.Queries
             var result = rsp.Select(x =>
                 new RspGetUserList
                 {
+                    Id = x.Id,
                     Name = x.Name,
                     Account = x.Account,
                     Email = x.Email,
