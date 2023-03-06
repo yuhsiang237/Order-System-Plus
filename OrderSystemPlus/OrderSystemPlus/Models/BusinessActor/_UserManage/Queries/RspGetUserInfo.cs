@@ -1,11 +1,9 @@
-﻿namespace OrderSystemPlus.Models.BusinessActor.Commands
+﻿namespace OrderSystemPlus.Models.BusinessActor.Queries
 {
-    public class ReqUserManageCreate
+    public class RspGetUserInfo
     {
         public string Name { get; set; }
         public string Email { get; set; }
         public string Account { get; set; }
-        public string Password { get; set; }
-
     }
 }

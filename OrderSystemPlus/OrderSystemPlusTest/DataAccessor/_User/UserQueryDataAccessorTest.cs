@@ -10,6 +10,7 @@ using OrderSystemPlus.DataAccessor.Queries;
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.DataAccessor.Commands;
 using OrderSystemPlus.DataAccessor.Commands;
+using OrderSystemPlus.Utils.GUIDSerialTool;
 
 namespace OrderSystemPlusTest.DataAccessor
 {
@@ -26,7 +27,7 @@ namespace OrderSystemPlusTest.DataAccessor
         public UserQueryDataAccessorTest()
         {
             _now = DateTime.Now;
-            _guid = Guid.NewGuid().ToString("N")[..15];
+            _guid = GUIDSerialTool.Generate(15);
             _query = new UserQuery();
             _insert = new UserCommand();
             _delete = new UserCommand();

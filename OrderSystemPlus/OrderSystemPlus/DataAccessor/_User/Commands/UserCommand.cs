@@ -3,6 +3,7 @@
 using Dapper;
 
 using System.Data.SqlClient;
+using OrderSystemPlus.Models;
 
 namespace OrderSystemPlus.DataAccessor.Commands
 {
@@ -12,12 +13,6 @@ namespace OrderSystemPlus.DataAccessor.Commands
         IDeleteCommand<IEnumerable<UserCommandModel>>,
         IUpdateCommand<IEnumerable<UserCommandModel>>
     {
-        private readonly string _connectStr;
-        public UserCommand()
-        {
-            _connectStr = @"Server=.\SQLExpress;Database=OrderSystemDB;Trusted_Connection=True;ConnectRetryCount=0";
-        }
-
         public async Task DeleteAsync(IEnumerable<UserCommandModel> commands)
         {
             var sql = @"
@@ -28,7 +23,7 @@ namespace OrderSystemPlus.DataAccessor.Commands
                 WHERE
                     [Id] = @Id
                 ";
-            using (SqlConnection conn = new SqlConnection(_connectStr))
+            using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
                 await conn.ExecuteAsync(sql, commands);
             }
@@ -61,7 +56,7 @@ namespace OrderSystemPlus.DataAccessor.Commands
                     @IsValid
                 )
                 ";
-            using (SqlConnection conn = new SqlConnection(_connectStr))
+            using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
                 await conn.ExecuteAsync(sql, commands);
             }
@@ -103,7 +98,7 @@ namespace OrderSystemPlus.DataAccessor.Commands
                 )
                 ";
          
-            using (SqlConnection conn = new SqlConnection(_connectStr))
+            using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
                 conn.Open();
                 using (var trans = conn.BeginTransaction()) { 
@@ -120,17 +115,12 @@ namespace OrderSystemPlus.DataAccessor.Commands
                 UPDATE [dbo].[User]
                 SET 
                   [Name] = @Name,
-                  [Salt] = @Salt,
                   [Email] = @Email,
-                  [Account] = @Account,
-                  [Password] = @Password,
-                  [RoleId] = @RoleId,
-                  [UpdatedOn] = @UpdatedOn,
-                  [IsValid] = @IsValid
+                  [UpdatedOn] = @UpdatedOn
                 WHERE
                     [Id] = @Id
                 ";
-            using (SqlConnection conn = new SqlConnection(_connectStr))
+            using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
                 await conn.ExecuteAsync(sql, commands);
             }
