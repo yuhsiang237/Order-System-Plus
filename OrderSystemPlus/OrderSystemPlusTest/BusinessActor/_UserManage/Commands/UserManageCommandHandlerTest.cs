@@ -13,7 +13,7 @@ using OrderSystemPlus.Models.BusinessActor.Commands;
 using OrderSystemPlus.Models.DataAccessor.Queries;
 using OrderSystemPlus.Utils.JwtHelper;
 
-namespace OrderSystemPlusTest.DataAccessor
+namespace OrderSystemPlusTest.BusinessActor.Commands
 {
     public class UserManageCommandHandlerTest
     {
