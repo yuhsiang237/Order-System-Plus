@@ -33,7 +33,13 @@ builder.Services
     .AddSingleton<IInsertCommand<IEnumerable<UserCommandModel>>, UserCommand>()
     .AddSingleton<IDeleteCommand<IEnumerable<UserCommandModel>>, UserCommand>()
     .AddSingleton<IUpdateCommand<IEnumerable<UserCommandModel>>, UserCommand>()
-    .AddSingleton<IUserQuery, UserQuery>();
+    .AddSingleton<IInsertCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
+    .AddSingleton<IDeleteCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
+    .AddSingleton<IUpdateCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>();
+
+builder.Services
+      .AddSingleton<IUserQuery, UserQuery>()
+      .AddSingleton<IProductTypeQuery, ProductTypeQuery>();
 
 builder.Services
     .AddSingleton<ICommandHandler<ReqUserCreate>, UserManageCommandHandler>()
