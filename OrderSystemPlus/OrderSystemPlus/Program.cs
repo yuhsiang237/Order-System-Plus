@@ -44,9 +44,10 @@ builder.Services
 builder.Services
     .AddSingleton<ICommandHandler<ReqUserCreate>, UserManageCommandHandler>()
     .AddSingleton<ICommandHandler<ReqUserSignIn, RspUserSignIn>, UserManageCommandHandler>()
-    .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
-    .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>();
-
+    .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>()
+    .AddSingleton<ICommandHandler<ReqProductTypeCreate>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqProductTypeUpdate>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqProductTypeDelete>, ProductManageCommandHandler>();
 // Add JWT
 builder.Services.AddSingleton<IJwtHelper, JwtHelper>();
 
