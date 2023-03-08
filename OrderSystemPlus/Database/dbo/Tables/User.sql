@@ -6,9 +6,9 @@
     [Account]   NVARCHAR (100) NULL,
     [Password]  NVARCHAR (500) NULL,
     [RoleId]    INT            NULL,
-    [CreatedOn]  DATETIME   NULL,
-    [UpdatedOn] DATETIME   NULL,
-    [IsValid] BIT            NULL,
+    [CreatedOn]  DATETIME   NOT NULL,
+    [UpdatedOn] DATETIME   NOT NULL,
+    [IsValid] BIT            NOT NULL,
     CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
