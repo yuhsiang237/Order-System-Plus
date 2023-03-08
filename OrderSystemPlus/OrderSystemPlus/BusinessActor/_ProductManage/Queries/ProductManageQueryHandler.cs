@@ -3,45 +3,24 @@ using OrderSystemPlus.Models.BusinessActor.Queries;
 
 namespace OrderSystemPlus.BusinessActor.Queries
 {
-    public class UserManageQueryHandler : IUserManageQueryHandler
+    public class ProductManageQueryHandler : IProductManageQueryHandler
     {
-        private readonly IUserQuery _query;
+        private readonly IProductTypeQuery _query;
 
-        public UserManageQueryHandler(IUserQuery query)
+        public ProductManageQueryHandler(IProductTypeQuery query)
         {
             _query = query;
         }
 
-        public async Task<RspGetUserInfo> GetUserInfoAsync(ReqGetUserInfo req)
+        public async Task<List<RspGetProductTypeList>> GetProductTypeListAsync(ReqGetProductTypeList req)
         {
-            var rsp = (await _query.FindByOptionsAsync(
-                req.Id,
-                null,
-                null))
-                .FirstOrDefault();
-
-            return new RspGetUserInfo
+            var data = await _query.FindByOptionsAsync(null, null);
+            return data.Select(x => new RspGetProductTypeList
             {
-                Id = rsp.Id,
-                Name = rsp.Name,
-                Account = rsp.Account,
-                Email = rsp.Email,
-            };
-        }
-
-        public async Task<List<RspGetUserList>> GetUserListAsync(ReqGetUserList req)
-        {
-            var rsp = await _query.FindByOptionsAsync(null, null, null);
-            var result = rsp.Select(x =>
-                new RspGetUserList
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Account = x.Account,
-                    Email = x.Email,
-                })
-                .ToList();
-            return result;
+                Id = x.Id,
+                Name = x.Name,
+                Description = x.Description,
+            }).ToList();
         }
     }
 }

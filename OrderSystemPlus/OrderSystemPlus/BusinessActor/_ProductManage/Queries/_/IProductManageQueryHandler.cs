@@ -2,19 +2,12 @@
 
 namespace OrderSystemPlus.BusinessActor.Queries;
 
-public interface IUserManageQueryHandler
+public interface IProductManageQueryHandler
 {
     /// <summary>
-    /// GetUserListAsync
+    /// GetProductTypeListAsync
     /// </summary>
     /// <param name="req"></param>
     /// <returns></returns>
-    Task<List<RspGetUserList>> GetUserListAsync(ReqGetUserList req);
-
-    /// <summary>
-    /// GetUserInfoAsync
-    /// </summary>
-    /// <param name="req"></param>
-    /// <returns></returns>
-    Task<RspGetUserInfo> GetUserInfoAsync(ReqGetUserInfo req);
+    Task<List<RspGetProductTypeList>> GetProductTypeListAsync(ReqGetProductTypeList req);
 }
