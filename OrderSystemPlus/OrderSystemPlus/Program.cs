@@ -33,13 +33,26 @@ builder.Services
     .AddSingleton<IInsertCommand<IEnumerable<UserCommandModel>>, UserCommand>()
     .AddSingleton<IDeleteCommand<IEnumerable<UserCommandModel>>, UserCommand>()
     .AddSingleton<IUpdateCommand<IEnumerable<UserCommandModel>>, UserCommand>()
-    .AddSingleton<IUserQuery, UserQuery>();
+    .AddSingleton<IInsertCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
+    .AddSingleton<IDeleteCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
+    .AddSingleton<IUpdateCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>();
+
+builder.Services
+      .AddSingleton<IUserQuery, UserQuery>()
+      .AddSingleton<IProductTypeQuery, ProductTypeQuery>();
 
 builder.Services
     .AddSingleton<ICommandHandler<ReqUserCreate>, UserManageCommandHandler>()
     .AddSingleton<ICommandHandler<ReqUserSignIn, RspUserSignIn>, UserManageCommandHandler>()
-    .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
-    .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>();
+    .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>()
+    .AddSingleton<ICommandHandler<ReqProductTypeCreate>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqProductTypeUpdate>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqProductTypeDelete>, ProductManageCommandHandler>()
+    .AddSingleton<IProductManageQueryHandler, ProductManageQueryHandler>();
+
+builder.Services
+    .AddSingleton<ProductManageCommandHandler, ProductManageCommandHandler>()
+    .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>();
 
 // Add JWT
 builder.Services.AddSingleton<IJwtHelper, JwtHelper>();
