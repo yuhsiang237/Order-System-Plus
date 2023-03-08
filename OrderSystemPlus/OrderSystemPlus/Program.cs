@@ -50,6 +50,10 @@ builder.Services
     .AddSingleton<ICommandHandler<ReqProductTypeDelete>, ProductManageCommandHandler>()
     .AddSingleton<IProductManageQueryHandler, ProductManageQueryHandler>();
 
+builder.Services
+    .AddSingleton<ProductManageCommandHandler, ProductManageCommandHandler>()
+    .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>();
+
 // Add JWT
 builder.Services.AddSingleton<IJwtHelper, JwtHelper>();
 

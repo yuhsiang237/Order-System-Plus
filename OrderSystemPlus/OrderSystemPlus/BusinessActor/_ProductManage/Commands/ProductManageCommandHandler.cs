@@ -51,8 +51,13 @@ namespace OrderSystemPlus.BusinessActor.Commands
                             Description = command.Description,
                             CreatedOn = DateTime.Now,
                             UpdatedOn = DateTime.Now,
+                            IsValid = true,
                         }
                     });
+            }
+            else
+            {
+                throw new Exception("已存在");
             }
         }
 
@@ -68,6 +73,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
                 {
                     new ProductTypeCommandModel
                     {
+                        Id  = command.Id,
                         Name = command.Name,
                         Description = command.Description,
                         UpdatedOn = DateTime.Now,
@@ -87,6 +93,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
                 new ProductTypeCommandModel
                 {
                     Id = command.Id,
+                    UpdatedOn= DateTime.Now,
                 }
             });
         }
