@@ -31,7 +31,7 @@ namespace OrderSystemPlus.DataAccessor.Queries
             if (id.HasValue)
                 conditions.Add("[Id] = @Id");
             if (!string.IsNullOrEmpty(name))
-                conditions.Add("[Name] LIKE @Name");
+                conditions.Add("[Name] = @Name");
             if (!string.IsNullOrEmpty(number))
                 conditions.Add("[Number] = @Number");
 

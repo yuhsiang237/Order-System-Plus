@@ -37,7 +37,7 @@ namespace OrderSystemPlusTest.DataAccessor
         public async Task RunAsync()
         {
             await _insert.InsertAsync(GetInsertModel());
-            var insertResult = await _query.FindByOptionsAsync(null, GetInsertModel().First().Name);
+            var insertResult = await _query.FindByOptionsAsync(null, GetInsertModel().First().Name, GetInsertModel().First().Number);
             insertResult.Count.Should().Be(1);
             insertResult.First().Name.Should().Be(GetInsertModel().First().Name);
             insertResult.First().Description.Should().Be(GetInsertModel().First().Description);
@@ -46,7 +46,7 @@ namespace OrderSystemPlusTest.DataAccessor
             insertResult.First().Price.Should().Be(GetInsertModel().First().Price);
 
             await _update.UpdateAsync(GetUpdateModel(insertResult.First().Id));
-            var updateResult = await _query.FindByOptionsAsync(insertResult.First().Id, null);
+            var updateResult = await _query.FindByOptionsAsync(insertResult.First().Id, null,null);
             updateResult.Count.Should().Be(1);
             updateResult.First().Name.Should().Be(GetUpdateModel(updateResult.First().Id).First().Name);
             updateResult.First().Description.Should().Be(GetUpdateModel(updateResult.First().Id).First().Description);
@@ -56,7 +56,7 @@ namespace OrderSystemPlusTest.DataAccessor
 
 
             await _delete.DeleteAsync(GetDeleteModel(updateResult.First().Id));
-            var deleteResult = await _query.FindByOptionsAsync(updateResult.First().Id, null);
+            var deleteResult = await _query.FindByOptionsAsync(updateResult.First().Id, null,null);
             deleteResult.Count.Should().Be(0);
         }
 

@@ -36,17 +36,17 @@ namespace OrderSystemPlusTest.DataAccessor
         [Fact]
         public async Task RunAsync()
         {
-            await _insert.InsertAsync(GetInsertModel());
-            var insertResult = await _query.FindByOptionsAsync(null, GetInsertModel().First().Name);
+            await _insert.InsertAsync(GetTypeInsertModel());
+            var insertResult = await _query.FindByOptionsAsync(null, GetTypeInsertModel().First().Name);
             insertResult.Count.Should().Be(1);
-            insertResult.First().Name.Should().Be(GetInsertModel().First().Name);
-            insertResult.First().Description.Should().Be(GetInsertModel().First().Description);
+            insertResult.First().Name.Should().Be(GetTypeInsertModel().First().Name);
+            insertResult.First().Description.Should().Be(GetTypeInsertModel().First().Description);
 
-            await _update.UpdateAsync(GetUpdateModel(insertResult.First().Id));
+            await _update.UpdateAsync(GetTypeUpdateModel(insertResult.First().Id));
             var updateResult = await _query.FindByOptionsAsync(insertResult.First().Id, null);
             updateResult.Count.Should().Be(1);
-            updateResult.First().Name.Should().Be(GetUpdateModel(updateResult.First().Id).First().Name);
-            updateResult.First().Description.Should().Be(GetUpdateModel(updateResult.First().Id).First().Description);
+            updateResult.First().Name.Should().Be(GetTypeUpdateModel(updateResult.First().Id).First().Name);
+            updateResult.First().Description.Should().Be(GetTypeUpdateModel(updateResult.First().Id).First().Description);
 
 
             await _delete.DeleteAsync(GetDeleteModel(updateResult.First().Id));
@@ -54,7 +54,7 @@ namespace OrderSystemPlusTest.DataAccessor
             deleteResult.Count.Should().Be(0);
         }
 
-        public List<ProductTypeCommandModel> GetInsertModel() => new List<ProductTypeCommandModel> {
+        public List<ProductTypeCommandModel> GetTypeInsertModel() => new List<ProductTypeCommandModel> {
                 new ProductTypeCommandModel
                 {
                     Name = $"Test{_guid}",
@@ -65,7 +65,7 @@ namespace OrderSystemPlusTest.DataAccessor
                 }
             };
 
-        public List<ProductTypeCommandModel> GetUpdateModel(int id) => new List<ProductTypeCommandModel> {
+        public List<ProductTypeCommandModel> GetTypeUpdateModel(int id) => new List<ProductTypeCommandModel> {
                 new ProductTypeCommandModel
                 {
                     Id = id,

@@ -38,7 +38,7 @@ namespace OrderSystemPlus.DataAccessor.Queries
             {
                 result = (await conn.QueryAsync<ProductTypeQueryModel>(sql,new {
                     IsValid = true,
-                    Name = "%" + name + "%",
+                    Name = name,
                     Id = id,
                 })).ToList();
             }
