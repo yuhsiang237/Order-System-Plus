@@ -10,6 +10,6 @@ namespace OrderSystemPlus.DataAccessor.Queries
         /// <param name="id"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Task<List<ProductQueryModel>> FindByOptionsAsync(int? id,string? name);
+        public Task<List<ProductQueryModel>> FindByOptionsAsync(int? id,string? name, string? number);
     }
 }

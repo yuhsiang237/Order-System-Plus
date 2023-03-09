@@ -9,7 +9,7 @@ namespace OrderSystemPlus.DataAccessor.Queries
 {
     public class ProductQuery : IProductQuery
     {
-        public async Task<List<ProductQueryModel>> FindByOptionsAsync(int? id = null, string? name = null)
+        public async Task<List<ProductQueryModel>> FindByOptionsAsync(int? id = null, string? name = null, string? number = null)
         {
             string sql = @"
                            SELECT
@@ -32,6 +32,8 @@ namespace OrderSystemPlus.DataAccessor.Queries
                 conditions.Add("[Id] = @Id");
             if (!string.IsNullOrEmpty(name))
                 conditions.Add("[Name] LIKE @Name");
+            if (!string.IsNullOrEmpty(number))
+                conditions.Add("[Number] = @Number");
 
             if (conditions.Any())
                 sql = string.Concat(sql, $" WHERE {string.Join(" AND ", conditions)}");
@@ -42,8 +44,9 @@ namespace OrderSystemPlus.DataAccessor.Queries
                 result = (await conn.QueryAsync<ProductQueryModel>(sql, new
                 {
                     IsValid = true,
-                    Name = '%' + name + '%',
+                    Name = name,
                     Id = id,
+                    Number = number,
                 })).ToList();
             }
 

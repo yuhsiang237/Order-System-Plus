@@ -66,6 +66,7 @@ namespace OrderSystemPlus.DataAccessor.Commands
                 SET
                   [Name] = @Name,
                   [Price] = @Price,
+                  [Number] = @Number,
                   [Description] = @Description,
                   [CurrentUnit] = @CurrentUnit,
                   [UpdatedOn] = @UpdatedOn
