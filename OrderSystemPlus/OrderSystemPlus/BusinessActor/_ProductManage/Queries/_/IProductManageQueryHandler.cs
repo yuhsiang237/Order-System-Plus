@@ -10,4 +10,11 @@ public interface IProductManageQueryHandler
     /// <param name="req"></param>
     /// <returns></returns>
     Task<List<RspGetProductTypeList>> GetProductTypeListAsync(ReqGetProductTypeList req);
+
+    /// <summary>
+    /// GetProductListAsync
+    /// </summary>
+    /// <param name="req"></param>
+    /// <returns></returns>
+    Task<List<RspGetProductList>> GetProductListAsync(ReqGetProductList req);
 }

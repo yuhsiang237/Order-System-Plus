@@ -7,19 +7,22 @@ using OrderSystemPlus.Models.DataAccessor.Queries;
 
 namespace OrderSystemPlus.DataAccessor.Queries
 {
-    public class ProductTypeQuery : IProductTypeQuery
+    public class ProductQuery : IProductQuery
     {
-        public async Task<List<ProductTypeQueryModel>> FindByOptionsAsync(int? id = null, string? name = null)
+        public async Task<List<ProductQueryModel>> FindByOptionsAsync(int? id = null, string? name = null, string? number = null)
         {
             string sql = @"
                            SELECT
-                              [Id],
-                              [Name],
-                              [Description],
-                              [CreatedOn],
-                              [UpdatedOn],
-                              [IsValid]
-                           FROM [dbo].[ProductType]";
+                              [Id]
+                              ,[Number]
+                              ,[Name]
+                              ,[Price]
+                              ,[Description]
+                              ,[CurrentUnit]
+                              ,[CreatedOn]
+                              ,[UpdatedOn]
+                              ,[IsValid]
+                           FROM [dbo].[Product]";
 
             var conditions = new List<string>
             {
@@ -29,17 +32,21 @@ namespace OrderSystemPlus.DataAccessor.Queries
                 conditions.Add("[Id] = @Id");
             if (!string.IsNullOrEmpty(name))
                 conditions.Add("[Name] = @Name");
+            if (!string.IsNullOrEmpty(number))
+                conditions.Add("[Number] = @Number");
 
             if (conditions.Any())
                 sql = string.Concat(sql, $" WHERE {string.Join(" AND ", conditions)}");
 
-            var result = default(List<ProductTypeQueryModel>);
+            var result = default(List<ProductQueryModel>);
             using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
-                result = (await conn.QueryAsync<ProductTypeQueryModel>(sql,new {
+                result = (await conn.QueryAsync<ProductQueryModel>(sql, new
+                {
                     IsValid = true,
                     Name = name,
                     Id = id,
+                    Number = number,
                 })).ToList();
             }
 

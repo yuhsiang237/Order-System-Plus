@@ -35,11 +35,15 @@ builder.Services
     .AddSingleton<IUpdateCommand<IEnumerable<UserCommandModel>>, UserCommand>()
     .AddSingleton<IInsertCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
     .AddSingleton<IDeleteCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
-    .AddSingleton<IUpdateCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>();
+    .AddSingleton<IUpdateCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
+    .AddSingleton<IInsertCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
+    .AddSingleton<IDeleteCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
+    .AddSingleton<IUpdateCommand<IEnumerable<ProductCommandModel>>, ProductCommand>();
 
 builder.Services
       .AddSingleton<IUserQuery, UserQuery>()
-      .AddSingleton<IProductTypeQuery, ProductTypeQuery>();
+      .AddSingleton<IProductTypeQuery, ProductTypeQuery>()
+      .AddSingleton<IProductQuery, ProductQuery>();
 
 builder.Services
     .AddSingleton<ICommandHandler<ReqUserCreate>, UserManageCommandHandler>()
@@ -48,6 +52,9 @@ builder.Services
     .AddSingleton<ICommandHandler<ReqProductTypeCreate>, ProductManageCommandHandler>()
     .AddSingleton<ICommandHandler<ReqProductTypeUpdate>, ProductManageCommandHandler>()
     .AddSingleton<ICommandHandler<ReqProductTypeDelete>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqProductCreate>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqProductUpdate>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqProductDelete>, ProductManageCommandHandler>()
     .AddSingleton<IProductManageQueryHandler, ProductManageQueryHandler>();
 
 builder.Services
