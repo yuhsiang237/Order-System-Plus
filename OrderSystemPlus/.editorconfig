@@ -22,6 +22,9 @@ csharp_style_expression_bodied_properties = true:silent
 csharp_indent_labels = one_less_than_current
 csharp_style_expression_bodied_indexers = true:silent
 
+# CS0618: Type or member is obsolete
+dotnet_diagnostic.CS0618.severity = none
+
 [*.{cs,vb}]
 #### Naming styles ####
 

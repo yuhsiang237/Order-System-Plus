@@ -13,23 +13,65 @@ using OrderSystemPlus.Utils.JwtHelper;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// Add auto fluent validation
-#pragma warning disable CS0618 // Type or member is obsolete
-builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
-#pragma warning restore CS0618 // Type or member is obsolete
-builder.Services
-    .AddTransient<IValidator<ReqCreateUser>, ReqCreateUserValidator>()
-    .AddTransient<IValidator<ReqSignInUser>, ReqSignInUserValidator>()
-    .AddTransient<IValidator<ReqUpdateUser>, ReqUpdateUserValidator>();
 
-// Add custom
-builder.Services
+// Add auto fluent validation
+builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
+
+/// <summary>
+/// Add dependency Validactor
+/// </summary>
+void AddValidactor()
+{
+    builder.Services
+        .AddTransient<IValidator<ReqCreateUser>, ReqCreateUserValidator>()
+        .AddTransient<IValidator<ReqSignInUser>, ReqSignInUserValidator>()
+        .AddTransient<IValidator<ReqUpdateUser>, ReqUpdateUserValidator>();
+}
+
+/// <summary>
+/// Add dependency injection Handler
+/// </summary>
+void AddHandler()
+{
+    builder.Services
+        .AddSingleton<ICommandHandler<ReqCreateUser>, UserManageCommandHandler>()
+        .AddSingleton<ICommandHandler<ReqSignInUser, RspSignInUser>, UserManageCommandHandler>()
+        .AddSingleton<ICommandHandler<ReqCreateProductType>, ProductManageCommandHandler>()
+        .AddSingleton<ICommandHandler<ReqUpdateProductType>, ProductManageCommandHandler>()
+        .AddSingleton<ICommandHandler<ReqDeleteProductType>, ProductManageCommandHandler>()
+        .AddSingleton<ICommandHandler<ReqCreateProduct>, ProductManageCommandHandler>()
+        .AddSingleton<ICommandHandler<ReqUpdateProduct>, ProductManageCommandHandler>()
+        .AddSingleton<ICommandHandler<ReqDeleteProduct>, ProductManageCommandHandler>();
+
+    builder.Services
+        .AddSingleton<ProductManageCommandHandler, ProductManageCommandHandler>()
+        .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
+        .AddSingleton<ProductInventoryCommandHandler, ProductInventoryCommandHandler>()
+        .AddSingleton<ProductManageCommandHandler, ProductManageCommandHandler>()
+        .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
+        .AddSingleton<ProductInventoryCommandHandler, ProductInventoryCommandHandler>();
+
+    builder.Services
+          .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>()
+          .AddSingleton<IProductManageQueryHandler, ProductManageQueryHandler>()
+          .AddSingleton<IProductInventoryQueryHandler, ProductInventoryQueryHandler>();
+}
+
+
+/// <summary>
+/// Add dependency injection Query/Command
+/// </summary>
+void AddQueryAndCommand()
+{
+    // command
+    builder.Services
     .AddSingleton<IInsertCommand<IEnumerable<UserCommandModel>>, UserCommand>()
     .AddSingleton<IDeleteCommand<IEnumerable<UserCommandModel>>, UserCommand>()
     .AddSingleton<IUpdateCommand<IEnumerable<UserCommandModel>>, UserCommand>()
@@ -41,31 +83,18 @@ builder.Services
     .AddSingleton<IUpdateCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
     .AddSingleton<IInsertCommand<IEnumerable<ProductInventoryCommandModel>>, ProductInventoryCommand>();
 
-builder.Services
-      .AddSingleton<IUserQuery, UserQuery>()
-      .AddSingleton<IProductTypeQuery, ProductTypeQuery>()
-      .AddSingleton<IProductQuery, ProductQuery>()
-      .AddSingleton<IProductInventoryQuery, ProductInventoryQuery>();
+    // query
+    builder.Services
+          .AddSingleton<IUserQuery, UserQuery>()
+          .AddSingleton<IProductTypeQuery, ProductTypeQuery>()
+          .AddSingleton<IProductQuery, ProductQuery>()
+          .AddSingleton<IProductInventoryQuery, ProductInventoryQuery>();
+}
 
-builder.Services
-    .AddSingleton<ICommandHandler<ReqCreateUser>, UserManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqSignInUser, RspSignInUser>, UserManageCommandHandler>()
-    .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>()
-    .AddSingleton<ICommandHandler<ReqCreateProductType>, ProductManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqUpdateProductType>, ProductManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqDeleteProductType>, ProductManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqCreateProduct>, ProductManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqUpdateProduct>, ProductManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqDeleteProduct>, ProductManageCommandHandler>()
-    .AddSingleton<IProductManageQueryHandler, ProductManageQueryHandler>()
-    .AddSingleton<IProductInventoryQueryHandler, ProductInventoryQueryHandler>();
-
-
-builder.Services
-    .AddSingleton<ProductManageCommandHandler, ProductManageCommandHandler>()
-    .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
-    .AddSingleton<ProductInventoryCommandHandler, ProductInventoryCommandHandler>();
-
+// Custom DI
+AddValidactor();
+AddQueryAndCommand();
+AddHandler();
 
 // Add JWT
 builder.Services.AddSingleton<IJwtHelper, JwtHelper>();
