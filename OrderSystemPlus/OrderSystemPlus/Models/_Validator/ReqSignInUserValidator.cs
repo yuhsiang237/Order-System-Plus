@@ -2,9 +2,9 @@
 
 using OrderSystemPlus.Models.BusinessActor.Commands;
 
-public class ReqUserSignInValidator : AbstractValidator<ReqUserSignIn>
+public class ReqSignInUserValidator : AbstractValidator<ReqSignInUser>
 {
-    public ReqUserSignInValidator()
+    public ReqSignInUserValidator()
     {
         RuleFor(x => x.Account)
             .NotNull().WithMessage("不可為空")

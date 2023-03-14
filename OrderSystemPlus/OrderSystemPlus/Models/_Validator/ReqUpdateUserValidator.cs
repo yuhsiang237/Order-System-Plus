@@ -2,9 +2,9 @@
 
 using OrderSystemPlus.Models.BusinessActor.Commands;
 
-public class ReqUserUpdateValidator : AbstractValidator<ReqUserUpdate>
+public class ReqUpdateUserValidator : AbstractValidator<ReqUpdateUser>
 {
-    public ReqUserUpdateValidator()
+    public ReqUpdateUserValidator()
     {
         RuleFor(x => x.Id)
           .NotNull().WithMessage("不可為空")

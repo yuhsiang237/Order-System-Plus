@@ -24,9 +24,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 #pragma warning restore CS0618 // Type or member is obsolete
 builder.Services
-    .AddTransient<IValidator<ReqUserCreate>, ReqUserCreateValidator>()
-    .AddTransient<IValidator<ReqUserSignIn>, ReqUserSignInValidator>()
-    .AddTransient<IValidator<ReqUserUpdate>, ReqUserUpdateValidator>();
+    .AddTransient<IValidator<ReqCreateUser>, ReqCreateUserValidator>()
+    .AddTransient<IValidator<ReqSignInUser>, ReqSignInUserValidator>()
+    .AddTransient<IValidator<ReqUpdateUser>, ReqUpdateUserValidator>();
 
 // Add custom
 builder.Services
@@ -48,15 +48,15 @@ builder.Services
       .AddSingleton<IProductInventoryQuery, ProductInventoryQuery>();
 
 builder.Services
-    .AddSingleton<ICommandHandler<ReqUserCreate>, UserManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqUserSignIn, RspUserSignIn>, UserManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqCreateUser>, UserManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqSignInUser, RspSignInUser>, UserManageCommandHandler>()
     .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>()
-    .AddSingleton<ICommandHandler<ReqProductTypeCreate>, ProductManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqProductTypeUpdate>, ProductManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqProductTypeDelete>, ProductManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqProductCreate>, ProductManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqProductUpdate>, ProductManageCommandHandler>()
-    .AddSingleton<ICommandHandler<ReqProductDelete>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqCreateProductType>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqUpdateProductType>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqDeleteProductType>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqCreateProduct>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqUpdateProduct>, ProductManageCommandHandler>()
+    .AddSingleton<ICommandHandler<ReqDeleteProduct>, ProductManageCommandHandler>()
     .AddSingleton<IProductManageQueryHandler, ProductManageQueryHandler>()
     .AddSingleton<IProductInventoryQueryHandler, ProductInventoryQueryHandler>();
 

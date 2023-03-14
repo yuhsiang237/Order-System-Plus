@@ -1,7 +1,7 @@
 ﻿namespace OrderSystemPlus.Models.BusinessActor.Commands
 {
-    public class RspUserSignIn
+    public class ReqDeleteProductType
     {
-        public string Token { get; set; }
+        public int Id { get; set; }
     }
 }

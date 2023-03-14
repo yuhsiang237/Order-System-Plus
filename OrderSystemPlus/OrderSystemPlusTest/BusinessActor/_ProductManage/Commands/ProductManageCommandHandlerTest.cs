@@ -57,7 +57,7 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
 
             _productTypeInsertMock.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductTypeCommandModel>>()));
 
-            await _handler.HandleAsync(new ReqProductTypeCreate
+            await _handler.HandleAsync(new ReqCreateProductType
             {
                 Name = "productName",
                 Description = "test"
@@ -71,7 +71,7 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
         {
             _productTypeUpdateMock.Setup(x => x.UpdateAsync(It.IsAny<IEnumerable<ProductTypeCommandModel>>()));
 
-            await _handler.HandleAsync(new ReqProductTypeUpdate
+            await _handler.HandleAsync(new ReqUpdateProductType
             {
                 Id = 1,
                 Name = "updateProductName",
@@ -83,7 +83,7 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
         public async Task ProductTypeDelete()
         {
             _productTypeDeleteMock.Setup(x => x.DeleteAsync(It.IsAny<IEnumerable<ProductTypeCommandModel>>()));
-            await _handler.HandleAsync(new ReqProductTypeDelete
+            await _handler.HandleAsync(new ReqDeleteProductType
             {
                 Id = 1,
             }); ;
@@ -99,7 +99,7 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
 
             _productInsertMock.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductCommandModel>>()));
 
-            await _handler.HandleAsync(new ReqProductCreate
+            await _handler.HandleAsync(new ReqCreateProduct
             {
                 Name = "productName",
                 Description = "test",
@@ -113,7 +113,7 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
         public async Task ProductDelete()
         {
             _productDeleteMock.Setup(x => x.DeleteAsync(It.IsAny<IEnumerable<ProductCommandModel>>()));
-            await _handler.HandleAsync(new ReqProductDelete
+            await _handler.HandleAsync(new ReqDeleteProduct
             {
                 Id = 1,
             }); ;
@@ -125,7 +125,7 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
         {
             _productUpdateMock.Setup(x => x.UpdateAsync(It.IsAny<IEnumerable<ProductCommandModel>>()));
 
-            await _handler.HandleAsync(new ReqProductUpdate
+            await _handler.HandleAsync(new ReqUpdateProduct
             {
                 Id = 1,
                 Name = "productName",

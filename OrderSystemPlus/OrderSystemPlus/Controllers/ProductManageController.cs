@@ -22,22 +22,22 @@ namespace OrderSystemPlus.Controllers
             _queryHandler = queryHandler;
         }
 
-        [HttpPost("ProductTypeCreate")]
-        public async Task<IActionResult> ProductTypeCreate([FromBody] ReqProductTypeCreate req)
+        [HttpPost("CreateProductType")]
+        public async Task<IActionResult> CreateProductType([FromBody] ReqCreateProductType req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);
         }
 
-        [HttpPost("ProductTypeDelete")]
-        public async Task<IActionResult> ProductTypeDelete([FromBody] ReqProductTypeDelete req)
+        [HttpPost("DeleteProductType")]
+        public async Task<IActionResult> DeleteProductType([FromBody] ReqDeleteProductType req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);
         }
 
-        [HttpPost("ProductTypeUpdate")]
-        public async Task<IActionResult> ProductTypeUpdate([FromBody] ReqProductTypeUpdate req)
+        [HttpPost("UpdateProductType")]
+        public async Task<IActionResult> UpdateProductType([FromBody] ReqUpdateProductType req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);
@@ -47,22 +47,22 @@ namespace OrderSystemPlus.Controllers
         public async Task<List<RspGetProductTypeList>> GetProductTypeList([FromBody] ReqGetProductTypeList req)
             => await _queryHandler.GetProductTypeListAsync(req);
 
-        [HttpPost("ProductCreate")]
-        public async Task<IActionResult> ProductCreate([FromBody] ReqProductCreate req)
+        [HttpPost("CreateProduct")]
+        public async Task<IActionResult> CreateProduct([FromBody] ReqCreateProduct req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);
         }
 
-        [HttpPost("ProductDelete")]
-        public async Task<IActionResult> ProductDelete([FromBody] ReqProductDelete req)
+        [HttpPost("DeleteProduct")]
+        public async Task<IActionResult> DeleteProduct([FromBody] ReqDeleteProduct req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);
         }
 
-        [HttpPost("ProductUpdate")]
-        public async Task<IActionResult> ProductUpdate([FromBody] ReqProductUpdate req)
+        [HttpPost("UpdateProduct")]
+        public async Task<IActionResult> UpdateProduct([FromBody] ReqUpdateProduct req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);

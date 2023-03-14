@@ -6,12 +6,12 @@ using OrderSystemPlus.Models.DataAccessor.Commands;
 namespace OrderSystemPlus.BusinessActor.Commands
 {
     public class ProductManageCommandHandler :
-        ICommandHandler<ReqProductTypeCreate>,
-        ICommandHandler<ReqProductTypeUpdate>,
-        ICommandHandler<ReqProductTypeDelete>,
-        ICommandHandler<ReqProductCreate>,
-        ICommandHandler<ReqProductUpdate>,
-        ICommandHandler<ReqProductDelete>
+        ICommandHandler<ReqCreateProductType>,
+        ICommandHandler<ReqUpdateProductType>,
+        ICommandHandler<ReqDeleteProductType>,
+        ICommandHandler<ReqCreateProduct>,
+        ICommandHandler<ReqUpdateProduct>,
+        ICommandHandler<ReqDeleteProduct>
     {
         private readonly IInsertCommand<IEnumerable<ProductTypeCommandModel>> _productTypeInsert;
         private readonly IUpdateCommand<IEnumerable<ProductTypeCommandModel>> _productTypeUpdate;
@@ -51,7 +51,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task HandleAsync(ReqProductCreate command)
+        public async Task HandleAsync(ReqCreateProduct command)
         {
             var hasExist = (await _productQuery.FindByOptionsAsync(null, command.Name, command.Number)).Any();
             if (!hasExist)
@@ -83,7 +83,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task HandleAsync(ReqProductTypeCreate command)
+        public async Task HandleAsync(ReqCreateProductType command)
         {
             var hasExist = (await _productTypeQuery.FindByOptionsAsync(null, command.Name)).Any();
             if (!hasExist)
@@ -112,7 +112,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task HandleAsync(ReqProductUpdate command)
+        public async Task HandleAsync(ReqUpdateProduct command)
         {
             await _productUpdate.UpdateAsync(
                 new List<ProductCommandModel>
@@ -136,7 +136,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task HandleAsync(ReqProductTypeUpdate command)
+        public async Task HandleAsync(ReqUpdateProductType command)
         {
             await _productTypeUpdate.UpdateAsync(
                 new List<ProductTypeCommandModel>
@@ -156,7 +156,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task HandleAsync(ReqProductTypeDelete command)
+        public async Task HandleAsync(ReqDeleteProductType command)
         {
             await _productTypeDelete.DeleteAsync(new List<ProductTypeCommandModel>
             {
@@ -173,7 +173,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task HandleAsync(ReqProductDelete command)
+        public async Task HandleAsync(ReqDeleteProduct command)
         {
             await _productDelete.DeleteAsync(new List<ProductCommandModel>
             {

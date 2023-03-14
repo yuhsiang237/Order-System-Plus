@@ -26,8 +26,8 @@ namespace OrderSystemPlus.Controllers
         public async Task<List<RspGetProductInventoryList>> GetProductInventoryList([FromBody] ReqGetProductInventoryList req)
            => await _queryHandler.GetProductInventoryListAsync(req);
 
-        [HttpPost("ProductInventoryCreate")]
-        public async Task<IActionResult> ProductInventoryCreate([FromBody] ReqProductInventoryCreate req)
+        [HttpPost("CreateProductInventory")]
+        public async Task<IActionResult> CreateProductInventory([FromBody] ReqCreateProductInventory req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);

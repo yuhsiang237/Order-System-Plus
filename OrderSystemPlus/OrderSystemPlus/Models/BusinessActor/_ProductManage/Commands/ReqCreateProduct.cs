@@ -1,6 +1,6 @@
 ﻿namespace OrderSystemPlus.Models.BusinessActor.Commands
 {
-    public class ReqProductCreate
+    public class ReqCreateProduct
     {
         /// <summary>
         /// 產品名稱
