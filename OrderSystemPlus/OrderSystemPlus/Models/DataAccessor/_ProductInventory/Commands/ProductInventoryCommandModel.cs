@@ -1,4 +1,6 @@
-﻿namespace OrderSystemPlus.Models.DataAccessor.Commands
+﻿using OrderSystemPlus.Enums;
+
+namespace OrderSystemPlus.Models.DataAccessor.Commands
 {
     /// <summary>
     /// ProductInventoryCommandModel
@@ -14,7 +16,11 @@
         /// Product Id
         /// </summary>
         public int ProductId { get; set; }
-
+        /// <summary>
+        /// ActionType
+        /// </summary>
+        public InventoryActionType ActionType { get; set; }
+        
         /// <summary>
         /// 產品庫存量
         /// </summary>

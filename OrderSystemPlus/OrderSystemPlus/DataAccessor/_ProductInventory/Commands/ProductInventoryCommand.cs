@@ -36,6 +36,7 @@ namespace OrderSystemPlus.DataAccessor.Commands
                   [ProductId]
                   ,[Quantity]
                   ,[Description]
+                  ,[ActionType]
                   ,[CreatedOn]
                   ,[UpdatedOn]
                   ,[IsValid]
@@ -44,6 +45,7 @@ namespace OrderSystemPlus.DataAccessor.Commands
                   @ProductId,
                   @Quantity,
                   @Description,
+                  @ActionType,
                   @CreatedOn,
                   @UpdatedOn,
                   @IsValid
@@ -63,6 +65,7 @@ namespace OrderSystemPlus.DataAccessor.Commands
                   [ProductId] = @ProductId,
                   [Quantity]= @Quantity,
                   [Description]= @Description,
+                  [ActionType] = @ActionType,
                   [UpdatedOn]= @UpdatedOn,
                   [IsValid]= @IsValid
                 WHERE

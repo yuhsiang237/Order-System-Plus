@@ -1,4 +1,6 @@
-﻿namespace OrderSystemPlus.Models.DataAccessor.Queries
+﻿using OrderSystemPlus.Enums;
+
+namespace OrderSystemPlus.Models.DataAccessor.Queries
 {
     /// <summary>
     /// ProductInventoryQueryModel
@@ -15,6 +17,10 @@
         /// </summary>
         public int ProductId { get; set; }
 
+        /// <summary>
+        /// ActionType
+        /// </summary>
+        public InventoryActionType ActionType { get; set; }
         /// <summary>
         /// 產品庫存量
         /// </summary>

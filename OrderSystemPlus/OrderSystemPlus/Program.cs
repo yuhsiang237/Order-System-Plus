@@ -38,7 +38,8 @@ builder.Services
     .AddSingleton<IUpdateCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
     .AddSingleton<IInsertCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
     .AddSingleton<IDeleteCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
-    .AddSingleton<IUpdateCommand<IEnumerable<ProductCommandModel>>, ProductCommand>();
+    .AddSingleton<IUpdateCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
+    .AddSingleton<IInsertCommand<IEnumerable<ProductInventoryCommandModel>>, ProductInventoryCommand>();
 
 builder.Services
       .AddSingleton<IUserQuery, UserQuery>()
@@ -62,7 +63,9 @@ builder.Services
 
 builder.Services
     .AddSingleton<ProductManageCommandHandler, ProductManageCommandHandler>()
-    .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>();
+    .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
+    .AddSingleton<ProductInventoryCommandHandler, ProductInventoryCommandHandler>();
+
 
 // Add JWT
 builder.Services.AddSingleton<IJwtHelper, JwtHelper>();

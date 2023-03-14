@@ -22,6 +22,7 @@ namespace OrderSystemPlus.BusinessActor.Queries
                     Id = x.Id,
                     ProductId = x.ProductId,
                     Quantity = x.Quantity,
+                    ActionType = x.ActionType,
                 }).ToList();
         }
     }

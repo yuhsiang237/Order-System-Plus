@@ -16,6 +16,7 @@ namespace OrderSystemPlus.DataAccessor.Queries
                               [Id]
                               ,[ProductId]
                               ,[Quantity]
+                              ,[ActionType]
                               ,[Description]
                               ,[CreatedOn]
                               ,[UpdatedOn]

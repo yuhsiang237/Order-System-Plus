@@ -2,6 +2,7 @@
     [Id]          INT             IDENTITY (1, 1) NOT NULL,
     [ProductId]   INT             NULL,
     [Quantity]        DECIMAL (18, 4) NULL,
+    [ActionType] INT NULL, 
     [Description] VARCHAR (500)   NULL,
     [CreatedOn]  DATETIME   NOT NULL,
     [UpdatedOn] DATETIME   NOT NULL,

@@ -1,4 +1,6 @@
-﻿namespace OrderSystemPlus.Models.BusinessActor.Queries
+﻿using OrderSystemPlus.Enums;
+
+namespace OrderSystemPlus.Models.BusinessActor.Queries
 {
     public class RspGetProductInventoryList
     {
@@ -12,6 +14,10 @@
         /// </summary>
         public int ProductId { get; set; }
 
+        /// <summary>
+        /// ActionType
+        /// </summary>
+        public InventoryActionType ActionType { get; set; }
         /// <summary>
         /// 數量
         /// </summary>
