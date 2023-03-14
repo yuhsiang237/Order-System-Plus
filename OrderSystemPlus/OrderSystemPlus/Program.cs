@@ -43,7 +43,8 @@ builder.Services
 builder.Services
       .AddSingleton<IUserQuery, UserQuery>()
       .AddSingleton<IProductTypeQuery, ProductTypeQuery>()
-      .AddSingleton<IProductQuery, ProductQuery>();
+      .AddSingleton<IProductQuery, ProductQuery>()
+      .AddSingleton<IProductInventoryQuery, ProductInventoryQuery>();
 
 builder.Services
     .AddSingleton<ICommandHandler<ReqUserCreate>, UserManageCommandHandler>()
@@ -55,7 +56,9 @@ builder.Services
     .AddSingleton<ICommandHandler<ReqProductCreate>, ProductManageCommandHandler>()
     .AddSingleton<ICommandHandler<ReqProductUpdate>, ProductManageCommandHandler>()
     .AddSingleton<ICommandHandler<ReqProductDelete>, ProductManageCommandHandler>()
-    .AddSingleton<IProductManageQueryHandler, ProductManageQueryHandler>();
+    .AddSingleton<IProductManageQueryHandler, ProductManageQueryHandler>()
+    .AddSingleton<IProductInventoryQueryHandler, ProductInventoryQueryHandler>();
+
 
 builder.Services
     .AddSingleton<ProductManageCommandHandler, ProductManageCommandHandler>()
