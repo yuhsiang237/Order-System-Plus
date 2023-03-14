@@ -23,18 +23,18 @@ namespace OrderSystemPlus.Controllers
         }
 
         [HttpPost("CreateUser")]
-        public async Task<IActionResult> CreateUser([FromBody] ReqUserCreate req)
+        public async Task<IActionResult> CreateUser([FromBody] ReqCreateUser req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);
         }
 
-        [HttpPost("UserSignIn")]
-        public async Task<RspUserSignIn> SignInUser([FromBody] ReqUserSignIn req)
+        [HttpPost("SignInUser")]
+        public async Task<RspSignInUser> SignInUser([FromBody] ReqSignInUser req)
             => await _commandHandler.HandleAsync(req);
 
         [HttpPost("UpdateUser")]
-        public async Task<IActionResult> UpdateUser([FromBody] ReqUserUpdate req)
+        public async Task<IActionResult> UpdateUser([FromBody] ReqUpdateUser req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);

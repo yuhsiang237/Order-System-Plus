@@ -1,6 +1,6 @@
 ﻿namespace OrderSystemPlus.Models.BusinessActor.Commands
 {
-    public class ReqProductUpdate
+    public class ReqUpdateProduct
     {
         public int Id { get; set; }
         /// <summary>

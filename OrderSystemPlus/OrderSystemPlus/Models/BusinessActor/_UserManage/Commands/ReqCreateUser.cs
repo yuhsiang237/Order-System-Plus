@@ -1,6 +1,6 @@
 ﻿namespace OrderSystemPlus.Models.BusinessActor.Commands
 {
-    public class ReqUserCreate
+    public class ReqCreateUser
     {
         public string Name { get; set; }
         public string Email { get; set; }

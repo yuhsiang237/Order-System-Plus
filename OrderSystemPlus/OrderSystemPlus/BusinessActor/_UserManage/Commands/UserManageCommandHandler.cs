@@ -9,9 +9,9 @@ using OrderSystemPlus.Utils.JwtHelper;
 namespace OrderSystemPlus.BusinessActor.Commands
 {
     public class UserManageCommandHandler :
-        ICommandHandler<ReqUserCreate>,
-        ICommandHandler<ReqUserSignIn, RspUserSignIn>,
-        ICommandHandler<ReqUserUpdate>
+        ICommandHandler<ReqCreateUser>,
+        ICommandHandler<ReqSignInUser, RspSignInUser>,
+        ICommandHandler<ReqUpdateUser>
     {
         private readonly IInsertCommand<IEnumerable<UserCommandModel>> _insert;
         private readonly IUpdateCommand<IEnumerable<UserCommandModel>> _update;
@@ -40,7 +40,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task HandleAsync(ReqUserCreate req)
+        public async Task HandleAsync(ReqCreateUser req)
         {
             var now = DateTime.Now;
             var hashSalt = HashSaltTool.Generate(req.Password);
@@ -76,7 +76,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task<RspUserSignIn> HandleAsync(ReqUserSignIn command)
+        public async Task<RspSignInUser> HandleAsync(ReqSignInUser command)
         {
             var user = (await _query.FindByOptionsAsync(null, null, command.Account)).FirstOrDefault();
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
@@ -86,14 +86,14 @@ namespace OrderSystemPlus.BusinessActor.Commands
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             if (isValid)
             {
-                return new RspUserSignIn
+                return new RspSignInUser
                 {
                     Token = _jwtHelper.GenerateToken(user.Account),
                 };
             }
             else
             {
-                return new RspUserSignIn
+                return new RspSignInUser
                 {
                     Token = String.Empty,
                 };
@@ -105,7 +105,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task HandleAsync(ReqUserUpdate command)
+        public async Task HandleAsync(ReqUpdateUser command)
         {
             var hasUser = (await _query.FindByOptionsAsync(command.Id, null, null))
                 .Any();

@@ -23,21 +23,21 @@ namespace OrderSystemPlus.Controllers
         }
 
         [HttpPost("CreateProductType")]
-        public async Task<IActionResult> CreateProductType([FromBody] ReqProductTypeCreate req)
+        public async Task<IActionResult> CreateProductType([FromBody] ReqCreateProductType req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);
         }
 
         [HttpPost("DeleteProductType")]
-        public async Task<IActionResult> DeleteProductType([FromBody] ReqProductTypeDelete req)
+        public async Task<IActionResult> DeleteProductType([FromBody] ReqDeleteProductType req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);
         }
 
         [HttpPost("UpdateProductType")]
-        public async Task<IActionResult> UpdateProductType([FromBody] ReqProductTypeUpdate req)
+        public async Task<IActionResult> UpdateProductType([FromBody] ReqUpdateProductType req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);
@@ -48,21 +48,21 @@ namespace OrderSystemPlus.Controllers
             => await _queryHandler.GetProductTypeListAsync(req);
 
         [HttpPost("CreateProduct")]
-        public async Task<IActionResult> CreateProduct([FromBody] ReqProductCreate req)
+        public async Task<IActionResult> CreateProduct([FromBody] ReqCreateProduct req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);
         }
 
         [HttpPost("DeleteProduct")]
-        public async Task<IActionResult> DeleteProduct([FromBody] ReqProductDelete req)
+        public async Task<IActionResult> DeleteProduct([FromBody] ReqDeleteProduct req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);
         }
 
         [HttpPost("UpdateProduct")]
-        public async Task<IActionResult> UpdateProduct([FromBody] ReqProductUpdate req)
+        public async Task<IActionResult> UpdateProduct([FromBody] ReqUpdateProduct req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);

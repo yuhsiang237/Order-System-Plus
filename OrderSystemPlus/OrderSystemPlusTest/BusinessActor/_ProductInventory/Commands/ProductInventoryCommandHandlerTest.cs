@@ -38,7 +38,7 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
 
             _productInventoryInsertMock.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductInventoryCommandModel>>()));
 
-            await _handler.HandleAsync(new ReqProductInventoryCreate
+            await _handler.HandleAsync(new ReqCreateProductInventory
             {
                 ProductId = 999999,
                 Quantity = 50,

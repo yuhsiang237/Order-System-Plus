@@ -27,7 +27,7 @@ namespace OrderSystemPlus.Controllers
            => await _queryHandler.GetProductInventoryListAsync(req);
 
         [HttpPost("CreateProductInventory")]
-        public async Task<IActionResult> CreateProductInventory([FromBody] ReqProductInventoryCreate req)
+        public async Task<IActionResult> CreateProductInventory([FromBody] ReqCreateProductInventory req)
         {
             await _commandHandler.HandleAsync(req);
             return StatusCode(200);

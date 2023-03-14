@@ -2,7 +2,7 @@
 
 namespace OrderSystemPlus.Models.BusinessActor.Commands
 {
-    public class ReqProductInventoryCreate
+    public class ReqCreateProductInventory
     {
         public int Id { get; set; }
         public int ProductId { get; set; }

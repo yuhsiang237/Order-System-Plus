@@ -53,7 +53,7 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
                _query.Object,
                _jwtHelp.Object);
 
-            var rsp = await _handler.HandleAsync(new ReqUserSignIn
+            var rsp = await _handler.HandleAsync(new ReqSignInUser
             {
                 Password = "testpwd605",
                 Account = "testAccount",
@@ -80,7 +80,7 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
 
             _insertMock.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<UserCommandModel>>()));
 
-            await _handler.HandleAsync(new ReqUserCreate
+            await _handler.HandleAsync(new ReqCreateUser
             {
                 Name = "LIN",
                 Email = "test@mail.com",
@@ -105,7 +105,7 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
 
             _updateMock.Setup(x => x.UpdateAsync(It.IsAny<IEnumerable<UserCommandModel>>()));
 
-            await _handler.HandleAsync(new ReqUserUpdate
+            await _handler.HandleAsync(new ReqUpdateUser
             {
                 Id = 1,
                 Name = "LIN",

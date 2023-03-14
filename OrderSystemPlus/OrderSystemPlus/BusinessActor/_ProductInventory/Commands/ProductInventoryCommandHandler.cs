@@ -7,7 +7,7 @@ using OrderSystemPlus.Models.DataAccessor.Commands;
 namespace OrderSystemPlus.BusinessActor.Commands
 {
     public class ProductInventoryCommandHandler :
-        ICommandHandler<ReqProductInventoryCreate>
+        ICommandHandler<ReqCreateProductInventory>
     {
         private readonly IInsertCommand<IEnumerable<ProductInventoryCommandModel>> _productInventoryInsert;
         private readonly IProductQuery _productQuery;
@@ -32,7 +32,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public async Task HandleAsync(ReqProductInventoryCreate command)
+        public async Task HandleAsync(ReqCreateProductInventory command)
         {
             var hasProductExist = (await _productQuery.FindByOptionsAsync(command.ProductId, null, null)).Any();
             if (!hasProductExist)
