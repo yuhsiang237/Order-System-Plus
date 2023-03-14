@@ -38,12 +38,14 @@ builder.Services
     .AddSingleton<IUpdateCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
     .AddSingleton<IInsertCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
     .AddSingleton<IDeleteCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
-    .AddSingleton<IUpdateCommand<IEnumerable<ProductCommandModel>>, ProductCommand>();
+    .AddSingleton<IUpdateCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
+    .AddSingleton<IInsertCommand<IEnumerable<ProductInventoryCommandModel>>, ProductInventoryCommand>();
 
 builder.Services
       .AddSingleton<IUserQuery, UserQuery>()
       .AddSingleton<IProductTypeQuery, ProductTypeQuery>()
-      .AddSingleton<IProductQuery, ProductQuery>();
+      .AddSingleton<IProductQuery, ProductQuery>()
+      .AddSingleton<IProductInventoryQuery, ProductInventoryQuery>();
 
 builder.Services
     .AddSingleton<ICommandHandler<ReqUserCreate>, UserManageCommandHandler>()
@@ -55,11 +57,15 @@ builder.Services
     .AddSingleton<ICommandHandler<ReqProductCreate>, ProductManageCommandHandler>()
     .AddSingleton<ICommandHandler<ReqProductUpdate>, ProductManageCommandHandler>()
     .AddSingleton<ICommandHandler<ReqProductDelete>, ProductManageCommandHandler>()
-    .AddSingleton<IProductManageQueryHandler, ProductManageQueryHandler>();
+    .AddSingleton<IProductManageQueryHandler, ProductManageQueryHandler>()
+    .AddSingleton<IProductInventoryQueryHandler, ProductInventoryQueryHandler>();
+
 
 builder.Services
     .AddSingleton<ProductManageCommandHandler, ProductManageCommandHandler>()
-    .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>();
+    .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
+    .AddSingleton<ProductInventoryCommandHandler, ProductInventoryCommandHandler>();
+
 
 // Add JWT
 builder.Services.AddSingleton<IJwtHelper, JwtHelper>();
