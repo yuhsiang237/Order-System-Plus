@@ -22,7 +22,7 @@ namespace OrderSystemPlus.Controllers
             _queryHandler = queryHandler;
         }
 
-        [HttpPost("UserCreate")]
+        [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] ReqUserCreate req)
         {
             await _commandHandler.HandleAsync(req);
@@ -33,7 +33,7 @@ namespace OrderSystemPlus.Controllers
         public async Task<RspUserSignIn> SignInUser([FromBody] ReqUserSignIn req)
             => await _commandHandler.HandleAsync(req);
 
-        [HttpPost("UserUpdate")]
+        [HttpPost("UpdateUser")]
         public async Task<IActionResult> UpdateUser([FromBody] ReqUserUpdate req)
         {
             await _commandHandler.HandleAsync(req);
