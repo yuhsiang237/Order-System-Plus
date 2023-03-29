@@ -81,14 +81,17 @@ void AddQueryAndCommand()
     .AddSingleton<IInsertCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
     .AddSingleton<IDeleteCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
     .AddSingleton<IUpdateCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
-    .AddSingleton<IInsertCommand<IEnumerable<ProductInventoryCommandModel>>, ProductInventoryCommand>();
+    .AddSingleton<IInsertCommand<IEnumerable<ProductInventoryCommandModel>>, ProductInventoryCommand>()
+    .AddSingleton<IInsertCommand<IEnumerable<ProductProductTypeRelationshipCommandModel>>, ProductProductTypeRelationshipCommand>()
+    .AddSingleton<IDeleteCommand<IEnumerable<ProductProductTypeRelationshipCommandModel>>, ProductProductTypeRelationshipCommand>();
 
     // query
     builder.Services
           .AddSingleton<IUserQuery, UserQuery>()
           .AddSingleton<IProductTypeQuery, ProductTypeQuery>()
           .AddSingleton<IProductQuery, ProductQuery>()
-          .AddSingleton<IProductInventoryQuery, ProductInventoryQuery>();
+          .AddSingleton<IProductInventoryQuery, ProductInventoryQuery>()
+          .AddSingleton<IProductProductTypeRelationshipQuery, ProductProductTypeRelationshipQuery>();
 }
 
 // Custom DI
