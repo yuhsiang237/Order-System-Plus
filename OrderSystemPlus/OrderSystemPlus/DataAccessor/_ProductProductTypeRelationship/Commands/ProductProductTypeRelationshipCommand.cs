@@ -4,6 +4,8 @@ using Dapper;
 
 using OrderSystemPlus.Models.DataAccessor.Commands;
 using OrderSystemPlus.Models;
+using System.Transactions;
+using System.Data;
 
 namespace OrderSystemPlus.DataAccessor.Commands
 {
@@ -26,20 +28,30 @@ namespace OrderSystemPlus.DataAccessor.Commands
 
         public async Task InsertAsync(IEnumerable<ProductProductTypeRelationshipCommandModel> commands)
         {
-            var sql = @"
+            var deleteSql = @"DELETE FROM [dbo].[ProductProductTypeRelationship]
+                            WHERE
+                                [ProductId] = @ProductId";
+
+            var insertSql = @"
                 INSERT INTO [dbo].[ProductProductTypeRelationship]
                 (
-                 [ProductId]
-                 ,[ProductTypeId]
+                    [ProductId]
+                    ,[ProductTypeId]
                 ) VALUES
                 (
                   @ProductId
                  ,@ProductTypeId
                 )
                 ";
-            using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
+            using (var ts = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                await conn.ExecuteAsync(sql, commands);
+                using (IDbConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
+                {
+                    await conn.ExecuteAsync(deleteSql, commands);
+                    var executeCount = await conn.ExecuteAsync(insertSql, commands);
+                    if(commands.Count() == executeCount)
+                        ts.Complete();
+                }
             }
         }
     }

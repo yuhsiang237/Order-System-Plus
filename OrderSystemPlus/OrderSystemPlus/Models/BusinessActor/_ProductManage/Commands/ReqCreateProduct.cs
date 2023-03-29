@@ -13,6 +13,11 @@
         public string Number { get; set; }
 
         /// <summary>
+        /// 產品類別
+        /// </summary>
+        public List<int> ProductTypeIds { get; set; }
+
+        /// <summary>
         /// 產品價格
         /// </summary>
         public decimal Price { get; set; }

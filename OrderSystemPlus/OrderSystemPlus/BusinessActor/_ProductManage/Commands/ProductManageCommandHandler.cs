@@ -16,9 +16,10 @@ namespace OrderSystemPlus.BusinessActor.Commands
         private readonly IInsertCommand<IEnumerable<ProductTypeCommandModel>> _productTypeInsert;
         private readonly IUpdateCommand<IEnumerable<ProductTypeCommandModel>> _productTypeUpdate;
         private readonly IDeleteCommand<IEnumerable<ProductTypeCommandModel>> _productTypeDelete;
-        private readonly IInsertCommand<IEnumerable<ProductCommandModel>> _productInsert;
+        private readonly IInsertCommand<IEnumerable<ProductCommandModel>, List<int>> _productInsert;
         private readonly IUpdateCommand<IEnumerable<ProductCommandModel>> _productUpdate;
         private readonly IDeleteCommand<IEnumerable<ProductCommandModel>> _productDelete;
+        private readonly IInsertCommand<IEnumerable<ProductProductTypeRelationshipCommandModel>> _productProductTypeRelationshipInsert;
         private readonly IProductTypeQuery _productTypeQuery;
         private readonly IProductQuery _productQuery;
         /// <summary>
@@ -30,9 +31,10 @@ namespace OrderSystemPlus.BusinessActor.Commands
             IInsertCommand<IEnumerable<ProductTypeCommandModel>> productTypeInsert,
             IUpdateCommand<IEnumerable<ProductTypeCommandModel>> productTypeUpdate,
             IDeleteCommand<IEnumerable<ProductTypeCommandModel>> productTypeDelete,
-            IInsertCommand<IEnumerable<ProductCommandModel>> productInsert,
+            IInsertCommand<IEnumerable<ProductCommandModel>, List<int>> productInsert,
             IUpdateCommand<IEnumerable<ProductCommandModel>> productUpdate,
             IDeleteCommand<IEnumerable<ProductCommandModel>> productDelete,
+            IInsertCommand<IEnumerable<ProductProductTypeRelationshipCommandModel>> productProductTypeRelationshipInsert,
             IProductTypeQuery productTypeQuery,
             IProductQuery productQuery)
         {
@@ -44,6 +46,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
             _productDelete = productDelete;
             _productTypeQuery = productTypeQuery;
             _productQuery = productQuery;
+            _productProductTypeRelationshipInsert = productProductTypeRelationshipInsert;
         }
 
         /// <summary>
@@ -56,7 +59,7 @@ namespace OrderSystemPlus.BusinessActor.Commands
             var hasExist = (await _productQuery.FindByOptionsAsync(null, command.Name, command.Number)).Any();
             if (!hasExist)
             {
-                await _productInsert.InsertAsync(
+                var productIds = await _productInsert.InsertAsync(
                     new List<ProductCommandModel>
                     {
                         new ProductCommandModel
@@ -71,6 +74,16 @@ namespace OrderSystemPlus.BusinessActor.Commands
                             IsValid = true,
                         }
                     });
+
+                await _productProductTypeRelationshipInsert
+                    .InsertAsync(
+                    command.ProductTypeIds?.Select(id =>
+                       new ProductProductTypeRelationshipCommandModel
+                       {
+                           ProductId = productIds.First(),
+                           ProductTypeId = id,
+                       }
+                   ).ToList());
             }
             else
             {
@@ -129,6 +142,16 @@ namespace OrderSystemPlus.BusinessActor.Commands
                         IsValid = true,
                     }
                 });
+
+            await _productProductTypeRelationshipInsert
+                    .InsertAsync(
+                    command.ProductTypeIds?.Select(id =>
+                       new ProductProductTypeRelationshipCommandModel
+                       {
+                           ProductId = command.Id,
+                           ProductTypeId = id,
+                       }
+                   ).ToList());
         }
 
         /// <summary>
