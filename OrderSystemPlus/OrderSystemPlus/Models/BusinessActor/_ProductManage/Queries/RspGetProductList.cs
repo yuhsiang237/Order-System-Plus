@@ -13,6 +13,11 @@
         public string Name { get; set; }
 
         /// <summary>
+        /// 產品分類Id
+        /// </summary>
+        public List<int> ProductTypeIds { get; set; }
+
+        /// <summary>
         /// 產品編號
         /// </summary>
         public string Number { get; set; }

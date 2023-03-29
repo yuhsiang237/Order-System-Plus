@@ -21,9 +21,10 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
         private readonly Mock<IInsertCommand<IEnumerable<ProductTypeCommandModel>>> _productTypeInsertMock;
         private readonly Mock<IUpdateCommand<IEnumerable<ProductTypeCommandModel>>> _productTypeUpdateMock;
         private readonly Mock<IDeleteCommand<IEnumerable<ProductTypeCommandModel>>> _productTypeDeleteMock;
-        private readonly Mock<IInsertCommand<IEnumerable<ProductCommandModel>>> _productInsertMock;
+        private readonly Mock<IInsertCommand<IEnumerable<ProductCommandModel>, List<int>>> _productInsertMock;
         private readonly Mock<IUpdateCommand<IEnumerable<ProductCommandModel>>> _productUpdateMock;
         private readonly Mock<IDeleteCommand<IEnumerable<ProductCommandModel>>> _productDeleteMock;
+        private readonly Mock<IInsertCommand<IEnumerable<ProductProductTypeRelationshipCommandModel>>> _productProductTypeRelationshipCommandInsertMock;
 
         public ProductManageCommandHandlerTest()
         {
@@ -32,11 +33,13 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
             _productTypeDeleteMock = new Mock<IDeleteCommand<IEnumerable<ProductTypeCommandModel>>>();
             _productTypeQuery = new Mock<IProductTypeQuery>();
 
-            _productInsertMock = new Mock<IInsertCommand<IEnumerable<ProductCommandModel>>>();
+            _productInsertMock = new Mock<IInsertCommand<IEnumerable<ProductCommandModel>, List<int>>>();
             _productUpdateMock = new Mock<IUpdateCommand<IEnumerable<ProductCommandModel>>>();
             _productDeleteMock = new Mock<IDeleteCommand<IEnumerable<ProductCommandModel>>>();
             _productQuery = new Mock<IProductQuery>();
-            
+
+            _productProductTypeRelationshipCommandInsertMock = new Mock<IInsertCommand<IEnumerable<ProductProductTypeRelationshipCommandModel>>>();
+
             _handler = new ProductManageCommandHandler(
                     _productTypeInsertMock.Object,
                     _productTypeUpdateMock.Object,
@@ -44,6 +47,7 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
                     _productInsertMock.Object,
                     _productUpdateMock.Object,
                     _productDeleteMock.Object,
+                    _productProductTypeRelationshipCommandInsertMock.Object,
                     _productTypeQuery.Object,
                     _productQuery.Object);
         }
@@ -97,7 +101,10 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
                 .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
                 .ReturnsAsync(new List<ProductQueryModel> { });
 
-            _productInsertMock.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductCommandModel>>()));
+            _productInsertMock.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductCommandModel>>()))
+                .ReturnsAsync(new List<int>());
+            
+            _productProductTypeRelationshipCommandInsertMock.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductProductTypeRelationshipCommandModel>>()));
 
             await _handler.HandleAsync(new ReqCreateProduct
             {
@@ -123,7 +130,10 @@ namespace OrderSystemPlusTest.BusinessActor.Commands
         [Fact]
         public async Task ProductUpdate()
         {
-            _productUpdateMock.Setup(x => x.UpdateAsync(It.IsAny<IEnumerable<ProductCommandModel>>()));
+            _productInsertMock.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductCommandModel>>()))
+            .ReturnsAsync(new List<int>());
+
+            _productProductTypeRelationshipCommandInsertMock.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductProductTypeRelationshipCommandModel>>()));
 
             await _handler.HandleAsync(new ReqUpdateProduct
             {

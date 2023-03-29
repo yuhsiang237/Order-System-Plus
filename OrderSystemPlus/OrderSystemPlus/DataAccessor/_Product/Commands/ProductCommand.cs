@@ -4,11 +4,13 @@ using Dapper;
 
 using OrderSystemPlus.Models.DataAccessor.Commands;
 using OrderSystemPlus.Models;
+using System.Transactions;
+using System.Data;
 
 namespace OrderSystemPlus.DataAccessor.Commands
 {
     public class ProductCommand :
-        IInsertCommand<IEnumerable<ProductCommandModel>>,
+        IInsertCommand<IEnumerable<ProductCommandModel>, List<int>>,
         IDeleteCommand<IEnumerable<ProductCommandModel>>,
         IUpdateCommand<IEnumerable<ProductCommandModel>>
     {
@@ -28,7 +30,26 @@ namespace OrderSystemPlus.DataAccessor.Commands
             }
         }
 
-        public async Task InsertAsync(IEnumerable<ProductCommandModel> commands)
+        public async Task<List<int>> InsertAsync(IEnumerable<ProductCommandModel> commands)
+        {
+            var result = new List<int>();
+            using (var ts = new TransactionScope())
+            {
+                using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
+                {
+                    result = commands
+                        .Select(s => InsertAsync(s, conn))
+                        .ToList();
+
+                    if (!result.Any(a => a == 0))
+                        ts.Complete();
+                }
+            }
+
+            return await Task.FromResult(result);
+        }
+
+        private int InsertAsync(ProductCommandModel command, IDbConnection cn)
         {
             var sql = @"
                 INSERT INTO [dbo].[Product]
@@ -52,11 +73,10 @@ namespace OrderSystemPlus.DataAccessor.Commands
                   @UpdatedOn,
                   @IsValid
                 )
+                SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY];
                 ";
-            using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
-            {
-                await conn.ExecuteAsync(sql, commands);
-            }
+
+            return cn.ExecuteScalar<int>(sql, command);
         }
 
         public async Task UpdateAsync(IEnumerable<ProductCommandModel> commands)

@@ -17,7 +17,7 @@ namespace OrderSystemPlusTest.DataAccessor
     public class ProductDataAccessorTest
     {
         private IProductQuery _query;
-        private IInsertCommand<IEnumerable<ProductCommandModel>> _insert;
+        private IInsertCommand<IEnumerable<ProductCommandModel>,List<int>> _insert;
         private IDeleteCommand<IEnumerable<ProductCommandModel>> _delete;
         private IUpdateCommand<IEnumerable<ProductCommandModel>> _update;
         private DateTime _now;
