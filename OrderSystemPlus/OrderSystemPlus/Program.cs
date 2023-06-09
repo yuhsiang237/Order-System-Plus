@@ -42,26 +42,14 @@ void AddHandler()
 {
     builder.Services
         .AddSingleton<ICommandHandler<ReqCreateUser>, UserManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqSignInUser, RspSignInUser>, UserManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqCreateProductType>, ProductManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqUpdateProductType>, ProductManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqDeleteProductType>, ProductManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqCreateProduct>, ProductManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqUpdateProduct>, ProductManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqDeleteProduct>, ProductManageCommandHandler>();
+        .AddSingleton<ICommandHandler<ReqSignInUser, RspSignInUser>, UserManageCommandHandler>();
 
     builder.Services
-        .AddSingleton<ProductManageCommandHandler, ProductManageCommandHandler>()
         .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
-        .AddSingleton<ProductInventoryCommandHandler, ProductInventoryCommandHandler>()
-        .AddSingleton<ProductManageCommandHandler, ProductManageCommandHandler>()
-        .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
-        .AddSingleton<ProductInventoryCommandHandler, ProductInventoryCommandHandler>();
+        .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>();
 
     builder.Services
-          .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>()
-          .AddSingleton<IProductManageQueryHandler, ProductManageQueryHandler>()
-          .AddSingleton<IProductInventoryQueryHandler, ProductInventoryQueryHandler>();
+          .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>();
 }
 
 
@@ -78,10 +66,6 @@ void AddQueryAndCommand()
     .AddSingleton<IInsertCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
     .AddSingleton<IDeleteCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
     .AddSingleton<IUpdateCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
-    .AddSingleton<IInsertCommand<IEnumerable<ProductCommandModel>, List<int>>, ProductCommand>()
-    .AddSingleton<IDeleteCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
-    .AddSingleton<IUpdateCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
-    .AddSingleton<IInsertCommand<IEnumerable<ProductInventoryCommandModel>>, ProductInventoryCommand>()
     .AddSingleton<IInsertCommand<IEnumerable<ProductProductTypeRelationshipCommandModel>>, ProductProductTypeRelationshipCommand>()
     .AddSingleton<IDeleteCommand<IEnumerable<ProductProductTypeRelationshipCommandModel>>, ProductProductTypeRelationshipCommand>();
 
@@ -89,8 +73,7 @@ void AddQueryAndCommand()
     builder.Services
           .AddSingleton<IUserQuery, UserQuery>()
           .AddSingleton<IProductTypeQuery, ProductTypeQuery>()
-          .AddSingleton<IProductQuery, ProductQuery>()
-          .AddSingleton<IProductInventoryQuery, ProductInventoryQuery>()
+          .AddSingleton<IProductRepository, ProductRepository>()
           .AddSingleton<IProductProductTypeRelationshipQuery, ProductProductTypeRelationshipQuery>();
 }
 

@@ -1,6 +1,6 @@
 ﻿using OrderSystemPlus.Enums;
 
-namespace OrderSystemPlus.Models.DataAccessor.Queries
+namespace OrderSystemPlus.Models.DataAccessor
 {
     /// <summary>
     /// ProductInventoryQueryModel
