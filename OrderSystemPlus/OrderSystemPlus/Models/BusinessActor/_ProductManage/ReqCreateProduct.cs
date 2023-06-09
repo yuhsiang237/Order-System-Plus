@@ -1,4 +1,4 @@
-﻿namespace OrderSystemPlus.Models.BusinessActor.Commands
+﻿namespace OrderSystemPlus.Models.BusinessActor
 {
     public class ReqCreateProduct
     {

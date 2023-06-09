@@ -1,4 +1,4 @@
-﻿namespace OrderSystemPlus.Models.BusinessActor.Queries
+﻿namespace OrderSystemPlus.Models.BusinessActor
 {
     public class RspGetProductList
     {
@@ -11,11 +11,6 @@
         /// 產品名稱
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// 產品分類Id
-        /// </summary>
-        public List<int> ProductTypeIds { get; set; }
 
         /// <summary>
         /// 產品編號

@@ -49,7 +49,8 @@ void AddHandler()
         .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>();
 
     builder.Services
-          .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>();
+        .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>()
+        .AddSingleton<IProductManageHandler, ProductManageHandler>();
 }
 
 

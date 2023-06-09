@@ -1,4 +1,4 @@
-﻿namespace OrderSystemPlus.Models.BusinessActor.Queries
+﻿namespace OrderSystemPlus.Models.BusinessActor
 {
     public class RspGetProductTypeList
     {
