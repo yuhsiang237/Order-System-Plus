@@ -39,7 +39,8 @@ void AddHandler()
     builder.Services
         .AddSingleton<IUserManageHandler, UserManageHandler>()
         .AddSingleton<IProductManageHandler, ProductManageHandler>()
-        .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>(); ;
+        .AddSingleton<IProductInventoryControlHandler, ProductInventoryControlHandler>()
+        .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>();
 }
 
 
@@ -51,6 +52,7 @@ void AddRepository()
     builder.Services
           .AddSingleton<IUserRepository, UserRepository>()
           .AddSingleton<IProductRepository, ProductRepository>()
+          .AddSingleton<IProductInventoryRepository, ProductInventoryRepository>()
           .AddSingleton<IProductTypeRepository, ProductTypeRepository>();
 }
 

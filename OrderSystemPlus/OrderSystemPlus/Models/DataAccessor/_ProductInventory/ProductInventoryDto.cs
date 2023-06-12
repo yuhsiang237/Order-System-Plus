@@ -3,9 +3,9 @@
 namespace OrderSystemPlus.Models.DataAccessor
 {
     /// <summary>
-    /// ProductInventoryQueryModel
+    /// ProductInventoryDto
     /// </summary>
-    public class ProductInventoryQueryModel
+    public class ProductInventoryDto
     {
         /// <summary>
         /// Id
@@ -30,5 +30,9 @@ namespace OrderSystemPlus.Models.DataAccessor
         /// 產品描述
         /// </summary>
         public string Description { get; set; }
+
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
+        public bool IsValid { get; set; }
     }
 }

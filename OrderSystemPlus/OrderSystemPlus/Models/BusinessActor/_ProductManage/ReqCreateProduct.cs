@@ -31,6 +31,6 @@
         /// <summary>
         /// 產品目前數量
         /// </summary>
-        public decimal CurrentUnit { get; set; }
+        public decimal? Quantity { get; set; }
     }
 }

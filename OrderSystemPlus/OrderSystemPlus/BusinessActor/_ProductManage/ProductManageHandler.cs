@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 
 using OrderSystemPlus.DataAccessor;
+using OrderSystemPlus.Enums;
 using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Models.DataAccessor;
 
@@ -9,9 +10,13 @@ namespace OrderSystemPlus.BusinessActor
     public class ProductManageHandler : IProductManageHandler
     {
         private readonly IProductRepository _productRepository;
+        private readonly IProductInventoryControlHandler _productInventoryControlHandler;
+
         public ProductManageHandler(
+            IProductInventoryControlHandler productInventoryControlHandler,
             IProductRepository productRepository)
         {
+            _productInventoryControlHandler = productInventoryControlHandler;
             _productRepository = productRepository;
         }
 
@@ -25,6 +30,12 @@ namespace OrderSystemPlus.BusinessActor
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
             var rsp = mapper.Map<List<ProductDto>, List<RspGetProductList>>(data);
+            
+            foreach(var item in rsp)
+            {
+                item.Quantity = await _productInventoryControlHandler.GetProductInventoryAsync(item.Id);
+            }
+
             return rsp.ToList();
         }
 
@@ -38,6 +49,7 @@ namespace OrderSystemPlus.BusinessActor
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
             var rsp = mapper.Map<ProductDto, RspGetProductInfo>(data);
+            rsp.Quantity = await _productInventoryControlHandler.GetProductInventoryAsync(req.Id);
             return rsp;
         }
 
@@ -54,7 +66,21 @@ namespace OrderSystemPlus.BusinessActor
                 UpdatedOn = now,
                 IsValid = true,
             }).ToList();
-            await _productRepository.InsertAsync(dtoList);
+            var productInsertResult = await _productRepository.InsertAsync(dtoList);
+            
+            var inventoryDtoList = new List<ReqAdjustProductInventory>();
+            for (var i = 0; i < productInsertResult.Count; i++)
+            {
+                inventoryDtoList.Add(new ReqAdjustProductInventory
+                {
+                    ProductId = productInsertResult[i],
+                    Type  = AdjustProductInventoryType.Force,
+                    Quantity = req[i].Quantity,
+                });
+            }
+            var inventoryResult = await _productInventoryControlHandler.AdjustProductInventoryAsync(inventoryDtoList);
+            if (inventoryResult == false)
+                throw new Exception("AdjustProductInventoryAsync Error");
         }
 
         public async Task HandleAsync(List<ReqUpdateProduct> req)
@@ -81,6 +107,13 @@ namespace OrderSystemPlus.BusinessActor
                 UpdatedOn = now,
             }).ToList();
             await _productRepository.DeleteAsync(dtoList);
+        }
+
+        public async Task HandleAsync(List<ReqAdjustProductInventory> req)
+        {
+            var inventoryResult = await _productInventoryControlHandler.AdjustProductInventoryAsync(req);
+            if (inventoryResult == false)
+                throw new Exception("AdjustProductInventoryAsync Error");
         }
     }
 }

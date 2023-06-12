@@ -9,70 +9,47 @@ using OrderSystemPlus.Models.DataAccessor;
 
 namespace OrderSystemPlus.DataAccessor
 {
-    public class ProductRepository : IProductRepository
+    public class ProductInventoryRepository : IProductInventoryRepository
     {
-        public async Task<List<ProductDto>> FindByOptionsAsync(int? id = null, string? name = null, string? number = null)
+        public async Task<List<ProductInventoryDto>> FindByOptionsAsync(int? productId = null)
         {
+
             string sql = @"
                            SELECT
                               [Id]
-                              ,[Number]
-                              ,[Name]
-                              ,[Price]
+                              ,[ProductId]
+                              ,[Quantity]
+                              ,[ActionType]
                               ,[Description]
-                              ,[CurrentUnit]
                               ,[CreatedOn]
                               ,[UpdatedOn]
                               ,[IsValid]
-                           FROM [dbo].[Product]";
+                           FROM [dbo].[ProductInventory]";
 
             var conditions = new List<string>
             {
                 "[IsValid] = @IsValid",
             };
-            if (id.HasValue)
-                conditions.Add("[Id] = @Id");
-            if (!string.IsNullOrEmpty(name))
-                conditions.Add("[Name] = @Name");
-            if (!string.IsNullOrEmpty(number))
-                conditions.Add("[Number] = @Number");
+
+            if (productId.HasValue)
+                conditions.Add("[ProductId] = @ProductId");
 
             if (conditions.Any())
                 sql = string.Concat(sql, $" WHERE {string.Join(" AND ", conditions)}");
 
-            var result = default(List<ProductDto>);
+            var result = default(List<ProductInventoryDto>);
             using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
-                result = (await conn.QueryAsync<ProductDto>(sql, new
+                result = (await conn.QueryAsync<ProductInventoryDto>(sql, new
                 {
                     IsValid = true,
-                    Name = name,
-                    Id = id,
-                    Number = number,
+                    ProductId = productId,
                 })).ToList();
             }
 
             return result;
         }
-        public async Task UpdateAsync(IEnumerable<ProductDto> model)
-        {
-            var sql = @"
-                UPDATE [dbo].[Product]
-                SET
-                  [Name] = @Name,
-                  [Price] = @Price,
-                  [Number] = @Number,
-                  [Description] = @Description,
-                  [UpdatedOn] = @UpdatedOn
-                WHERE
-                    [Id] = @Id
-                ";
-            using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
-            {
-                await conn.ExecuteAsync(sql, model);
-            }
-        }
-        public async Task<List<int>> InsertAsync(IEnumerable<ProductDto> model)
+        public async Task<List<int>> InsertAsync(IEnumerable<ProductInventoryDto> model)
         {
             var result = new List<int>();
             using (var ts = new TransactionScope())
@@ -90,24 +67,25 @@ namespace OrderSystemPlus.DataAccessor
 
             return await Task.FromResult(result);
         }
-        private int InsertAsync(ProductDto command, IDbConnection cn)
+
+        private int InsertAsync(ProductInventoryDto command, IDbConnection cn)
         {
             var sql = @"
-                INSERT INTO [dbo].[Product]
+                INSERT INTO [dbo].[ProductInventory]
                 (
-                  [Number]
-                  ,[Name]
-                  ,[Price]
+                  [ProductId]
+                  ,[Quantity]
                   ,[Description]
+                  ,[ActionType]
                   ,[CreatedOn]
                   ,[UpdatedOn]
                   ,[IsValid]
                 ) VALUES
                 (
-                  @Number,
-                  @Name,
-                  @Price,
+                  @ProductId,
+                  @Quantity,
                   @Description,
+                  @ActionType,
                   @CreatedOn,
                   @UpdatedOn,
                   @IsValid
@@ -116,10 +94,11 @@ namespace OrderSystemPlus.DataAccessor
                 ";
             return cn.ExecuteScalar<int>(sql, command);
         }
-        public async Task DeleteAsync(IEnumerable<ProductDto> model)
+
+        public async Task DeleteAsync(IEnumerable<ProductInventoryDto> model)
         {
             var sql = @"
-                UPDATE [dbo].[Product]
+                UPDATE [dbo].[ProductInventory]
                 SET 
                     [IsValid] = 0,
                     [UpdatedOn] = @UpdatedOn
