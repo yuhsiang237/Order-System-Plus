@@ -57,6 +57,21 @@ namespace OrderSystemPlusTest.BusinessActor
             _productRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
         }
 
+        public async Task GetProductInfoAsync()
+        {
+            _productRepository
+            .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
+            .ReturnsAsync(new List<ProductDto> {
+                new ProductDto{
+                    Name = "Test",
+                    Description = "Test",
+                    Number = "TEST",
+                }});
+
+            var rsp = await _handler.GetProductInfoAsync(new ReqGetProductInfo { });
+            _productRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
+        }
+
         [Fact]
         public async Task ProductUpdate()
         {

@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+
+using AutoMapper;
 
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.BusinessActor;
@@ -26,6 +28,19 @@ namespace OrderSystemPlus.BusinessActor
             var mapper = config.CreateMapper();
             var rsp = mapper.Map<List<ProductDto>, List<RspGetProductList>>(data);
             return rsp.ToList();
+        }
+
+        public async Task<RspGetProductInfo> GetProductInfoAsync(ReqGetProductInfo req)
+        {
+            var data = (await _productRepository.FindByOptionsAsync(null, null, null)).FirstOrDefault();
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ProductDto, RspGetProductInfo>();
+            });
+            config.AssertConfigurationIsValid();
+            var mapper = config.CreateMapper();
+            var rsp = mapper.Map<ProductDto, RspGetProductInfo>(data);
+            return rsp;
         }
 
         public async Task HandleAsync(List<ReqCreateProduct> req)
