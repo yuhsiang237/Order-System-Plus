@@ -38,13 +38,6 @@ namespace OrderSystemPlus.Controllers
             return StatusCode(200);
         }
 
-
-        [HttpPost("AdjustProductInventory")]
-        public async Task<IActionResult> AdjustProductInventory([FromBody] List<ReqAdjustProductInventory> req)
-        {
-            await _productHandler.HandleAsync(req);
-            return StatusCode(200);
-        }
         [HttpPost("GetProductList")]
         public async Task<List<RspGetProductList>> GetProductList([FromBody] ReqGetProductList req)
             => await _productHandler.GetProductListAsync(req);

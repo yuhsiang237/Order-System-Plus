@@ -39,7 +39,7 @@ void AddHandler()
     builder.Services
         .AddSingleton<IUserManageHandler, UserManageHandler>()
         .AddSingleton<IProductManageHandler, ProductManageHandler>()
-        .AddSingleton<IProductInventoryControlHandler, ProductInventoryControlHandler>()
+        .AddSingleton<IProductInventoryManageHandler, ProductInventoryManageHandler>()
         .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>();
 }
 

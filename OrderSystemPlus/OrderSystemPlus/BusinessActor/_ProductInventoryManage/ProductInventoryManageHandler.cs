@@ -1,24 +1,26 @@
-﻿using OrderSystemPlus.DataAccessor;
+﻿using System.Linq;
+
+using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Enums;
 using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Models.DataAccessor;
 
 namespace OrderSystemPlus.BusinessActor
 {
-    public class ProductInventoryControlHandler : IProductInventoryControlHandler
+    public class ProductInventoryManageHandler : IProductInventoryManageHandler
     {
         private readonly IProductInventoryRepository _productInventoryRepository;
-        private static SemaphoreSlim _adjustProductInventorySemaphoreSlim;
-        public ProductInventoryControlHandler(IProductInventoryRepository
+        private static SemaphoreSlim _updateProductInventorySemaphoreSlim;
+        public ProductInventoryManageHandler(IProductInventoryRepository
             productInventoryRepository)
         {
-            _adjustProductInventorySemaphoreSlim = new SemaphoreSlim(1, 1);
+            _updateProductInventorySemaphoreSlim = new SemaphoreSlim(1, 1);
             _productInventoryRepository = productInventoryRepository;
         }
 
-        public async Task<bool> AdjustProductInventoryAsync(List<ReqAdjustProductInventory> req)
+        public async Task<bool> HandleAsync(List<ReqUpdateProductInventory> req)
         {
-            await _adjustProductInventorySemaphoreSlim.WaitAsync();
+            await _updateProductInventorySemaphoreSlim.WaitAsync();
             try
             {
                 var dtoList = new List<ProductInventoryDto>();
@@ -47,18 +49,18 @@ namespace OrderSystemPlus.BusinessActor
                     else if (item.Type == AdjustProductInventoryType.Force &&
                         item.Quantity != currentInventory)
                     {
-                            var calcInventory = item.Quantity - currentInventory;
-                            if (item.Quantity < 0)
-                                throw new Exception("Inventory < 0");
+                        var calcInventory = item.Quantity - currentInventory;
+                        if (item.Quantity < 0)
+                            throw new Exception("Inventory < 0");
 
-                            dtoList.Add(new ProductInventoryDto
-                            {
-                                ProductId = item.ProductId.Value,
-                                Quantity = calcInventory.Value,
-                                CreatedOn = now,
-                                UpdatedOn = now,
-                                IsValid = true,
-                            });
+                        dtoList.Add(new ProductInventoryDto
+                        {
+                            ProductId = item.ProductId.Value,
+                            Quantity = calcInventory.Value,
+                            CreatedOn = now,
+                            UpdatedOn = now,
+                            IsValid = true,
+                        });
                     }
                     else if (item.Type == AdjustProductInventoryType.Increase &&
                         item.Quantity != 0)
@@ -83,15 +85,25 @@ namespace OrderSystemPlus.BusinessActor
             }
             finally
             {
-                _adjustProductInventorySemaphoreSlim.Release();
+                _updateProductInventorySemaphoreSlim.Release();
             }
         }
 
-        public async Task<decimal?> GetProductInventoryAsync(int productId)
+        public async Task<decimal?> GetProductInventoryInfoAsync(int? productId)
         {
             var currentInventory = (await _productInventoryRepository.FindByOptionsAsync(productId))
                                         .Sum(s => s.Quantity);
             return currentInventory;
+        }
+
+        public async Task<List<RspGetProductInventoryHistoryList>> GetProductInventoryHistoryListAsync(ReqGetProductInventoryHistoryList req)
+        {
+            return (await _productInventoryRepository.FindByOptionsAsync(req.ProductId))
+                .Select(s => new RspGetProductInventoryHistoryList
+                {
+                    ProductId = s.ProductId,
+                    Quantity = s.Quantity,
+                }).ToList();
         }
     }
 }
