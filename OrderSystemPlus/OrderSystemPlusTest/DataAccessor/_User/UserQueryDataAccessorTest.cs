@@ -6,59 +6,46 @@ using System.Linq;
 using Xunit;
 using FluentAssertions;
 
-using OrderSystemPlus.DataAccessor.Queries;
 using OrderSystemPlus.DataAccessor;
-using OrderSystemPlus.Models.DataAccessor.Commands;
-using OrderSystemPlus.DataAccessor.Commands;
 using OrderSystemPlus.Utils.GUIDSerialTool;
+using OrderSystemPlus.Models.DataAccessor;
 
 namespace OrderSystemPlusTest.DataAccessor
 {
-    public class UserQueryDataAccessorTest
+    public class UserRepositoryDataAccessorTest
     {
-        private IUserQuery _query;
-        private IInsertCommand<IEnumerable<UserCommandModel>> _insert;
-        private IDeleteCommand<IEnumerable<UserCommandModel>> _delete;
-        private IRefreshCommand<IEnumerable<UserCommandModel>> _refresh;
-        private IUpdateCommand<IEnumerable<UserCommandModel>> _update;
+        private IUserRepository _repository;
         private DateTime _now;
         private string _guid;
 
-        public UserQueryDataAccessorTest()
+        public UserRepositoryDataAccessorTest()
         {
             _now = DateTime.Now;
             _guid = GUIDSerialTool.Generate(15);
-            _query = new UserQuery();
-            _insert = new UserCommand();
-            _delete = new UserCommand();
-            _refresh = new UserCommand();
-            _update = new UserCommand();
+            _repository = new UserRepository();
         }
 
         [Fact]
         public async Task RunAsync()
         {
-            await _insert.InsertAsync(GetInsertModel());
-            var insertResult = await _query.FindByOptionsAsync(null, GetInsertModel().First().Email, GetInsertModel().First().Account);
+            await _repository.InsertAsync(GetInsertModel());
+            var insertResult = await _repository.FindByOptionsAsync(
+                email: GetInsertModel().Email,
+                account: GetInsertModel().Account);
             insertResult.Count.Should().Be(1);
 
-            await _update.UpdateAsync(GetUpdateModel(insertResult.First().Id));
-            var updateResult = await _query.FindByOptionsAsync(insertResult.First().Id, null, null);
+            await _repository.UpdateAsync(new List<UserDto> { GetUpdateModel(insertResult.First().Id) });
+            var updateResult = await _repository.FindByOptionsAsync(insertResult.First().Id, null, null);
             updateResult.Count.Should().Be(1);
             updateResult.First().Name.Should().Be("UpdateTest");
 
-            await _refresh.RefreshAsync(GetRefreshModel(updateResult.First().Id));
-            var refreshResult = await _query.FindByOptionsAsync(null, null, updateResult.First().Account);
-            refreshResult.Count.Should().Be(1);
-            refreshResult.First().Name.Should().Be("RefreshTest");
-
-            await _delete.DeleteAsync(GetDeleteModel(refreshResult.First().Id));
-            var deleteResult = await _query.FindByOptionsAsync(refreshResult.First().Id, null, null);
+            await _repository.DeleteAsync(new List<UserDto> { GetDeleteModel(insertResult.First().Id) });
+            var deleteResult = await _repository.FindByOptionsAsync(id: insertResult.First().Id);
             deleteResult.Count.Should().Be(0);
         }
 
-        public List<UserCommandModel> GetInsertModel() => new List<UserCommandModel> {
-                new UserCommandModel
+        public UserDto GetInsertModel() =>
+                new UserDto
                 {
                     Name = "Test",
                     Password = "TEST",
@@ -69,47 +56,40 @@ namespace OrderSystemPlusTest.DataAccessor
                     RoleId = 1,
                     Salt = "SALT",
                     Email = "test@gmail.com"
-                }
-            };
+                };
 
-        public List<UserCommandModel> GetUpdateModel(int id) => new List<UserCommandModel> {
-                new UserCommandModel
-                {
-                    Id = id,
-                    Name = "UpdateTest",
-                    Password = "TEST",
-                    IsValid = true,
-                    CreatedOn = _now,
-                    UpdatedOn = _now,
-                    Account = $"Test{_guid}",
-                    RoleId = 1,
-                    Salt = "SALT",
-                    Email = "test@gmail.com"
-                }
-            };
+        public UserDto GetUpdateModel(int id) => new UserDto
+        {
+            Id = id,
+            Name = "UpdateTest",
+            Password = "TEST",
+            IsValid = true,
+            CreatedOn = _now,
+            UpdatedOn = _now,
+            Account = $"Test{_guid}",
+            RoleId = 1,
+            Salt = "SALT",
+            Email = "test@gmail.com"
+        };
 
-        public List<UserCommandModel> GetRefreshModel(int id) => new List<UserCommandModel> {
-                new UserCommandModel
-                {
-                    Id = id,
-                    Name = "RefreshTest",
-                    Password = "TEST",
-                    IsValid = true,
-                    CreatedOn = _now,
-                    UpdatedOn = _now,
-                    Account = $"Test{_guid}",
-                    RoleId = 1,
-                    Salt = "SALT",
-                    Email = "test@gmail.com"
-                }
-            };
+        public UserDto GetRefreshModel(int id) => new UserDto
+        {
+            Id = id,
+            Name = "RefreshTest",
+            Password = "TEST",
+            IsValid = true,
+            CreatedOn = _now,
+            UpdatedOn = _now,
+            Account = $"Test{_guid}",
+            RoleId = 1,
+            Salt = "SALT",
+            Email = "test@gmail.com"
+        };
 
-        public List<UserCommandModel> GetDeleteModel(int id) => new List<UserCommandModel> {
-                 new UserCommandModel
-                {
-                    Id = id,
-                    UpdatedOn = _now,
-                }
-            };
+        public UserDto GetDeleteModel(int id) => new UserDto
+        {
+            Id = id,
+            UpdatedOn = _now,
+        };
     }
 }

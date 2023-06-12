@@ -6,94 +6,79 @@ using System.Linq;
 using Xunit;
 using FluentAssertions;
 
-using OrderSystemPlus.DataAccessor.Queries;
 using OrderSystemPlus.DataAccessor;
-using OrderSystemPlus.Models.DataAccessor.Commands;
-using OrderSystemPlus.DataAccessor.Commands;
-using OrderSystemPlus.Utils.GUIDSerialTool;
+using OrderSystemPlus.Models.DataAccessor;
 
-namespace OrderSystemPlusTest.DataAccessor
+namespace OrderSystemPlusTest.DataAccessorquery
 {
     public class ProductDataAccessorTest
     {
-        private IProductQuery _query;
-        private IInsertCommand<IEnumerable<ProductCommandModel>,List<int>> _insert;
-        private IDeleteCommand<IEnumerable<ProductCommandModel>> _delete;
-        private IUpdateCommand<IEnumerable<ProductCommandModel>> _update;
+        private IProductRepository _repository;
         private DateTime _now;
-        private string _guid;
 
         public ProductDataAccessorTest()
         {
             _now = DateTime.Now;
-            _guid = GUIDSerialTool.Generate(15);
-            _query = new ProductQuery();
-            _insert = new ProductCommand();
-            _delete = new ProductCommand();
-            _update = new ProductCommand();
+            _repository = new ProductRepository();
         }
 
         [Fact]
         public async Task RunAsync()
         {
-            await _insert.InsertAsync(GetInsertModel());
-            var insertResult = await _query.FindByOptionsAsync(null, GetInsertModel().First().Name, GetInsertModel().First().Number);
+            await _repository.InsertAsync(new List<ProductDto> { GetInsertModel() });
+            var insertResult = await _repository.FindByOptionsAsync(null, GetInsertModel().Name, GetInsertModel().Number);
             insertResult.Count.Should().Be(1);
-            insertResult.First().Name.Should().Be(GetInsertModel().First().Name);
-            insertResult.First().Description.Should().Be(GetInsertModel().First().Description);
-            insertResult.First().CurrentUnit.Should().Be(GetInsertModel().First().CurrentUnit);
-            insertResult.First().Number.Should().Be(GetInsertModel().First().Number);
-            insertResult.First().Price.Should().Be(GetInsertModel().First().Price);
+            insertResult.First().Name.Should().Be(GetInsertModel().Name);
+            insertResult.First().Description.Should().Be(GetInsertModel().Description);
+            insertResult.First().CurrentUnit.Should().Be(GetInsertModel().CurrentUnit);
+            insertResult.First().Number.Should().Be(GetInsertModel().Number);
+            insertResult.First().Price.Should().Be(GetInsertModel().Price);
 
-            await _update.UpdateAsync(GetUpdateModel(insertResult.First().Id));
-            var updateResult = await _query.FindByOptionsAsync(insertResult.First().Id, null,null);
+            await _repository.UpdateAsync(new List<ProductDto> { GetUpdateModel(insertResult.First().Id) });
+            var updateResult = await _repository.FindByOptionsAsync(insertResult.First().Id, null, null);
             updateResult.Count.Should().Be(1);
-            updateResult.First().Name.Should().Be(GetUpdateModel(updateResult.First().Id).First().Name);
-            updateResult.First().Description.Should().Be(GetUpdateModel(updateResult.First().Id).First().Description);
-            updateResult.First().CurrentUnit.Should().Be(GetUpdateModel(updateResult.First().Id).First().CurrentUnit);
-            updateResult.First().Number.Should().Be(GetUpdateModel(updateResult.First().Id).First().Number);
-            updateResult.First().Price.Should().Be(GetUpdateModel(updateResult.First().Id).First().Price);
+            updateResult.First().Name.Should().Be(GetUpdateModel(updateResult.First().Id).Name);
+            updateResult.First().Description.Should().Be(GetUpdateModel(updateResult.First().Id).Description);
+            updateResult.First().CurrentUnit.Should().Be(GetUpdateModel(updateResult.First().Id).CurrentUnit);
+            updateResult.First().Number.Should().Be(GetUpdateModel(updateResult.First().Id).Number);
+            updateResult.First().Price.Should().Be(GetUpdateModel(updateResult.First().Id).Price);
 
-
-            await _delete.DeleteAsync(GetDeleteModel(updateResult.First().Id));
-            var deleteResult = await _query.FindByOptionsAsync(updateResult.First().Id, null,null);
+            await _repository.DeleteAsync(new List<ProductDto> { GetDeleteModel(updateResult.First().Id) });
+            var deleteResult = await _repository.FindByOptionsAsync(updateResult.First().Id, null, null);
             deleteResult.Count.Should().Be(0);
         }
 
-        public List<ProductCommandModel> GetInsertModel() => new List<ProductCommandModel> {
-                new ProductCommandModel
+        public ProductDto GetInsertModel() =>
+                new ProductDto
                 {
-                    Name = $"Test{_guid}",
-                    Description = $"Test{_guid}",
-                    Number = $"Test{_guid}",
+                    Name = $"Test1",
+                    Description = $"Test1",
+                    Number = $"Test1",
                     Price = 100,
                     CurrentUnit = 100,
                     IsValid = true,
                     CreatedOn = _now,
                     UpdatedOn = _now,
-                }
-            };
+                };
 
-        public List<ProductCommandModel> GetUpdateModel(int id) => new List<ProductCommandModel> {
-                new ProductCommandModel
+        public ProductDto GetUpdateModel(int id) =>
+                new ProductDto
                 {
                     Id = id,
-                    Name = $"UpdateTest{_guid}",
-                    Description = $"UpdateTest{_guid}",
-                    Number = $"Test{_guid}",
+                    Name = "Test2",
+                    Description = "Test2",
+                    Number = "Test2",
                     Price = 120,
                     CurrentUnit = 120,
                     IsValid = true,
                     UpdatedOn = _now,
-                }
-            };
+                };
 
-        public List<ProductCommandModel> GetDeleteModel(int id) => new List<ProductCommandModel> {
-                 new ProductCommandModel
-                {
-                    Id = id,
-                    UpdatedOn = _now,
-                }
-            };
+        public ProductDto GetDeleteModel(int id) =>
+                 new ProductDto
+                 {
+                     Id = id,
+                     UpdatedOn = _now,
+                 };
     }
 }

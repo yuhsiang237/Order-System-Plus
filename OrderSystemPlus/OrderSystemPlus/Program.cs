@@ -2,12 +2,8 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 
 using OrderSystemPlus.BusinessActor;
-using OrderSystemPlus.BusinessActor.Commands;
-using OrderSystemPlus.BusinessActor.Queries;
 using OrderSystemPlus.DataAccessor;
-using OrderSystemPlus.DataAccessor.Commands;
-using OrderSystemPlus.DataAccessor.Queries;
-using OrderSystemPlus.Models.BusinessActor.Commands;
+using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Models.DataAccessor.Commands;
 using OrderSystemPlus.Utils.JwtHelper;
 
@@ -41,62 +37,24 @@ void AddValidactor()
 void AddHandler()
 {
     builder.Services
-        .AddSingleton<ICommandHandler<ReqCreateUser>, UserManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqSignInUser, RspSignInUser>, UserManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqCreateProductType>, ProductManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqUpdateProductType>, ProductManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqDeleteProductType>, ProductManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqCreateProduct>, ProductManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqUpdateProduct>, ProductManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqDeleteProduct>, ProductManageCommandHandler>();
-
-    builder.Services
-        .AddSingleton<ProductManageCommandHandler, ProductManageCommandHandler>()
-        .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
-        .AddSingleton<ProductInventoryCommandHandler, ProductInventoryCommandHandler>()
-        .AddSingleton<ProductManageCommandHandler, ProductManageCommandHandler>()
-        .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
-        .AddSingleton<ProductInventoryCommandHandler, ProductInventoryCommandHandler>();
-
-    builder.Services
-          .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>()
-          .AddSingleton<IProductManageQueryHandler, ProductManageQueryHandler>()
-          .AddSingleton<IProductInventoryQueryHandler, ProductInventoryQueryHandler>();
+        .AddSingleton<IUserManageHandler, UserManageHandler>()
+        .AddSingleton<IProductManageHandler, ProductManageHandler>();
 }
 
 
 /// <summary>
-/// Add dependency injection Query/Command
+/// Add dependency injection Repository
 /// </summary>
-void AddQueryAndCommand()
+void AddRepository()
 {
-    // command
     builder.Services
-    .AddSingleton<IInsertCommand<IEnumerable<UserCommandModel>>, UserCommand>()
-    .AddSingleton<IDeleteCommand<IEnumerable<UserCommandModel>>, UserCommand>()
-    .AddSingleton<IUpdateCommand<IEnumerable<UserCommandModel>>, UserCommand>()
-    .AddSingleton<IInsertCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
-    .AddSingleton<IDeleteCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
-    .AddSingleton<IUpdateCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
-    .AddSingleton<IInsertCommand<IEnumerable<ProductCommandModel>, List<int>>, ProductCommand>()
-    .AddSingleton<IDeleteCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
-    .AddSingleton<IUpdateCommand<IEnumerable<ProductCommandModel>>, ProductCommand>()
-    .AddSingleton<IInsertCommand<IEnumerable<ProductInventoryCommandModel>>, ProductInventoryCommand>()
-    .AddSingleton<IInsertCommand<IEnumerable<ProductProductTypeRelationshipCommandModel>>, ProductProductTypeRelationshipCommand>()
-    .AddSingleton<IDeleteCommand<IEnumerable<ProductProductTypeRelationshipCommandModel>>, ProductProductTypeRelationshipCommand>();
-
-    // query
-    builder.Services
-          .AddSingleton<IUserQuery, UserQuery>()
-          .AddSingleton<IProductTypeQuery, ProductTypeQuery>()
-          .AddSingleton<IProductQuery, ProductQuery>()
-          .AddSingleton<IProductInventoryQuery, ProductInventoryQuery>()
-          .AddSingleton<IProductProductTypeRelationshipQuery, ProductProductTypeRelationshipQuery>();
+          .AddSingleton<IUserRepository, UserRepository>()
+          .AddSingleton<IProductRepository, ProductRepository>();
 }
 
 // Custom DI
 AddValidactor();
-AddQueryAndCommand();
+AddRepository();
 AddHandler();
 
 // Add JWT

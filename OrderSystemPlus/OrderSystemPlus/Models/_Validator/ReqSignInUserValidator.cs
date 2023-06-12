@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-using OrderSystemPlus.Models.BusinessActor.Commands;
+using OrderSystemPlus.Models.BusinessActor;
 
 public class ReqSignInUserValidator : AbstractValidator<ReqSignInUser>
 {

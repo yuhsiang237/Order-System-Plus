@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
-
-using OrderSystemPlus.Models.BusinessActor.Commands;
+using OrderSystemPlus.Models.BusinessActor;
 
 public class ReqCreateUserValidator : AbstractValidator<ReqCreateUser>
 {
