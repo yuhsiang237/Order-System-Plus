@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-using AutoMapper;
+﻿using AutoMapper;
 
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.BusinessActor;

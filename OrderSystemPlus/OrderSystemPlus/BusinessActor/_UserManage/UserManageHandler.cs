@@ -84,10 +84,6 @@ namespace OrderSystemPlus.BusinessActor
 
                 return await Task.FromResult(result);
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
             finally
             {
                 _userCreateSemaphoreSlim.Release();

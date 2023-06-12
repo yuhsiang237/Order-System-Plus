@@ -96,7 +96,7 @@ namespace OrderSystemPlus.DataAccessor
                 ";
             using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
-                return conn.ExecuteScalar<int>(sql, model);
+                return await conn.ExecuteScalarAsync<int>(sql, model);
             }
         }
 
