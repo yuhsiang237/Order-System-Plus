@@ -1,9 +1,9 @@
-﻿namespace OrderSystemPlus.Models.DataAccessor.Commands
+﻿namespace OrderSystemPlus.Models.DataAccessor
 {
     /// <summary>
-    /// ProductTypeCommandModel
+    /// ProductTypeDto
     /// </summary>
-    public class ProductTypeCommandModel
+    public class ProductTypeDto
     {
         /// <summary>
         /// ID
