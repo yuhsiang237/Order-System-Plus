@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
-using OrderSystemPlus.BusinessActor.Commands;
-using OrderSystemPlus.BusinessActor.Queries;
-using OrderSystemPlus.Models.BusinessActor.Commands;
-using OrderSystemPlus.Models.BusinessActor.Queries;
+using OrderSystemPlus.BusinessActor;
+using OrderSystemPlus.Models.BusinessActor;
 
 namespace OrderSystemPlus.Controllers
 {
@@ -11,42 +9,46 @@ namespace OrderSystemPlus.Controllers
     [Route("[controller]")]
     public class UserManageController : ControllerBase
     {
-        private readonly UserManageCommandHandler _commandHandler;
-        private readonly IUserManageQueryHandler _queryHandler;
+        private readonly IUserManageHandler _userHandler;
 
         public UserManageController(
-            UserManageCommandHandler commandHandler,
-            IUserManageQueryHandler queryHandler)
+            IUserManageHandler userHandler)
         {
-            _commandHandler = commandHandler;
-            _queryHandler = queryHandler;
+            _userHandler = userHandler;
         }
 
         [HttpPost("CreateUser")]
-        public async Task<IActionResult> CreateUser([FromBody] ReqCreateUser req)
+        public async Task<int> CreateUser([FromBody] ReqCreateUser req)
         {
-            await _commandHandler.HandleAsync(req);
-            return StatusCode(200);
+            return await _userHandler.HandleAsync(req);
         }
 
         [HttpPost("SignInUser")]
         public async Task<RspSignInUser> SignInUser([FromBody] ReqSignInUser req)
-            => await _commandHandler.HandleAsync(req);
+            => await _userHandler.HandleAsync(req);
 
         [HttpPost("UpdateUser")]
         public async Task<IActionResult> UpdateUser([FromBody] ReqUpdateUser req)
         {
-            await _commandHandler.HandleAsync(req);
+            await _userHandler.HandleAsync(req);
             return StatusCode(200);
+        }
+
+        [HttpPost("DeleteUser")]
+        public async Task<IActionResult> DeleteUser([FromBody] ReqDeleteUser req)
+        {
+            await _userHandler.HandleAsync(req);
+            return StatusCode(200);
+        }
+
+        [HttpPost("GetUserInfo")]
+        public async Task<RspGetUserInfo> GetUserInfo([FromBody] ReqGetUserInfo req)
+        {
+            return await _userHandler.GetUserInfoAsync(req);
         }
 
         [HttpPost("GetUserList")]
         public async Task<List<RspGetUserList>> GetUserList([FromBody] ReqGetUserList req)
-            => await _queryHandler.GetUserListAsync(req);
-
-        [HttpPost("GetUserInfo")]
-        public async Task<RspGetUserInfo> GetUserInfo([FromBody] ReqGetUserInfo req)
-            => await _queryHandler.GetUserInfoAsync(req);
-
+            => await _userHandler.GetUserListAsync(req);
     }
 }

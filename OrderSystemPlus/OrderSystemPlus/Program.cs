@@ -2,12 +2,10 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 
 using OrderSystemPlus.BusinessActor;
-using OrderSystemPlus.BusinessActor.Commands;
-using OrderSystemPlus.BusinessActor.Queries;
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.DataAccessor.Commands;
 using OrderSystemPlus.DataAccessor.Queries;
-using OrderSystemPlus.Models.BusinessActor.Commands;
+using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Models.DataAccessor.Commands;
 using OrderSystemPlus.Utils.JwtHelper;
 
@@ -41,15 +39,7 @@ void AddValidactor()
 void AddHandler()
 {
     builder.Services
-        .AddSingleton<ICommandHandler<ReqCreateUser>, UserManageCommandHandler>()
-        .AddSingleton<ICommandHandler<ReqSignInUser, RspSignInUser>, UserManageCommandHandler>();
-
-    builder.Services
-        .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>()
-        .AddSingleton<UserManageCommandHandler, UserManageCommandHandler>();
-
-    builder.Services
-        .AddSingleton<IUserManageQueryHandler, UserManageQueryHandler>()
+        .AddSingleton<IUserManageHandler, UserManageHandler>()
         .AddSingleton<IProductManageHandler, ProductManageHandler>();
 }
 
@@ -61,9 +51,6 @@ void AddQueryAndCommand()
 {
     // command
     builder.Services
-    .AddSingleton<IInsertCommand<IEnumerable<UserCommandModel>>, UserCommand>()
-    .AddSingleton<IDeleteCommand<IEnumerable<UserCommandModel>>, UserCommand>()
-    .AddSingleton<IUpdateCommand<IEnumerable<UserCommandModel>>, UserCommand>()
     .AddSingleton<IInsertCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
     .AddSingleton<IDeleteCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
     .AddSingleton<IUpdateCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
@@ -72,10 +59,8 @@ void AddQueryAndCommand()
 
     // query
     builder.Services
-          .AddSingleton<IUserQuery, UserQuery>()
-          .AddSingleton<IProductTypeQuery, ProductTypeQuery>()
-          .AddSingleton<IProductRepository, ProductRepository>()
-          .AddSingleton<IProductProductTypeRelationshipQuery, ProductProductTypeRelationshipQuery>();
+          .AddSingleton<IUserRepository, UserRepository>()
+          .AddSingleton<IProductRepository, ProductRepository>();
 }
 
 // Custom DI

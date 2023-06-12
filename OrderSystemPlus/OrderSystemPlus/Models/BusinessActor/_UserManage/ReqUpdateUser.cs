@@ -1,10 +1,9 @@
-﻿namespace OrderSystemPlus.Models.BusinessActor.Queries
+﻿namespace OrderSystemPlus.Models.BusinessActor
 {
-    public class RspGetUserInfo
+    public class ReqUpdateUser
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public string Account { get; set; }
     }
 }

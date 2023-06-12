@@ -1,12 +1,13 @@
-﻿namespace OrderSystemPlus.Models.DataAccessor.Queries
+﻿namespace OrderSystemPlus.Models.DataAccessor
 {
     /// <summary>
-    /// UserQueryModel
+    /// UserDto
     /// </summary>
-    public class UserQueryModel
+    public class UserDto
     {
+
         /// <summary>
-        /// ID
+        /// Id
         /// </summary>
         public int Id { get; set; }
 
@@ -40,5 +41,20 @@
         /// 角色ID
         /// </summary>
         public int? RoleId { get; set; }
+
+        /// <summary>
+        /// 是否為生效資料
+        /// </summary>
+        public bool IsValid { get; set; }
+
+        /// <summary>
+        /// 資料建立時間
+        /// </summary>
+        public DateTime CreatedOn { get; set; }
+
+        /// <summary>
+        /// 資料更新時間
+        /// </summary>
+        public DateTime UpdatedOn { get; set; }
     }
 }

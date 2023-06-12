@@ -9,7 +9,7 @@ using OrderSystemPlus.Models.DataAccessor;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.Models.BusinessActor;
 
-namespace OrderSystemPlusTest.BusinessActor._ProductManage
+namespace OrderSystemPlusTest.BusinessActor
 {
     public class ProductManageHandlerTest
     {
