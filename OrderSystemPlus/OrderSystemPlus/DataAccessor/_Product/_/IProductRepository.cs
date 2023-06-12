@@ -33,6 +33,6 @@ namespace OrderSystemPlus.DataAccessor
         /// <param name="name"></param>
         /// <param name="number"></param>
         /// <returns></returns>
-        Task<List<ProductDto>> FindByOptionsAsync(int? id, string? name, string? number);
+        Task<List<ProductDto>> FindByOptionsAsync(int? id = null, string? name = null, string? number = null);
     }
 }

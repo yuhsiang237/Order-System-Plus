@@ -30,7 +30,7 @@ namespace OrderSystemPlus.BusinessActor
 
         public async Task<RspGetProductInfo> GetProductInfoAsync(ReqGetProductInfo req)
         {
-            var data = (await _productRepository.FindByOptionsAsync(null, null, null)).FirstOrDefault();
+            var data = (await _productRepository.FindByOptionsAsync(id:req.Id)).FirstOrDefault();
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ProductDto, RspGetProductInfo>();
