@@ -3,8 +3,6 @@ using FluentValidation.AspNetCore;
 
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.DataAccessor;
-using OrderSystemPlus.DataAccessor.Commands;
-using OrderSystemPlus.DataAccessor.Queries;
 using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Models.DataAccessor.Commands;
 using OrderSystemPlus.Utils.JwtHelper;
@@ -45,19 +43,10 @@ void AddHandler()
 
 
 /// <summary>
-/// Add dependency injection Query/Command
+/// Add dependency injection Repository
 /// </summary>
-void AddQueryAndCommand()
+void AddRepository()
 {
-    // command
-    builder.Services
-    .AddSingleton<IInsertCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
-    .AddSingleton<IDeleteCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
-    .AddSingleton<IUpdateCommand<IEnumerable<ProductTypeCommandModel>>, ProductTypeCommand>()
-    .AddSingleton<IInsertCommand<IEnumerable<ProductProductTypeRelationshipCommandModel>>, ProductProductTypeRelationshipCommand>()
-    .AddSingleton<IDeleteCommand<IEnumerable<ProductProductTypeRelationshipCommandModel>>, ProductProductTypeRelationshipCommand>();
-
-    // query
     builder.Services
           .AddSingleton<IUserRepository, UserRepository>()
           .AddSingleton<IProductRepository, ProductRepository>();
@@ -65,7 +54,7 @@ void AddQueryAndCommand()
 
 // Custom DI
 AddValidactor();
-AddQueryAndCommand();
+AddRepository();
 AddHandler();
 
 // Add JWT
