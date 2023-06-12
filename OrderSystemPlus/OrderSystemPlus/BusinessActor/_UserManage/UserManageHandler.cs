@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-using AutoMapper;
+﻿using AutoMapper;
 
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Enums;
@@ -15,10 +13,13 @@ namespace OrderSystemPlus.BusinessActor
     {
         private readonly IJwtHelper _jwtHelper;
         private readonly IUserRepository _userRepository;
+        private static SemaphoreSlim _userCreateSemaphoreSlim;
+
         public UserManageHandler(
             IUserRepository userRepository,
             IJwtHelper jwtHelper)
         {
+            _userCreateSemaphoreSlim = new SemaphoreSlim(1, 1);
             _userRepository = userRepository;
             _jwtHelper = jwtHelper;
         }
@@ -38,7 +39,7 @@ namespace OrderSystemPlus.BusinessActor
 
         public async Task<RspGetUserInfo> GetUserInfoAsync(ReqGetUserInfo req)
         {
-            var data = (await _userRepository.FindByOptionsAsync(id:req.Id)).FirstOrDefault();
+            var data = (await _userRepository.FindByOptionsAsync(id: req.Id)).FirstOrDefault();
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<UserDto, RspGetUserInfo>();
@@ -51,34 +52,46 @@ namespace OrderSystemPlus.BusinessActor
 
         public async Task<int> HandleAsync(ReqCreateUser req)
         {
-            var result = default(int);
-            var now = DateTime.Now;
-            var hashSalt = HashSaltTool.Generate(req.Password);
-            var isExist = (await _userRepository.FindByOptionsAsync(null, null, req.Account))
-                        .ToList()
-                        .Any();
-            if (!isExist)
+            await _userCreateSemaphoreSlim.WaitAsync();
+            try
             {
-                result = await _userRepository.InsertAsync(
-                    new UserDto
-                    {
-                        Name = req.Name,
-                        Salt = hashSalt.Salt,
-                        Email = req.Email,
-                        Account = req.Account,
-                        Password = hashSalt.Hash,
-                        RoleId = (int)RoleType.Basic,
-                        IsValid = true,
-                        CreatedOn = now,
-                        UpdatedOn = now,
-                    });
-            }
-            else
-            {
-                throw new Exception("使用者已存在");
-            }
+                var result = default(int);
+                var now = DateTime.Now;
+                var hashSalt = HashSaltTool.Generate(req.Password);
+                var isExist = (await _userRepository.FindByOptionsAsync(null, null, req.Account))
+                            .ToList()
+                            .Any();
+                if (!isExist)
+                {
+                    result = await _userRepository.InsertAsync(
+                        new UserDto
+                        {
+                            Name = req.Name,
+                            Salt = hashSalt.Salt,
+                            Email = req.Email,
+                            Account = req.Account,
+                            Password = hashSalt.Hash,
+                            RoleId = (int)RoleType.Basic,
+                            IsValid = true,
+                            CreatedOn = now,
+                            UpdatedOn = now,
+                        });
+                }
+                else
+                {
+                    throw new Exception("使用者已存在");
+                }
 
-            return await Task.FromResult(result);
+                return await Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                _userCreateSemaphoreSlim.Release();
+            }
         }
 
         public async Task HandleAsync(ReqUpdateUser req)
