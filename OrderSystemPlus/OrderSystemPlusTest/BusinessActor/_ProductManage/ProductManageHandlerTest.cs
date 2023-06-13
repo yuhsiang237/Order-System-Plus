@@ -15,11 +15,14 @@ namespace OrderSystemPlusTest.BusinessActor
     {
         private IProductManageHandler _handler;
         private readonly Mock<IProductRepository> _productRepository;
+        private readonly Mock<IProductInventoryManageHandler> _productInventoryHandler;
 
         public ProductManageHandlerTest()
         {
             _productRepository = new Mock<IProductRepository>();
+            _productInventoryHandler = new Mock<IProductInventoryManageHandler>();
             _handler = new ProductManageHandler(
+              _productInventoryHandler.Object,
               _productRepository.Object);
         }
 
@@ -27,7 +30,8 @@ namespace OrderSystemPlusTest.BusinessActor
         public async Task ProductCreate()
         {
             _productRepository.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductDto>>()))
-                .ReturnsAsync(new List<int>());
+                .ReturnsAsync(new List<int> { 1 });
+            _productInventoryHandler.Setup(x => x.HandleAsync(It.IsAny<List<ReqUpdateProductInventory>>())).ReturnsAsync(true);
 
             await _handler.HandleAsync(new List<ReqCreateProduct>
             {
@@ -36,8 +40,10 @@ namespace OrderSystemPlusTest.BusinessActor
                     Name = "productName",
                     Description = "test",
                     Number = "TEST",
+                    Quantity = 50,
                 }
             });
+            _productInventoryHandler.Verify(x => x.HandleAsync(It.IsAny<List<ReqUpdateProductInventory>>()), Times.Once());
             _productRepository.Verify(x => x.InsertAsync(It.IsAny<IEnumerable<ProductDto>>()), Times.Once());
         }
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 
 using OrderSystemPlus.DataAccessor;
+using OrderSystemPlus.Enums;
 using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Models.DataAccessor;
 
@@ -9,9 +10,13 @@ namespace OrderSystemPlus.BusinessActor
     public class ProductManageHandler : IProductManageHandler
     {
         private readonly IProductRepository _productRepository;
+        private readonly IProductInventoryManageHandler _productInventoryControlHandler;
+
         public ProductManageHandler(
+            IProductInventoryManageHandler productInventoryControlHandler,
             IProductRepository productRepository)
         {
+            _productInventoryControlHandler = productInventoryControlHandler;
             _productRepository = productRepository;
         }
 
@@ -20,17 +25,27 @@ namespace OrderSystemPlus.BusinessActor
             var data = await _productRepository.FindByOptionsAsync(null, null, null);
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ProductDto, RspGetProductList>();
+                cfg.CreateMap<ProductDto, RspGetProductList>()
+                   .ForMember(dest => dest.Quantity, opt => opt.Ignore());
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
             var rsp = mapper.Map<List<ProductDto>, List<RspGetProductList>>(data);
+
+            foreach (var item in rsp)
+            {
+                item.Quantity = await _productInventoryControlHandler.GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
+                {
+                    ProductId = item.Id,
+                });
+            }
+
             return rsp.ToList();
         }
 
         public async Task<RspGetProductInfo> GetProductInfoAsync(ReqGetProductInfo req)
         {
-            var data = (await _productRepository.FindByOptionsAsync(id:req.Id)).FirstOrDefault();
+            var data = (await _productRepository.FindByOptionsAsync(id: req.Id)).FirstOrDefault();
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ProductDto, RspGetProductInfo>();
@@ -38,6 +53,10 @@ namespace OrderSystemPlus.BusinessActor
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
             var rsp = mapper.Map<ProductDto, RspGetProductInfo>(data);
+            rsp.Quantity = await _productInventoryControlHandler.GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
+            {
+                ProductId = req.Id,
+            });
             return rsp;
         }
 
@@ -54,7 +73,22 @@ namespace OrderSystemPlus.BusinessActor
                 UpdatedOn = now,
                 IsValid = true,
             }).ToList();
-            await _productRepository.InsertAsync(dtoList);
+            var productInsertResult = await _productRepository.InsertAsync(dtoList);
+
+            var inventoryDtoList = new List<ReqUpdateProductInventory>();
+            for (var i = 0; i < productInsertResult.Count; i++)
+            {
+                inventoryDtoList.Add(new ReqUpdateProductInventory
+                {
+                    ProductId = productInsertResult[i],
+                    Type = AdjustProductInventoryType.Force,
+                    AdjustQuantity = req[i].Quantity,
+                    Description = "商品建立庫存。"
+                });
+            }
+            var inventoryResult = await _productInventoryControlHandler.HandleAsync(inventoryDtoList);
+            if (inventoryResult == false)
+                throw new Exception("AdjustProductInventoryAsync Error");
         }
 
         public async Task HandleAsync(List<ReqUpdateProduct> req)

@@ -4,7 +4,6 @@ using FluentValidation.AspNetCore;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.BusinessActor;
-using OrderSystemPlus.Models.DataAccessor.Commands;
 using OrderSystemPlus.Utils.JwtHelper;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,7 +38,8 @@ void AddHandler()
     builder.Services
         .AddSingleton<IUserManageHandler, UserManageHandler>()
         .AddSingleton<IProductManageHandler, ProductManageHandler>()
-        .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>(); ;
+        .AddSingleton<IProductInventoryManageHandler, ProductInventoryManageHandler>()
+        .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>();
 }
 
 
@@ -51,6 +51,7 @@ void AddRepository()
     builder.Services
           .AddSingleton<IUserRepository, UserRepository>()
           .AddSingleton<IProductRepository, ProductRepository>()
+          .AddSingleton<IProductInventoryRepository, ProductInventoryRepository>()
           .AddSingleton<IProductTypeRepository, ProductTypeRepository>();
 }
 

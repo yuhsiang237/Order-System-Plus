@@ -9,7 +9,7 @@ using FluentAssertions;
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.DataAccessor;
 
-namespace OrderSystemPlusTest.DataAccessorquery
+namespace OrderSystemPlusTest.DataAccessor
 {
     public class ProductDataAccessorTest
     {
@@ -30,7 +30,6 @@ namespace OrderSystemPlusTest.DataAccessorquery
             insertResult.Count.Should().Be(1);
             insertResult.First().Name.Should().Be(GetInsertModel().Name);
             insertResult.First().Description.Should().Be(GetInsertModel().Description);
-            insertResult.First().CurrentUnit.Should().Be(GetInsertModel().CurrentUnit);
             insertResult.First().Number.Should().Be(GetInsertModel().Number);
             insertResult.First().Price.Should().Be(GetInsertModel().Price);
 
@@ -39,7 +38,6 @@ namespace OrderSystemPlusTest.DataAccessorquery
             updateResult.Count.Should().Be(1);
             updateResult.First().Name.Should().Be(GetUpdateModel(updateResult.First().Id).Name);
             updateResult.First().Description.Should().Be(GetUpdateModel(updateResult.First().Id).Description);
-            updateResult.First().CurrentUnit.Should().Be(GetUpdateModel(updateResult.First().Id).CurrentUnit);
             updateResult.First().Number.Should().Be(GetUpdateModel(updateResult.First().Id).Number);
             updateResult.First().Price.Should().Be(GetUpdateModel(updateResult.First().Id).Price);
 
@@ -55,7 +53,6 @@ namespace OrderSystemPlusTest.DataAccessorquery
                     Description = $"Test1",
                     Number = $"Test1",
                     Price = 100,
-                    CurrentUnit = 100,
                     IsValid = true,
                     CreatedOn = _now,
                     UpdatedOn = _now,
@@ -69,7 +66,6 @@ namespace OrderSystemPlusTest.DataAccessorquery
                     Description = "Test2",
                     Number = "Test2",
                     Price = 120,
-                    CurrentUnit = 120,
                     IsValid = true,
                     UpdatedOn = _now,
                 };

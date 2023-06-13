@@ -32,11 +32,6 @@
         public string Description { get; set; }
 
         /// <summary>
-        /// 產品目前數量
-        /// </summary>
-        public decimal? CurrentUnit { get; set; }
-
-        /// <summary>
         /// 是否為生效資料
         /// </summary>
         public bool IsValid { get; set; }

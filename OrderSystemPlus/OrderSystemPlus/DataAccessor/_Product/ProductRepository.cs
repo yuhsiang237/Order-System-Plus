@@ -20,7 +20,6 @@ namespace OrderSystemPlus.DataAccessor
                               ,[Name]
                               ,[Price]
                               ,[Description]
-                              ,[CurrentUnit]
                               ,[CreatedOn]
                               ,[UpdatedOn]
                               ,[IsValid]
@@ -63,7 +62,6 @@ namespace OrderSystemPlus.DataAccessor
                   [Price] = @Price,
                   [Number] = @Number,
                   [Description] = @Description,
-                  [CurrentUnit] = @CurrentUnit,
                   [UpdatedOn] = @UpdatedOn
                 WHERE
                     [Id] = @Id
@@ -100,7 +98,6 @@ namespace OrderSystemPlus.DataAccessor
                   ,[Name]
                   ,[Price]
                   ,[Description]
-                  ,[CurrentUnit]
                   ,[CreatedOn]
                   ,[UpdatedOn]
                   ,[IsValid]
@@ -110,7 +107,6 @@ namespace OrderSystemPlus.DataAccessor
                   @Name,
                   @Price,
                   @Description,
-                  @CurrentUnit,
                   @CreatedOn,
                   @UpdatedOn,
                   @IsValid
