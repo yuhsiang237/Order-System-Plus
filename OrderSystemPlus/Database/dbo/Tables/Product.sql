@@ -4,7 +4,6 @@
     [Name]        NVARCHAR (100)  NULL,
     [Price]       DECIMAL (18, 4) NULL,
     [Description] VARCHAR (500)   NULL,
-    [CurrentUnit] DECIMAL (18, 4) NULL,
     [CreatedOn]  DATETIME   NOT NULL,
     [UpdatedOn] DATETIME   NOT NULL,
     [IsValid] BIT            NOT NULL,
@@ -48,15 +47,6 @@ EXEC sp_addextendedproperty @name = N'MS_Description',
     @level1name = N'Product',
     @level2type = N'COLUMN',
     @level2name = N'CreatedOn'
-GO
-EXEC sp_addextendedproperty @name = N'MS_Description',
-    @value = N'目前數量',
-    @level0type = N'SCHEMA',
-    @level0name = N'dbo',
-    @level1type = N'TABLE',
-    @level1name = N'Product',
-    @level2type = N'COLUMN',
-    @level2name = N'CurrentUnit'
 GO
 EXEC sp_addextendedproperty @name = N'MS_Description',
     @value = N'描述',

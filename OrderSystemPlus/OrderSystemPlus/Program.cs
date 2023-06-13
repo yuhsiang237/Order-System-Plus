@@ -4,7 +4,6 @@ using FluentValidation.AspNetCore;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.BusinessActor;
-using OrderSystemPlus.Models.DataAccessor.Commands;
 using OrderSystemPlus.Utils.JwtHelper;
 
 var builder = WebApplication.CreateBuilder(args);

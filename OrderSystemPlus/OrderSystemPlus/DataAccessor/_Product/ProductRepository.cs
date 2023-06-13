@@ -20,7 +20,6 @@ namespace OrderSystemPlus.DataAccessor
                               ,[Name]
                               ,[Price]
                               ,[Description]
-                              ,[CurrentUnit]
                               ,[CreatedOn]
                               ,[UpdatedOn]
                               ,[IsValid]

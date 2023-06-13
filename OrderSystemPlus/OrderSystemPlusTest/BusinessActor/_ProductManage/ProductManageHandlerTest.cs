@@ -15,11 +15,14 @@ namespace OrderSystemPlusTest.BusinessActor
     {
         private IProductManageHandler _handler;
         private readonly Mock<IProductRepository> _productRepository;
+        private readonly Mock<IProductInventoryManageHandler> _productInventoryHandler;
 
         public ProductManageHandlerTest()
         {
             _productRepository = new Mock<IProductRepository>();
+            _productInventoryHandler = new Mock<IProductInventoryManageHandler>();
             _handler = new ProductManageHandler(
+              _productInventoryHandler.Object,
               _productRepository.Object);
         }
 
