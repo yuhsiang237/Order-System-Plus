@@ -22,7 +22,7 @@ namespace OrderSystemPlus.DataAccessor
                                 ,[PrevTotalQuantity]
                                 ,[TotalQuantity]
                                 ,[AdjustProductInventoryType]
-                                ,[Description]
+                                ,[Remark]
                                 ,[CreatedOn]
                                 ,[UpdatedOn]
                                 ,[IsValid]
@@ -80,7 +80,7 @@ namespace OrderSystemPlus.DataAccessor
                     ,[PrevTotalQuantity]
                     ,[TotalQuantity]
                     ,[AdjustProductInventoryType]
-                    ,[Description]
+                    ,[Remark]
                     ,[CreatedOn]
                     ,[UpdatedOn]
                     ,[IsValid]
@@ -91,7 +91,7 @@ namespace OrderSystemPlus.DataAccessor
                     @PrevTotalQuantity,
                     @TotalQuantity,
                     @AdjustProductInventoryType,
-                    @Description,
+                    @Remark,
                     @CreatedOn,
                     @UpdatedOn,
                     @IsValid

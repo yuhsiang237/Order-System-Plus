@@ -5,7 +5,7 @@ namespace OrderSystemPlus.BusinessActor
     public interface IProductInventoryManageHandler
     {
         Task<List<RspGetProductInventoryHistoryList>> GetProductInventoryHistoryListAsync(ReqGetProductInventoryHistoryList req);
-        Task<decimal?> GetProductInventoryInfoAsync(int? productId);
+        Task<decimal?> GetProductCurrentTotalQuantityAsync(ReqGetProductCurrentTotalQuantity req);
         Task<bool> HandleAsync(List<ReqUpdateProductInventory> req);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace OrderSystemPlus.Models.BusinessActor
 {
-    public class ReqGetProductInventoryInfo
+    public class ReqGetProductCurrentTotalQuantity
     {
         public int ProductId { get; set; }
     }

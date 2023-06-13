@@ -38,9 +38,9 @@ namespace OrderSystemPlus.Models.DataAccessor
         public decimal? TotalQuantity { get; set; }
 
         /// <summary>
-        /// 產品描述
+        /// 備註
         /// </summary>
-        public string Description { get; set; }
+        public string Remark { get; set; }
 
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }

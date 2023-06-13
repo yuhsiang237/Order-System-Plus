@@ -5,7 +5,7 @@
     [PrevTotalQuantity]       DECIMAL (18, 4) NULL,
     [TotalQuantity]        DECIMAL (18, 4) NULL,
     [AdjustProductInventoryType] INT NULL, 
-    [Description] VARCHAR (500)   NULL,
+    [Remark] VARCHAR (500)   NULL,
     [CreatedOn]  DATETIME   NOT NULL,
     [UpdatedOn] DATETIME   NOT NULL,
     [IsValid] BIT            NOT NULL,
@@ -42,13 +42,13 @@ EXEC sp_addextendedproperty @name = N'MS_Description',
     @level2name = N'AdjustProductInventoryType'
 GO
 EXEC sp_addextendedproperty @name = N'MS_Description',
-    @value = N'描述',
+    @value = N'備註',
     @level0type = N'SCHEMA',
     @level0name = N'dbo',
     @level1type = N'TABLE',
     @level1name = N'ProductInventory',
     @level2type = N'COLUMN',
-    @level2name = N'Description'
+    @level2name = 'Remark'
 GO
 EXEC sp_addextendedproperty @name = N'MS_Description',
     @value = N'建立時間',

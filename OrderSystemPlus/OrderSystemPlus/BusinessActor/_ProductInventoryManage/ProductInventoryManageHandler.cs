@@ -26,11 +26,10 @@ namespace OrderSystemPlus.BusinessActor
                 for (var i = 0; i < req.Count; i++)
                 {
                     var item = req[i];
-                    var currentQuantity = (await _productInventoryRepository.FindByOptionsAsync(item.ProductId))
-                                                .OrderByDescending(o => o.CreatedOn)
-                                                .ThenByDescending(o => o.Id)
-                                                .FirstOrDefault()
-                                                ?.TotalQuantity ?? 0;
+                    var currentQuantity = (await GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
+                    {
+                        ProductId = req[i].ProductId.Value
+                    }));
 
                     if (item.Type == AdjustProductInventoryType.Decrease &&
                         item.AdjustQuantity != 0)
@@ -45,7 +44,7 @@ namespace OrderSystemPlus.BusinessActor
                             AdjustQuantity = -Math.Abs(item.AdjustQuantity.Value),
                             TotalQuantity = calcQuantity,
                             AdjustProductInventoryType = AdjustProductInventoryType.Decrease,
-                            Description = item.Description + $"調整庫存: {currentQuantity}=>{calcQuantity}。",
+                            Remark = item.Description + $"調整庫存: {currentQuantity}=>{calcQuantity}。",
                             CreatedOn = now,
                             UpdatedOn = now,
                             IsValid = true,
@@ -64,7 +63,7 @@ namespace OrderSystemPlus.BusinessActor
                             PrevTotalQuantity = currentQuantity,
                             AdjustQuantity = calcQuantity.Value,
                             AdjustProductInventoryType = AdjustProductInventoryType.Force,
-                            Description = item.Description + $"調整庫存: {currentQuantity}=>{calcQuantity}。",
+                            Remark = item.Description + $"調整庫存: {currentQuantity}=>{calcQuantity}。",
                             TotalQuantity = calcQuantity.Value,
                             CreatedOn = now,
                             UpdatedOn = now,
@@ -82,7 +81,7 @@ namespace OrderSystemPlus.BusinessActor
                             ProductId = item.ProductId.Value,
                             PrevTotalQuantity = currentQuantity,
                             AdjustQuantity = Math.Abs(item.AdjustQuantity.Value),
-                            Description = item.Description + $"調整庫存: {currentQuantity}=>{calcQuantity}。",
+                            Remark = item.Description + $"調整庫存: {currentQuantity}=>{calcQuantity}。",
                             AdjustProductInventoryType = AdjustProductInventoryType.Increase,
                             TotalQuantity = calcQuantity,
                             CreatedOn = now,
@@ -102,9 +101,9 @@ namespace OrderSystemPlus.BusinessActor
             }
         }
 
-        public async Task<decimal?> GetProductInventoryInfoAsync(int? productId)
+        public async Task<decimal?> GetProductCurrentTotalQuantityAsync(ReqGetProductCurrentTotalQuantity req)
         {
-            var currentQuantity = (await _productInventoryRepository.FindByOptionsAsync(productId))
+            var currentQuantity = (await _productInventoryRepository.FindByOptionsAsync(req.ProductId))
                                                 .OrderByDescending(o => o.CreatedOn)
                                                 .ThenByDescending(o => o.Id)
                                                 .FirstOrDefault()
@@ -117,9 +116,18 @@ namespace OrderSystemPlus.BusinessActor
             return (await _productInventoryRepository.FindByOptionsAsync(req.ProductId))
                 .Select(s => new RspGetProductInventoryHistoryList
                 {
+                    Id = s.Id,
                     ProductId = s.ProductId,
-                    Quantity = s.AdjustQuantity,
-                }).ToList();
+                    AdjustQuantity = s.AdjustQuantity,
+                    PrevTotalQuantity = s.PrevTotalQuantity,
+                    AdjustProductInventoryType = s.AdjustProductInventoryType,
+                    TotalQuantity = s.TotalQuantity,
+                    Remark = s.Remark,
+                    CreatedOn = s.CreatedOn,
+                })
+                .OrderByDescending(o => o.CreatedOn)
+                .ThenByDescending(o => o.Id)
+                .ToList();
         }
     }
 }

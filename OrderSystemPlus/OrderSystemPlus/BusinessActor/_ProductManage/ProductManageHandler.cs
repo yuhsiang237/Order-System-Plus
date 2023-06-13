@@ -30,10 +30,13 @@ namespace OrderSystemPlus.BusinessActor
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
             var rsp = mapper.Map<List<ProductDto>, List<RspGetProductList>>(data);
-            
-            foreach(var item in rsp)
+
+            foreach (var item in rsp)
             {
-                item.Quantity = await _productInventoryControlHandler.GetProductInventoryInfoAsync(item.Id);
+                item.Quantity = await _productInventoryControlHandler.GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
+                {
+                    ProductId = item.Id,
+                });
             }
 
             return rsp.ToList();
@@ -41,7 +44,7 @@ namespace OrderSystemPlus.BusinessActor
 
         public async Task<RspGetProductInfo> GetProductInfoAsync(ReqGetProductInfo req)
         {
-            var data = (await _productRepository.FindByOptionsAsync(id:req.Id)).FirstOrDefault();
+            var data = (await _productRepository.FindByOptionsAsync(id: req.Id)).FirstOrDefault();
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ProductDto, RspGetProductInfo>();
@@ -49,7 +52,10 @@ namespace OrderSystemPlus.BusinessActor
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
             var rsp = mapper.Map<ProductDto, RspGetProductInfo>(data);
-            rsp.Quantity = await _productInventoryControlHandler.GetProductInventoryInfoAsync(req.Id);
+            rsp.Quantity = await _productInventoryControlHandler.GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
+            {
+                ProductId = req.Id,
+            });
             return rsp;
         }
 
@@ -67,14 +73,14 @@ namespace OrderSystemPlus.BusinessActor
                 IsValid = true,
             }).ToList();
             var productInsertResult = await _productRepository.InsertAsync(dtoList);
-            
+
             var inventoryDtoList = new List<ReqUpdateProductInventory>();
             for (var i = 0; i < productInsertResult.Count; i++)
             {
                 inventoryDtoList.Add(new ReqUpdateProductInventory
                 {
                     ProductId = productInsertResult[i],
-                    Type  = AdjustProductInventoryType.Force,
+                    Type = AdjustProductInventoryType.Force,
                     AdjustQuantity = req[i].Quantity,
                     Description = "商品建立庫存。"
                 });

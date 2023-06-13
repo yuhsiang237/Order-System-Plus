@@ -34,10 +34,13 @@ namespace OrderSystemPlus.Controllers
             return await _productInventoryHandler.GetProductInventoryHistoryListAsync(req);
         }
 
-        [HttpPost("GetProductInventoryInfo")]
-        public async Task<decimal?> GetProductInventoryInfo([FromBody] ReqGetProductInventoryInfo req)
+        [HttpPost("GetProductCurrentTotalQuantity")]
+        public async Task<decimal?> GetProductCurrentTotalQuantityAsync([FromBody] ReqGetProductCurrentTotalQuantity req)
         {
-            return await _productInventoryHandler.GetProductInventoryInfoAsync(req.ProductId);
+            return await _productInventoryHandler.GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
+            {
+                ProductId = req.ProductId,
+            });
         }
     }
 }
