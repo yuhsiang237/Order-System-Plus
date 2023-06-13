@@ -11,7 +11,7 @@ namespace OrderSystemPlus.DataAccessor
 {
     public class ProductInventoryRepository : IProductInventoryRepository
     {
-        public async Task<List<ProductInventoryDto>> FindByOptionsAsync(int? productId = null)
+        public async Task<List<ProductInventoryDto>> FindByOptionsAsync(int? productId = null, int? Id = null)
         {
 
             string sql = @"
@@ -35,6 +35,8 @@ namespace OrderSystemPlus.DataAccessor
 
             if (productId.HasValue)
                 conditions.Add("[ProductId] = @ProductId");
+            if (Id.HasValue)
+                conditions.Add("[Id] = @Id");
 
             if (conditions.Any())
                 sql = string.Concat(sql, $" WHERE {string.Join(" AND ", conditions)}");
@@ -46,6 +48,7 @@ namespace OrderSystemPlus.DataAccessor
                 {
                     IsValid = true,
                     ProductId = productId,
+                    Id = Id,
                 })).ToList();
             }
 

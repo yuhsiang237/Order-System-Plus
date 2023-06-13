@@ -9,8 +9,8 @@ namespace OrderSystemPlus.BusinessActor
     {
         private readonly IProductInventoryRepository _productInventoryRepository;
         private static SemaphoreSlim _updateProductInventorySemaphoreSlim;
-        public ProductInventoryManageHandler(IProductInventoryRepository
-            productInventoryRepository)
+        public ProductInventoryManageHandler(
+            IProductInventoryRepository productInventoryRepository)
         {
             _updateProductInventorySemaphoreSlim = new SemaphoreSlim(1, 1);
             _productInventoryRepository = productInventoryRepository;
