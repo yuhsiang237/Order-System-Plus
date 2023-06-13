@@ -8,5 +8,5 @@
 
 GO
 CREATE NONCLUSTERED INDEX [IX_ProductTypeRelationship]
-    ON [dbo].[ProductTypeRelationship]([ProductId] ASC);
+    ON [dbo].[ProductTypeRelationship]([ProductId] ASC,[ProductTypeId] ASC);
 
