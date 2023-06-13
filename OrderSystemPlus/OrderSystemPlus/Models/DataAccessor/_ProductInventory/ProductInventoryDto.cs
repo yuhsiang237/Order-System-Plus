@@ -13,18 +13,29 @@ namespace OrderSystemPlus.Models.DataAccessor
         public int Id { get; set; }
 
         /// <summary>
-        /// Product Id
+        /// 商品ID
         /// </summary>
         public int ProductId { get; set; }
 
         /// <summary>
-        /// ActionType
+        /// AdjustProductInventoryType
         /// </summary>
-        public InventoryActionType ActionType { get; set; }
+        public AdjustProductInventoryType AdjustProductInventoryType { get; set; }
+        
         /// <summary>
-        /// 產品庫存量
+        /// 調整數量
         /// </summary>
-        public decimal Quantity { get; set; }
+        public decimal? AdjustQuantity { get; set; }
+
+        /// <summary>
+        /// 調整前總數量
+        /// </summary>
+        public decimal? PrevTotalQuantity { get; set; }
+
+        /// <summary>
+        /// 調整後總數量
+        /// </summary>
+        public decimal? TotalQuantity { get; set; }
 
         /// <summary>
         /// 產品描述

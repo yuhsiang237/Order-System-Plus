@@ -20,6 +20,10 @@ namespace OrderSystemPlus.Controllers
         [HttpPost("UpdateProductInventory")]
         public async Task<IActionResult> UpdateProductInventory([FromBody] List<ReqUpdateProductInventory> req)
         {
+            req.ForEach(f =>
+            {
+                f.Description = "手動調整庫存。";
+            });
             await _productInventoryHandler.HandleAsync(req);
             return StatusCode(200);
         }

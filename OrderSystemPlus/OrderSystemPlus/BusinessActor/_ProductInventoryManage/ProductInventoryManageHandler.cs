@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-using OrderSystemPlus.DataAccessor;
+﻿using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Enums;
 using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Models.DataAccessor;
@@ -28,50 +26,65 @@ namespace OrderSystemPlus.BusinessActor
                 for (var i = 0; i < req.Count; i++)
                 {
                     var item = req[i];
-                    var currentInventory = (await _productInventoryRepository.FindByOptionsAsync(item.ProductId))
-                                                .Sum(s => s.Quantity);
+                    var currentQuantity = (await _productInventoryRepository.FindByOptionsAsync(item.ProductId))
+                                                .OrderByDescending(o => o.CreatedOn)
+                                                .ThenByDescending(o => o.Id)
+                                                .FirstOrDefault()
+                                                ?.TotalQuantity ?? 0;
 
                     if (item.Type == AdjustProductInventoryType.Decrease &&
-                        item.Quantity != 0)
+                        item.AdjustQuantity != 0)
                     {
-                        var calcInventory = currentInventory - Math.Abs(item.Quantity.Value);
-                        if (calcInventory < 0)
+                        var calcQuantity = currentQuantity - Math.Abs(item.AdjustQuantity.Value);
+                        if (calcQuantity < 0)
                             throw new Exception("Inventory < 0");
                         dtoList.Add(new ProductInventoryDto
                         {
                             ProductId = item.ProductId.Value,
-                            Quantity = -Math.Abs(item.Quantity.Value),
+                            PrevTotalQuantity = currentQuantity,
+                            AdjustQuantity = -Math.Abs(item.AdjustQuantity.Value),
+                            TotalQuantity = calcQuantity,
+                            AdjustProductInventoryType = AdjustProductInventoryType.Decrease,
+                            Description = item.Description + $"調整庫存: {currentQuantity}=>{calcQuantity}。",
                             CreatedOn = now,
                             UpdatedOn = now,
                             IsValid = true,
                         });
                     }
                     else if (item.Type == AdjustProductInventoryType.Force &&
-                        item.Quantity != currentInventory)
+                        item.AdjustQuantity != currentQuantity)
                     {
-                        var calcInventory = item.Quantity - currentInventory;
-                        if (item.Quantity < 0)
+                        var calcQuantity = item.AdjustQuantity - currentQuantity;
+                        if (item.AdjustQuantity < 0)
                             throw new Exception("Inventory < 0");
 
                         dtoList.Add(new ProductInventoryDto
                         {
                             ProductId = item.ProductId.Value,
-                            Quantity = calcInventory.Value,
+                            PrevTotalQuantity = currentQuantity,
+                            AdjustQuantity = calcQuantity.Value,
+                            AdjustProductInventoryType = AdjustProductInventoryType.Force,
+                            Description = item.Description + $"調整庫存: {currentQuantity}=>{calcQuantity}。",
+                            TotalQuantity = calcQuantity.Value,
                             CreatedOn = now,
                             UpdatedOn = now,
                             IsValid = true,
                         });
                     }
                     else if (item.Type == AdjustProductInventoryType.Increase &&
-                        item.Quantity != 0)
+                        item.AdjustQuantity != 0)
                     {
-                        var calcInventory = currentInventory + Math.Abs(item.Quantity.Value);
-                        if (calcInventory < 0)
+                        var calcQuantity = currentQuantity + Math.Abs(item.AdjustQuantity.Value);
+                        if (calcQuantity < 0)
                             throw new Exception("Inventory < 0");
                         dtoList.Add(new ProductInventoryDto
                         {
                             ProductId = item.ProductId.Value,
-                            Quantity = Math.Abs(item.Quantity.Value),
+                            PrevTotalQuantity = currentQuantity,
+                            AdjustQuantity = Math.Abs(item.AdjustQuantity.Value),
+                            Description = item.Description + $"調整庫存: {currentQuantity}=>{calcQuantity}。",
+                            AdjustProductInventoryType = AdjustProductInventoryType.Increase,
+                            TotalQuantity = calcQuantity,
                             CreatedOn = now,
                             UpdatedOn = now,
                             IsValid = true,
@@ -91,9 +104,12 @@ namespace OrderSystemPlus.BusinessActor
 
         public async Task<decimal?> GetProductInventoryInfoAsync(int? productId)
         {
-            var currentInventory = (await _productInventoryRepository.FindByOptionsAsync(productId))
-                                        .Sum(s => s.Quantity);
-            return currentInventory;
+            var currentQuantity = (await _productInventoryRepository.FindByOptionsAsync(productId))
+                                                .OrderByDescending(o => o.CreatedOn)
+                                                .ThenByDescending(o => o.Id)
+                                                .FirstOrDefault()
+                                                ?.TotalQuantity;
+            return currentQuantity;
         }
 
         public async Task<List<RspGetProductInventoryHistoryList>> GetProductInventoryHistoryListAsync(ReqGetProductInventoryHistoryList req)
@@ -102,7 +118,7 @@ namespace OrderSystemPlus.BusinessActor
                 .Select(s => new RspGetProductInventoryHistoryList
                 {
                     ProductId = s.ProductId,
-                    Quantity = s.Quantity,
+                    Quantity = s.AdjustQuantity,
                 }).ToList();
         }
     }

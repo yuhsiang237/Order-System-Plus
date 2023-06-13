@@ -16,14 +16,16 @@ namespace OrderSystemPlus.DataAccessor
 
             string sql = @"
                            SELECT
-                              [Id]
-                              ,[ProductId]
-                              ,[Quantity]
-                              ,[ActionType]
-                              ,[Description]
-                              ,[CreatedOn]
-                              ,[UpdatedOn]
-                              ,[IsValid]
+                                [Id]
+                                ,[ProductId]
+                                ,[AdjustQuantity]
+                                ,[PrevTotalQuantity]
+                                ,[TotalQuantity]
+                                ,[AdjustProductInventoryType]
+                                ,[Description]
+                                ,[CreatedOn]
+                                ,[UpdatedOn]
+                                ,[IsValid]
                            FROM [dbo].[ProductInventory]";
 
             var conditions = new List<string>
@@ -73,22 +75,26 @@ namespace OrderSystemPlus.DataAccessor
             var sql = @"
                 INSERT INTO [dbo].[ProductInventory]
                 (
-                  [ProductId]
-                  ,[Quantity]
-                  ,[Description]
-                  ,[ActionType]
-                  ,[CreatedOn]
-                  ,[UpdatedOn]
-                  ,[IsValid]
+                    [ProductId]
+                    ,[AdjustQuantity]
+                    ,[PrevTotalQuantity]
+                    ,[TotalQuantity]
+                    ,[AdjustProductInventoryType]
+                    ,[Description]
+                    ,[CreatedOn]
+                    ,[UpdatedOn]
+                    ,[IsValid]
                 ) VALUES
                 (
-                  @ProductId,
-                  @Quantity,
-                  @Description,
-                  @ActionType,
-                  @CreatedOn,
-                  @UpdatedOn,
-                  @IsValid
+                    @ProductId,
+                    @AdjustQuantity,
+                    @PrevTotalQuantity,
+                    @TotalQuantity,
+                    @AdjustProductInventoryType,
+                    @Description,
+                    @CreatedOn,
+                    @UpdatedOn,
+                    @IsValid
                 )
                 SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY];
                 ";

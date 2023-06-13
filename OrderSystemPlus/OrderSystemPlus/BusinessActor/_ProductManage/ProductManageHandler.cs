@@ -75,7 +75,8 @@ namespace OrderSystemPlus.BusinessActor
                 {
                     ProductId = productInsertResult[i],
                     Type  = AdjustProductInventoryType.Force,
-                    Quantity = req[i].Quantity,
+                    AdjustQuantity = req[i].Quantity,
+                    Description = "商品建立庫存。"
                 });
             }
             var inventoryResult = await _productInventoryControlHandler.HandleAsync(inventoryDtoList);
