@@ -25,7 +25,8 @@ namespace OrderSystemPlus.BusinessActor
             var data = await _productRepository.FindByOptionsAsync(null, null, null);
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ProductDto, RspGetProductList>();
+                cfg.CreateMap<ProductDto, RspGetProductList>()
+                   .ForMember(dest => dest.Quantity, opt => opt.Ignore());
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();

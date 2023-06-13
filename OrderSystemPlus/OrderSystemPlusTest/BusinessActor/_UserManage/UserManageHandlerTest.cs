@@ -63,6 +63,10 @@ namespace OrderSystemPlusTest.BusinessActor
             _userRepository.Setup(x => x.InsertAsync(It.IsAny<UserDto>()))
                 .ReturnsAsync(1);
 
+            _userRepository
+           .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
+           .ReturnsAsync(new List<UserDto> {});
+
             await _handler.HandleAsync(new ReqCreateUser
             {
                 Name = "userName",
@@ -70,6 +74,7 @@ namespace OrderSystemPlusTest.BusinessActor
                 Account = "TEST",
                 Password = "Test"
             });
+            _userRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
             _userRepository.Verify(x => x.InsertAsync(It.IsAny<UserDto>()), Times.Once());
         }
 

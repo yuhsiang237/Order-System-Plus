@@ -30,7 +30,8 @@ namespace OrderSystemPlusTest.BusinessActor
         public async Task ProductCreate()
         {
             _productRepository.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductDto>>()))
-                .ReturnsAsync(new List<int>());
+                .ReturnsAsync(new List<int> { 1 });
+            _productInventoryHandler.Setup(x => x.HandleAsync(It.IsAny<List<ReqUpdateProductInventory>>())).ReturnsAsync(true);
 
             await _handler.HandleAsync(new List<ReqCreateProduct>
             {
@@ -39,8 +40,10 @@ namespace OrderSystemPlusTest.BusinessActor
                     Name = "productName",
                     Description = "test",
                     Number = "TEST",
+                    Quantity = 50,
                 }
             });
+            _productInventoryHandler.Verify(x => x.HandleAsync(It.IsAny<List<ReqUpdateProductInventory>>()), Times.Once());
             _productRepository.Verify(x => x.InsertAsync(It.IsAny<IEnumerable<ProductDto>>()), Times.Once());
         }
 
