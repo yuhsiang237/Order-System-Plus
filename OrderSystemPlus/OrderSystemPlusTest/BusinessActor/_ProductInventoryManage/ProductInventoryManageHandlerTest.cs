@@ -8,6 +8,7 @@ using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.DataAccessor;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.Models.BusinessActor;
+using OrderSystemPlus.Enums;
 
 namespace OrderSystemPlusTest.BusinessActor
 {
@@ -24,82 +25,78 @@ namespace OrderSystemPlusTest.BusinessActor
         }
 
         [Fact]
+        public async Task GetProductInventoryHistoryListAsync()
+        {
+            _productInventoryRepository.Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<int?>()))
+               .ReturnsAsync(new List<ProductInventoryDto>
+            {
+                new ProductInventoryDto
+                {
+                    ProductId = 99999,
+                    AdjustQuantity = 50,
+                    Remark = "5",
+                    PrevTotalQuantity = 0,
+                    TotalQuantity = 50,
+                    AdjustProductInventoryType = AdjustProductInventoryType.Force,
+                }
+            });
+            await _handler.GetProductInventoryHistoryListAsync(new ReqGetProductInventoryHistoryList
+            {
+            });
+            _productInventoryRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<int?>()), Times.Once());
+        }
+
+        [Fact]
+        public async Task GetProductCurrentTotalQuantityAsync()
+        {
+            _productInventoryRepository.Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<int?>()))
+               .ReturnsAsync(new List<ProductInventoryDto>
+            {
+                new ProductInventoryDto
+                {
+                    ProductId = 99999,
+                    AdjustQuantity = 50,
+                    Remark = "5",
+                    PrevTotalQuantity = 0,
+                    TotalQuantity = 50,
+                    AdjustProductInventoryType = AdjustProductInventoryType.Force,
+                }
+            });
+            await _handler.GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
+            {
+            });
+            _productInventoryRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<int?>()), Times.Once());
+        }
+
+        [Fact]
         public async Task UpdateProductInventory()
         {
-            _productInventoryRepository.Setup(x => x.FindByOptionsAsync();
+            _productInventoryRepository.Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<int?>()))
+                .ReturnsAsync(new List<ProductInventoryDto>
+            {
+                new ProductInventoryDto
+                {
+                    ProductId = 99999,
+                    AdjustQuantity = 50,
+                    Remark = "5",
+                    AdjustProductInventoryType = AdjustProductInventoryType.Force,
+                }
+            });
+            _productInventoryRepository.Setup(x => x.InsertAsync(It.IsAny<List<ProductInventoryDto>>()))
+                .ReturnsAsync(new List<int> { 1 });
 
             await _handler.HandleAsync(new List<ReqUpdateProductInventory>
             {
                 new ReqUpdateProductInventory
                 {
+                    ProductId = 99999,
+                    AdjustQuantity = 50,
+                    Description = "5",
+                    Type = AdjustProductInventoryType.Force,
                 }
             });
-            _productInventoryHandler.Verify(x => x.HandleAsync(It.IsAny<List<ReqUpdateProductInventory>>()), Times.Once());
-            _productInventoryRepository.Verify(x => x.InsertAsync(It.IsAny<IEnumerable<ProductDto>>()), Times.Once());
-        }
-
-        [Fact]
-        public async Task GetProductListAsync()
-        {
-            _productInventoryRepository
-            .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
-            .ReturnsAsync(new List<ProductDto> {
-                new ProductDto{
-                    Name = "Test",
-                    Description = "Test",
-                    Number = "TEST",
-                }});
-
-            var rsp = await _handler.GetProductListAsync(new ReqGetProductList { });
-            _productInventoryRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
-        }
-
-        public async Task GetProductInfoAsync()
-        {
-            _productInventoryRepository
-            .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
-            .ReturnsAsync(new List<ProductDto> {
-                new ProductDto{
-                    Name = "Test",
-                    Description = "Test",
-                    Number = "TEST",
-                }});
-
-            var rsp = await _handler.GetProductInfoAsync(new ReqGetProductInfo { });
-            _productInventoryRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
-        }
-
-        [Fact]
-        public async Task ProductUpdate()
-        {
-            _productInventoryRepository.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductDto>>()))
-            .ReturnsAsync(new List<int>());
-
-            await _handler.HandleAsync(new List<ReqUpdateProduct>
-            {
-                new ReqUpdateProduct
-                {
-                    Id = 1,
-                    Name = "productName",
-                    Description = "test",
-                    Number = "TEST",
-                }
-            });
-            _productInventoryRepository.Verify(x => x.UpdateAsync(It.IsAny<IEnumerable<ProductDto>>()), Times.Once());
-        }
-
-        [Fact]
-        public async Task ProductDelete()
-        {
-            _productInventoryRepository.Setup(x => x.DeleteAsync(It.IsAny<IEnumerable<ProductDto>>()));
-            await _handler.HandleAsync(new List<ReqDeleteProduct>
-            {
-                new ReqDeleteProduct
-                {
-                    Id = 1,
-                }
-            });
-            _productInventoryRepository.Verify(x => x.DeleteAsync(It.IsAny<IEnumerable<ProductDto>>()), Times.Once());
+            _productInventoryRepository.Verify(x => x.InsertAsync(It.IsAny<List<ProductInventoryDto>>()), Times.Once());
+            _productInventoryRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<int?>()), Times.Once());
         }
     }
 }

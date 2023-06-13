@@ -9,7 +9,7 @@ using FluentAssertions;
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.DataAccessor;
 
-namespace OrderSystemPlusTest.DataAccessorquery
+namespace OrderSystemPlusTest.DataAccessor
 {
     public class ProductTypeDataAccessorTest
     {
