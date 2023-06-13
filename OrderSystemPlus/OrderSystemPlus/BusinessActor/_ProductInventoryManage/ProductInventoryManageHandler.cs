@@ -31,19 +31,20 @@ namespace OrderSystemPlus.BusinessActor
                         ProductId = req[i].ProductId.Value
                     }));
 
-                    if (item.Type == AdjustProductInventoryType.Decrease &&
+                    if (item.Type == AdjustProductInventoryType.IncreaseDecrease &&
                         item.AdjustQuantity != 0)
                     {
-                        var calcQuantity = currentQuantity - Math.Abs(item.AdjustQuantity.Value);
+                        var calcQuantity = currentQuantity + item.AdjustQuantity.Value;
                         if (calcQuantity < 0)
                             throw new Exception("Inventory < 0");
+
                         dtoList.Add(new ProductInventoryDto
                         {
                             ProductId = item.ProductId.Value,
                             PrevTotalQuantity = currentQuantity,
-                            AdjustQuantity = -Math.Abs(item.AdjustQuantity.Value),
+                            AdjustQuantity = item.AdjustQuantity.Value,
                             TotalQuantity = calcQuantity,
-                            AdjustProductInventoryType = AdjustProductInventoryType.Decrease,
+                            AdjustProductInventoryType = AdjustProductInventoryType.IncreaseDecrease,
                             Remark = item.Description + $"調整庫存: {currentQuantity}=>{calcQuantity}。",
                             CreatedOn = now,
                             UpdatedOn = now,
@@ -70,25 +71,6 @@ namespace OrderSystemPlus.BusinessActor
                             IsValid = true,
                         });
                     }
-                    else if (item.Type == AdjustProductInventoryType.Increase &&
-                        item.AdjustQuantity != 0)
-                    {
-                        var calcQuantity = currentQuantity + Math.Abs(item.AdjustQuantity.Value);
-                        if (calcQuantity < 0)
-                            throw new Exception("Inventory < 0");
-                        dtoList.Add(new ProductInventoryDto
-                        {
-                            ProductId = item.ProductId.Value,
-                            PrevTotalQuantity = currentQuantity,
-                            AdjustQuantity = Math.Abs(item.AdjustQuantity.Value),
-                            Remark = item.Description + $"調整庫存: {currentQuantity}=>{calcQuantity}。",
-                            AdjustProductInventoryType = AdjustProductInventoryType.Increase,
-                            TotalQuantity = calcQuantity,
-                            CreatedOn = now,
-                            UpdatedOn = now,
-                            IsValid = true,
-                        });
-                    }
                 }
 
                 await _productInventoryRepository.InsertAsync(dtoList);
@@ -107,7 +89,7 @@ namespace OrderSystemPlus.BusinessActor
                                                 .OrderByDescending(o => o.CreatedOn)
                                                 .ThenByDescending(o => o.Id)
                                                 .FirstOrDefault()
-                                                ?.TotalQuantity;
+                                                ?.TotalQuantity ?? 0;
             return currentQuantity;
         }
 
