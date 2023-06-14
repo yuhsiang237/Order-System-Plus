@@ -95,14 +95,15 @@ namespace OrderSystemPlus.BusinessActor
             var productTypeRelationshipDtoList = new List<ProductTypeRelationshipDto>();
             for (var i = 0; i < productIds.Count; i++)
             {
-                productTypeRelationshipDtoList.AddRange(
-                req[i].ProductTypeIds.Select(productTypeId =>
-                    new ProductTypeRelationshipDto
-                    {
-                        ProductId = productIds[i],
-                        ProductTypeId = productTypeId,
-                    }).ToList()
-                );
+                var ProductTypeIds =
+                 req[i].ProductTypeIds?.Select(productTypeId =>
+                     new ProductTypeRelationshipDto
+                     {
+                         ProductId = productIds[i],
+                         ProductTypeId = productTypeId,
+                     }).ToList() ?? new List<ProductTypeRelationshipDto>();
+
+                productTypeRelationshipDtoList.AddRange(ProductTypeIds);
             }
             await _productTypeRelationshipRepository.RefreshAsync(productTypeRelationshipDtoList);
             var inventoryDtoList = new List<ReqUpdateProductInventory>();
@@ -137,14 +138,15 @@ namespace OrderSystemPlus.BusinessActor
             var productTypeRelationshipDtoList = new List<ProductTypeRelationshipDto>();
             for (var i = 0; i < dtoList.Count; i++)
             {
-                productTypeRelationshipDtoList.AddRange(
-                req[i].ProductTypeIds.Select(productTypeId =>
+                var ProductTypeIds =
+                req[i].ProductTypeIds?.Select(productTypeId =>
                     new ProductTypeRelationshipDto
                     {
                         ProductId = dtoList[i].Id,
                         ProductTypeId = productTypeId,
-                    }).ToList()
-                );
+                    }).ToList() ?? new List<ProductTypeRelationshipDto>();
+
+                productTypeRelationshipDtoList.AddRange(ProductTypeIds);
             }
             await _productRepository.UpdateAsync(dtoList);
             await _productTypeRelationshipRepository.RefreshAsync(productTypeRelationshipDtoList);

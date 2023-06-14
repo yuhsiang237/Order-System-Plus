@@ -21,6 +21,7 @@ namespace OrderSystemPlusTest.BusinessActor
         public ProductManageHandlerTest()
         {
             _productRepository = new Mock<IProductRepository>();
+            _productTypeRelationshipRepository = new Mock<IProductTypeRelationshipRepository>();
             _productInventoryHandler = new Mock<IProductInventoryManageHandler>();
             _handler = new ProductManageHandler(
               _productInventoryHandler.Object,
@@ -34,6 +35,8 @@ namespace OrderSystemPlusTest.BusinessActor
             _productRepository.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductDto>>()))
                 .ReturnsAsync(new List<int> { 1 });
             _productInventoryHandler.Setup(x => x.HandleAsync(It.IsAny<List<ReqUpdateProductInventory>>())).ReturnsAsync(true);
+            _productTypeRelationshipRepository.Setup(x => x.RefreshAsync(It.IsAny<IEnumerable<ProductTypeRelationshipDto>>())).ReturnsAsync(true);
+
 
             await _handler.HandleAsync(new List<ReqCreateProduct>
             {
@@ -43,8 +46,10 @@ namespace OrderSystemPlusTest.BusinessActor
                     Description = "test",
                     Number = "TEST",
                     Quantity = 50,
+                    ProductTypeIds = new List<int?>{1}
                 }
             });
+            _productTypeRelationshipRepository.Verify(x => x.RefreshAsync(It.IsAny<IEnumerable<ProductTypeRelationshipDto>>()), Times.Once());
             _productInventoryHandler.Verify(x => x.HandleAsync(It.IsAny<List<ReqUpdateProductInventory>>()), Times.Once());
             _productRepository.Verify(x => x.InsertAsync(It.IsAny<IEnumerable<ProductDto>>()), Times.Once());
         }
@@ -56,12 +61,24 @@ namespace OrderSystemPlusTest.BusinessActor
             .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
             .ReturnsAsync(new List<ProductDto> {
                 new ProductDto{
+                    Id = 1,
                     Name = "Test",
                     Description = "Test",
                     Number = "TEST",
                 }});
+            _productTypeRelationshipRepository.Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<int?>()))
+            .ReturnsAsync(new List<ProductTypeRelationshipDto>
+            {
+                new ProductTypeRelationshipDto
+                {
+                    ProductId = 1,
+                    ProductTypeId = 1
+                }
+            });
 
             var rsp = await _handler.GetProductListAsync(new ReqGetProductList { });
+
+            _productTypeRelationshipRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<int?>()), Times.Once());
             _productRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
         }
 
@@ -85,6 +102,7 @@ namespace OrderSystemPlusTest.BusinessActor
         {
             _productRepository.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductDto>>()))
             .ReturnsAsync(new List<int>());
+            _productTypeRelationshipRepository.Setup(x => x.RefreshAsync(It.IsAny<IEnumerable<ProductTypeRelationshipDto>>())).ReturnsAsync(true);
 
             await _handler.HandleAsync(new List<ReqUpdateProduct>
             {
@@ -96,6 +114,7 @@ namespace OrderSystemPlusTest.BusinessActor
                     Number = "TEST",
                 }
             });
+            _productTypeRelationshipRepository.Verify(x => x.RefreshAsync(It.IsAny<IEnumerable<ProductTypeRelationshipDto>>()), Times.Once());
             _productRepository.Verify(x => x.UpdateAsync(It.IsAny<IEnumerable<ProductDto>>()), Times.Once());
         }
 

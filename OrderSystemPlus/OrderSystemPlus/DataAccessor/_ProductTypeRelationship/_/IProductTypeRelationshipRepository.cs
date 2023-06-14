@@ -9,7 +9,7 @@ namespace OrderSystemPlus.DataAccessor
         /// </summary>
         /// <param name="commands"></param>
         /// <returns></returns>
-        Task<List<int>> RefreshAsync(IEnumerable<ProductTypeRelationshipDto> model);
+        Task<bool> RefreshAsync(IEnumerable<ProductTypeRelationshipDto> model);
 
         /// <summary>
         /// 查詢ProductTypeRelationship資料們
