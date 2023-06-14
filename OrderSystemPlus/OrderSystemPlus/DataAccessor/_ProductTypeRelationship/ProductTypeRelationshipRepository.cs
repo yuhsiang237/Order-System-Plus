@@ -44,9 +44,8 @@ namespace OrderSystemPlus.DataAccessor
 
             return result;
         }
-        public async Task<List<int>> RefreshAsync(IEnumerable<ProductTypeRelationshipDto> model)
+        public async Task<bool> RefreshAsync(IEnumerable<ProductTypeRelationshipDto> model)
         {
-            var result = new List<int>();
             using (var ts = new TransactionScope())
             {
                 using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
@@ -55,12 +54,11 @@ namespace OrderSystemPlus.DataAccessor
                         Delete(item, conn);
 
                     Insert(model, conn);
-
                     ts.Complete();
                 }
             }
 
-            return await Task.FromResult(result);
+            return await Task.FromResult(true);
         }
 
         private int Insert(IEnumerable<ProductTypeRelationshipDto> command, IDbConnection cn)
