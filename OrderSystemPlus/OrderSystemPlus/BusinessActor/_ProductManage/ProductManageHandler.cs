@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-
+using System.Transactions;
 using AutoMapper;
 
 using OrderSystemPlus.DataAccessor;
@@ -91,6 +91,7 @@ namespace OrderSystemPlus.BusinessActor
                 IsValid = true,
             }).ToList();
 
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             var productIds = await _productRepository.InsertAsync(dtoList);
             var productTypeRelationshipDtoList = new List<ProductTypeRelationshipDto>();
             for (var i = 0; i < productIds.Count; i++)
@@ -105,7 +106,10 @@ namespace OrderSystemPlus.BusinessActor
 
                 productTypeRelationshipDtoList.AddRange(ProductTypeIds);
             }
-            await _productTypeRelationshipRepository.RefreshAsync(productTypeRelationshipDtoList);
+            var productTypeRelationshipResult = await _productTypeRelationshipRepository.RefreshAsync(productTypeRelationshipDtoList);
+            if (productTypeRelationshipResult == false)
+                throw new Exception("productTypeRelationshipResult Error");
+
             var inventoryDtoList = new List<ReqUpdateProductInventory>();
             for (var i = 0; i < productIds.Count; i++)
             {
@@ -120,6 +124,8 @@ namespace OrderSystemPlus.BusinessActor
             var inventoryResult = await _productInventoryControlHandler.HandleAsync(inventoryDtoList);
             if (inventoryResult == false)
                 throw new Exception("AdjustProductInventoryAsync Error");
+
+            scope.Complete();
         }
 
         public async Task HandleAsync(List<ReqUpdateProduct> req)
@@ -135,6 +141,7 @@ namespace OrderSystemPlus.BusinessActor
                 UpdatedOn = now,
             }).ToList();
 
+            using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             var productTypeRelationshipDtoList = new List<ProductTypeRelationshipDto>();
             for (var i = 0; i < dtoList.Count; i++)
             {
@@ -149,7 +156,10 @@ namespace OrderSystemPlus.BusinessActor
                 productTypeRelationshipDtoList.AddRange(ProductTypeIds);
             }
             await _productRepository.UpdateAsync(dtoList);
-            await _productTypeRelationshipRepository.RefreshAsync(productTypeRelationshipDtoList);
+            var productTypeRelationshipResult = await _productTypeRelationshipRepository.RefreshAsync(productTypeRelationshipDtoList);
+            if (productTypeRelationshipResult == false)
+                throw new Exception("productTypeRelationshipResult Error");
+            scope.Complete();
         }
 
         public async Task HandleAsync(List<ReqDeleteProduct> req)
