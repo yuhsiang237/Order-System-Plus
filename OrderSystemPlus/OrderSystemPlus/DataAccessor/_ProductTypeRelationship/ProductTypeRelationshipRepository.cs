@@ -13,7 +13,6 @@ namespace OrderSystemPlus.DataAccessor
     {
         public async Task<List<ProductTypeRelationshipDto>> FindByOptionsAsync(int? productId = null, int? productTypeId = null)
         {
-
             string sql = @"
                            SELECT
                                 [ProductId],
@@ -61,7 +60,7 @@ namespace OrderSystemPlus.DataAccessor
             return await Task.FromResult(true);
         }
 
-        private int Insert(IEnumerable<ProductTypeRelationshipDto> command, IDbConnection cn)
+        private void Insert(IEnumerable<ProductTypeRelationshipDto> command, IDbConnection cn)
         {
             var sql = @"
                 INSERT INTO [dbo].[ProductTypeRelationship]
@@ -74,7 +73,7 @@ namespace OrderSystemPlus.DataAccessor
                     @ProductTypeId
                 )
                 ";
-            return cn.Execute(sql, command);
+            cn.Execute(sql, command);
         }
 
         private void Delete(ProductTypeRelationshipDto command, IDbConnection cn)
