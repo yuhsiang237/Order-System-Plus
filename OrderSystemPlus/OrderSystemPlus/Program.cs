@@ -52,7 +52,9 @@ void AddRepository()
           .AddSingleton<IUserRepository, UserRepository>()
           .AddSingleton<IProductRepository, ProductRepository>()
           .AddSingleton<IProductInventoryRepository, ProductInventoryRepository>()
-          .AddSingleton<IProductTypeRepository, ProductTypeRepository>();
+          .AddSingleton<IProductTypeRepository, ProductTypeRepository>()
+          .AddSingleton<IProductTypeRelationshipRepository, ProductTypeRelationshipRepository>();
+
 }
 
 // Custom DI

@@ -11,7 +11,7 @@
         /// <summary>
         /// 產品類別Ids
         /// </summary>
-        public List<int> ProductTypeIds { get; set; }
+        public List<int?> ProductTypeIds { get; set; }
         /// <summary>
         /// 產品編號
         /// </summary>

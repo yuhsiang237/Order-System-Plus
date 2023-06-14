@@ -15,7 +15,7 @@
         /// <summary>
         /// 產品類別
         /// </summary>
-        public List<int> ProductTypeIds { get; set; }
+        public List<int?> ProductTypeIds { get; set; }
 
         /// <summary>
         /// 產品價格

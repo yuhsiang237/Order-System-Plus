@@ -32,5 +32,10 @@
         /// 數量
         /// </summary>
         public decimal? Quantity { get; set; }
+
+        /// <summary>
+        /// 產品類別
+        /// </summary>
+        public List<int?> ProductTypeIds { get; set; }
     }
 }
