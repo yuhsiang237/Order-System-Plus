@@ -16,6 +16,7 @@ namespace OrderSystemPlusTest.BusinessActor
         private IProductManageHandler _handler;
         private readonly Mock<IProductRepository> _productRepository;
         private readonly Mock<IProductInventoryManageHandler> _productInventoryHandler;
+        private readonly Mock<IProductTypeRelationshipRepository> _productTypeRelationshipRepository;
 
         public ProductManageHandlerTest()
         {
@@ -23,7 +24,8 @@ namespace OrderSystemPlusTest.BusinessActor
             _productInventoryHandler = new Mock<IProductInventoryManageHandler>();
             _handler = new ProductManageHandler(
               _productInventoryHandler.Object,
-              _productRepository.Object);
+              _productRepository.Object,
+              _productTypeRelationshipRepository.Object);
         }
 
         [Fact]

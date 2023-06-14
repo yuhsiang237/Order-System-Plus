@@ -44,26 +44,26 @@ namespace OrderSystemPlus.DataAccessor
 
             return result;
         }
-        public async Task<List<int>> InsertAsync(IEnumerable<ProductTypeRelationshipDto> model)
+        public async Task<List<int>> RefreshAsync(IEnumerable<ProductTypeRelationshipDto> model)
         {
             var result = new List<int>();
             using (var ts = new TransactionScope())
             {
                 using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
                 {
-                    result = model
-                        .Select(s => InsertAsync(s, conn))
-                        .ToList();
+                    foreach (var item in model)
+                        Delete(item, conn);
 
-                    if (!result.Any(a => a == 0))
-                        ts.Complete();
+                    Insert(model, conn);
+
+                    ts.Complete();
                 }
             }
 
             return await Task.FromResult(result);
         }
 
-        private int InsertAsync(ProductTypeRelationshipDto command, IDbConnection cn)
+        private int Insert(IEnumerable<ProductTypeRelationshipDto> command, IDbConnection cn)
         {
             var sql = @"
                 INSERT INTO [dbo].[ProductTypeRelationship]
@@ -75,36 +75,24 @@ namespace OrderSystemPlus.DataAccessor
                     @ProductId,
                     @ProductTypeId
                 )
-                SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY];
                 ";
-            return cn.ExecuteScalar<int>(sql, command);
+            return cn.Execute(sql, command);
         }
 
-        public async Task DeleteAsync(ProductTypeRelationshipDto model)
+        private void Delete(ProductTypeRelationshipDto command, IDbConnection cn)
         {
             var sql = @"
-                UPDATE [dbo].[ProductTypeRelationship]
-                SET 
-                    [IsValid] = 0,
-                    [UpdatedOn] = @UpdatedOn
-
+                DELETE FROM [dbo].[ProductTypeRelationship]
                 ";
-            var conditions = new List<string>
-            {
-            };
+            var conditions = new List<string> { };
 
-            if (model.ProductId.HasValue)
+            if (command.ProductId.HasValue)
                 conditions.Add("[ProductId] = @ProductId");
-            if (model.ProductTypeId.HasValue)
-                conditions.Add("[ProductTypeId] = @ProductTypeId");
 
             if (conditions.Any())
                 sql = string.Concat(sql, $" WHERE {string.Join(" AND ", conditions)}");
 
-            using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
-            {
-                await conn.ExecuteAsync(sql, model);
-            }
+            cn.Execute(sql, command);
         }
     }
 }

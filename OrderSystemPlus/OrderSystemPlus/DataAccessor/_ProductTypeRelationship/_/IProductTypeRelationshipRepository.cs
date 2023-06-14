@@ -5,18 +5,11 @@ namespace OrderSystemPlus.DataAccessor
     public interface IProductTypeRelationshipRepository
     {
         /// <summary>
-        /// 刪除ProductTypeRelationship資料們
+        /// 重建ProductTypeRelationship資料們
         /// </summary>
         /// <param name="commands"></param>
         /// <returns></returns>
-        Task DeleteAsync(ProductTypeRelationshipDto model);
-
-        /// <summary>
-        /// 新增ProductTypeRelationship資料們
-        /// </summary>
-        /// <param name="commands"></param>
-        /// <returns></returns>
-        Task<List<int>> InsertAsync(IEnumerable<ProductTypeRelationshipDto> model);
+        Task<List<int>> RefreshAsync(IEnumerable<ProductTypeRelationshipDto> model);
 
         /// <summary>
         /// 查詢ProductTypeRelationship資料們

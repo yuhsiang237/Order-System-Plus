@@ -6,7 +6,7 @@
     public class ProductDto
     {
         /// <summary>
-        /// ID
+        /// Product ID
         /// </summary>
         public int Id { get; set; }
 
