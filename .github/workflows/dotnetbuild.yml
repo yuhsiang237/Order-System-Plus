@@ -1,0 +1,32 @@
+name: .NET Core Build Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    # use ubuntu for more build minutes
+    runs-on: ubuntu-latest
+    # use release mode for all steps
+    env:
+      config: 'Release'
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'  
+
+      # Install dependencies 
+    - name: Install dependencies
+      working-directory: ./OrderSystemPlus
+      run: dotnet restore
+
+      # Build project
+    - name: Build
+      working-directory: ./OrderSystemPlus
+      run: dotnet build
