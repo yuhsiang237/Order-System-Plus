@@ -21,12 +21,23 @@ jobs:
       with:
         dotnet-version: '6.0.x'  
 
-      # Install dependencies 
-    - name: Install dependencies
+      # Install project dependencies 
+    - name: Install project dependencies
       working-directory: ./OrderSystemPlus/OrderSystemPlus
       run: dotnet restore
 
       # Build project
-    - name: Build
+    - name: Build project
       working-directory: ./OrderSystemPlus/OrderSystemPlus
       run: dotnet build
+      
+      # Install test project dependencies 
+    - name:  Install test project dependencies
+      working-directory: ./OrderSystemPlus/OrderSystemPlusTest
+      run: dotnet restore
+      
+      # Test test project (Only BusinessActor)
+    - name: Build project
+      working-directory: ./OrderSystemPlus/OrderSystemPlusTest
+      run: dotnet test --filter FullyQualifiedName~OrderSystemPlusTest.BusinessActor
+    
