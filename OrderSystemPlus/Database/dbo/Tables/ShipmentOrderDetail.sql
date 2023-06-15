@@ -1,15 +1,17 @@
 ﻿CREATE TABLE [dbo].[ShipmentOrderDetail] (
-    [OrderNumber]   VARCHAR(100)             NOT NULL,
-    [ProductId]     INT             NULL,
-    [ProductNumber] NVARCHAR (100)  NULL,
-    [ProductName]   NVARCHAR (100)  NULL,
-    [ProductPrice]  DECIMAL (18, 4) NULL,
-    [ProductQuantity]   DECIMAL (18, 4) NULL,
-    [Remarks]       NVARCHAR (500)  NULL,
-    [CreatedOn]     DATETIME    NOT NULL,
-    [UpdatedOn]     DATETIME    NOT NULL,
-    [IsValid]     BIT             NOT NULL
+    [OrderNumber]     VARCHAR (100)   NOT NULL,
+    [ProductId]       INT             NULL,
+    [ProductNumber]   NVARCHAR (100)  NULL,
+    [ProductName]     NVARCHAR (100)  NULL,
+    [ProductPrice]    DECIMAL (18, 4) NULL,
+    [ProductQuantity] DECIMAL (18, 4) NULL,
+    [Remarks]         NVARCHAR (500)  NULL,
+    [CreatedOn]       DATETIME        NOT NULL,
+    [UpdatedOn]       DATETIME        NOT NULL,
+    [IsValid]         BIT             NOT NULL
 );
+
+
 
 
 GO
@@ -102,3 +104,7 @@ EXEC sp_addextendedproperty @name = N'MS_Description',
     @level1name = N'ShipmentOrderDetail',
     @level2type = N'COLUMN',
     @level2name = N'IsValid'
+GO
+CREATE NONCLUSTERED INDEX [IX_ShipmentOrderDetail]
+    ON [dbo].[ShipmentOrderDetail]([OrderNumber] ASC);
+
