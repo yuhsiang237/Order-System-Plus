@@ -37,7 +37,7 @@ jobs:
       run: dotnet restore
       
       # Test test project (Only BusinessActor)
-    - name: Build project
+    - name: Test test project
       working-directory: ./OrderSystemPlus/OrderSystemPlusTest
       run: dotnet test --filter FullyQualifiedName~OrderSystemPlusTest.BusinessActor
     
