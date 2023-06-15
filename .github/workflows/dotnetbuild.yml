@@ -23,10 +23,10 @@ jobs:
 
       # Install dependencies 
     - name: Install dependencies
-      working-directory: ./OrderSystemPlus
+      working-directory: ./OrderSystemPlus/OrderSystemPlus
       run: dotnet restore
 
       # Build project
     - name: Build
-      working-directory: ./OrderSystemPlus
+      working-directory: ./OrderSystemPlus/OrderSystemPlus
       run: dotnet build
