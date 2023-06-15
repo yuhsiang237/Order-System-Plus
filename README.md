@@ -1,5 +1,5 @@
 # Order-System-Plus
-![example workflow](https://github.com/yuhsiang237/Order-System-Plus/actions/workflows/dotnetbuild.yml/badge.svg)
+![example workflow](https://github.com/yuhsiang237/Order-System-Plus/actions/workflows/dotnet-build.yml/badge.svg)
 
 The Order System Plus is builded by front-end and back-end separation. The frontend is Vue3 with Typescript, and the backend is .NET Core API, which contains unit test to assist system work correctly.
 
