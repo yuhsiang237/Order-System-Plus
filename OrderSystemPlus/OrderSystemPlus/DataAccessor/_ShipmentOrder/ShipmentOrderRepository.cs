@@ -53,6 +53,7 @@ namespace OrderSystemPlus.DataAccessor
 
             return result;
         }
+
         public async Task UpdateAsync(IEnumerable<ShipmentOrderDto> model)
         {
             var sql = @"
@@ -87,6 +88,7 @@ namespace OrderSystemPlus.DataAccessor
                     foreach (var item in model)
                     {
                         InsertAsync(item, conn);
+                        InsertDetailAsync(item.Details, conn);
                     }
                 }
                 ts.Complete();
@@ -132,11 +134,44 @@ namespace OrderSystemPlus.DataAccessor
             var count = cn.Execute(sql, command);
             if (count != 1) { throw new Exception("InsertAsync"); }
         }
+
+        private void InsertDetailAsync(List<ShipmentOrderDetailDto> command, IDbConnection cn)
+        {
+            var sql = @"
+                INSERT INTO [dbo].[ShipmentOrderDetail]
+                (
+                    [OrderNumber]
+                    ,[ProductId]
+                    ,[ProductNumber]
+                    ,[ProductName]
+                    ,[ProductPrice]
+                    ,[ProductQuantity]
+                    ,[Remarks]
+                    ,[CreatedOn]
+                    ,[UpdatedOn]
+                    ,[IsValid]
+                ) VALUES
+                (
+                    @OrderNumber
+                    ,@ProductId
+                    ,@ProductNumber
+                    ,@ProductName
+                    ,@ProductPrice
+                    ,@ProductQuantity
+                    ,@Remarks
+                    ,@CreatedOn
+                    ,@UpdatedOn
+                    ,@IsValid
+                );
+                ";
+            var count = cn.Execute(sql, command);
+            if (count != command.Count) { throw new Exception("InsertDetailAsync"); }
+        }
         public async Task DeleteAsync(IEnumerable<ShipmentOrderDto> model)
         {
             var sql = @"
                 UPDATE [dbo].[ShipmentOrder]
-                SET 
+                SET
                     [IsValid] = 0,
                     [UpdatedOn] = @UpdatedOn
                 WHERE

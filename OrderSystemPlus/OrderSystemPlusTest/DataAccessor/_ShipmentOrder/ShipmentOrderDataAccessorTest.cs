@@ -40,7 +40,7 @@ namespace OrderSystemPlusTest.DataAccessor
             insertResult.First().DeliveryDate.Should().Be(GetInsertModel().DeliveryDate);
             insertResult.First().Address.Should().Be(GetInsertModel().Address);
             insertResult.First().Remark.Should().Be(GetInsertModel().Remark);
-
+            
             await _repository.UpdateAsync(new List<ShipmentOrderDto> { GetUpdateModel() });
             var updateResult = await _repository.FindByOptionsAsync(GetUpdateModel().OrderNumber);
             updateResult.First().OrderNumber.Should().Be(GetUpdateModel().OrderNumber);
@@ -72,6 +72,22 @@ namespace OrderSystemPlusTest.DataAccessor
                     DeliveryDate = new DateTime(2023, 07, 16),
                     Address = "OO市OO區OO路",
                     Remark = "備註",
+                    Details = new List<ShipmentOrderDetailDto>
+                    {
+                        new ShipmentOrderDetailDto
+                        {
+                            OrderNumber = _orderNumber,
+                            ProductId = 3,
+                            ProductNumber = "TEST",
+                            ProductName = "TESTNAME",
+                            ProductPrice= 300,
+                            ProductQuantity = 53,
+                            Remarks = "備註",
+                            CreatedOn = new DateTime(2023, 06, 16),
+                            UpdatedOn = new DateTime(2023, 06, 16),
+                            IsValid = true,
+                        }
+                    },
                     IsValid = true,
                     CreatedOn = _now,
                     UpdatedOn = _now,
