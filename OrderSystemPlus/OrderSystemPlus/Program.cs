@@ -53,6 +53,7 @@ void AddRepository()
           .AddSingleton<IProductRepository, ProductRepository>()
           .AddSingleton<IProductInventoryRepository, ProductInventoryRepository>()
           .AddSingleton<IProductTypeRepository, ProductTypeRepository>()
+                    .AddSingleton<IShipmentOrderRepository, ShipmentOrderRepository>()
           .AddSingleton<IProductTypeRelationshipRepository, ProductTypeRelationshipRepository>();
 
 }
