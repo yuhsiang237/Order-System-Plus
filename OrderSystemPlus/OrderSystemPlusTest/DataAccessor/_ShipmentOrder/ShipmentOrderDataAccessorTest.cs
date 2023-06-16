@@ -40,7 +40,16 @@ namespace OrderSystemPlusTest.DataAccessor
             insertResult.First().DeliveryDate.Should().Be(GetInsertModel().DeliveryDate);
             insertResult.First().Address.Should().Be(GetInsertModel().Address);
             insertResult.First().Remark.Should().Be(GetInsertModel().Remark);
-            
+
+            var insertDetailResult = insertResult.First().Details.First();
+            insertDetailResult.OrderNumber.Should().Be(GetInsertModel().Details.First().OrderNumber);
+            insertDetailResult.ProductId.Should().Be(GetInsertModel().Details.First().ProductId);
+            insertDetailResult.ProductNumber.Should().Be(GetInsertModel().Details.First().ProductNumber);
+            insertDetailResult.ProductName.Should().Be(GetInsertModel().Details.First().ProductName);
+            insertDetailResult.ProductPrice.Should().Be(GetInsertModel().Details.First().ProductPrice);
+            insertDetailResult.ProductQuantity.Should().Be(GetInsertModel().Details.First().ProductQuantity);
+            insertDetailResult.Remarks.Should().Be(GetInsertModel().Details.First().Remarks);
+
             await _repository.UpdateAsync(new List<ShipmentOrderDto> { GetUpdateModel() });
             var updateResult = await _repository.FindByOptionsAsync(GetUpdateModel().OrderNumber);
             updateResult.First().OrderNumber.Should().Be(GetUpdateModel().OrderNumber);
@@ -53,6 +62,15 @@ namespace OrderSystemPlusTest.DataAccessor
             updateResult.First().DeliveryDate.Should().Be(GetUpdateModel().DeliveryDate);
             updateResult.First().Address.Should().Be(GetUpdateModel().Address);
             updateResult.First().Remark.Should().Be(GetUpdateModel().Remark);
+
+            var updateDetailResult = updateResult.First().Details.First();
+            updateDetailResult.OrderNumber.Should().Be(GetUpdateModel().Details.First().OrderNumber);
+            updateDetailResult.ProductId.Should().Be(GetUpdateModel().Details.First().ProductId);
+            updateDetailResult.ProductNumber.Should().Be(GetUpdateModel().Details.First().ProductNumber);
+            updateDetailResult.ProductName.Should().Be(GetUpdateModel().Details.First().ProductName);
+            updateDetailResult.ProductPrice.Should().Be(GetUpdateModel().Details.First().ProductPrice);
+            updateDetailResult.ProductQuantity.Should().Be(GetUpdateModel().Details.First().ProductQuantity);
+            updateDetailResult.Remarks.Should().Be(GetUpdateModel().Details.First().Remarks);
 
             await _repository.DeleteAsync(new List<ShipmentOrderDto> { GetDeleteModel() });
             var deleteResult = await _repository.FindByOptionsAsync(_orderNumber);
@@ -106,6 +124,22 @@ namespace OrderSystemPlusTest.DataAccessor
                     DeliveryDate = new DateTime(2023, 07, 16),
                     Address = "OO市OO區OO路",
                     Remark = "備註",
+                    Details = new List<ShipmentOrderDetailDto>
+                    {
+                        new ShipmentOrderDetailDto
+                        {
+                            OrderNumber = _orderNumber,
+                            ProductId = 65,
+                            ProductNumber = "TEST",
+                            ProductName = "TESTNAME",
+                            ProductPrice= 30,
+                            ProductQuantity = 5,
+                            Remarks = "備註",
+                            CreatedOn = new DateTime(2023, 06, 16),
+                            UpdatedOn = new DateTime(2023, 06, 16),
+                            IsValid = true,
+                        }
+                    },
                     IsValid = true,
                     UpdatedOn = _now,
                 };

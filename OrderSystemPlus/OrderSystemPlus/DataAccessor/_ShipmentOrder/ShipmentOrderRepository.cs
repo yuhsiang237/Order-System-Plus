@@ -51,6 +51,40 @@ namespace OrderSystemPlus.DataAccessor
                 })).ToList();
             }
 
+            result.ForEach(x =>
+            {
+                x.Details = GetDetails(x.OrderNumber);
+            });
+
+            return result;
+        }
+
+        public List<ShipmentOrderDetailDto> GetDetails(string orderNumber)
+        {
+            string sql = @"
+                           SELECT
+                                [OrderNumber]
+                                ,[ProductId]
+                                ,[ProductNumber]
+                                ,[ProductName]
+                                ,[ProductPrice]
+                                ,[ProductQuantity]
+                                ,[Remarks]
+                                ,[CreatedOn]
+                                ,[UpdatedOn]
+                                ,[IsValid]
+                           FROM [dbo].[ShipmentOrderDetail]
+                           WHERE 
+                                [OrderNumber] = @OrderNumber
+                                AND [IsValid] = 1";
+            var result = default(List<ShipmentOrderDetailDto>);
+            using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
+            {
+                result = (conn.Query<ShipmentOrderDetailDto>(sql, new
+                {
+                    OrderNumber = orderNumber,
+                })).ToList();
+            }
             return result;
         }
 
@@ -76,6 +110,10 @@ namespace OrderSystemPlus.DataAccessor
             using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
                 await conn.ExecuteAsync(sql, model);
+                foreach (var item in model)
+                {
+                    UpdateInsertDetailAsync(item.Details, conn);
+                }
             }
         }
         public async Task<List<string>> InsertAsync(IEnumerable<ShipmentOrderDto> model)
@@ -88,7 +126,7 @@ namespace OrderSystemPlus.DataAccessor
                     foreach (var item in model)
                     {
                         InsertAsync(item, conn);
-                        InsertDetailAsync(item.Details, conn);
+                        UpdateInsertDetailAsync(item.Details, conn);
                     }
                 }
                 ts.Complete();
@@ -135,9 +173,17 @@ namespace OrderSystemPlus.DataAccessor
             if (count != 1) { throw new Exception("InsertAsync"); }
         }
 
-        private void InsertDetailAsync(List<ShipmentOrderDetailDto> command, IDbConnection cn)
+        private void UpdateInsertDetailAsync(List<ShipmentOrderDetailDto> command, IDbConnection cn)
         {
-            var sql = @"
+            var deletesql = @"
+                UPDATE [dbo].[ShipmentOrderDetail]
+                SET
+                    [IsValid] = 0,
+                    [UpdatedOn] = @UpdatedOn
+                WHERE
+                    [OrderNumber] = @OrderNumber";
+
+            var insertsql = @"
                 INSERT INTO [dbo].[ShipmentOrderDetail]
                 (
                     [OrderNumber]
@@ -164,9 +210,11 @@ namespace OrderSystemPlus.DataAccessor
                     ,@IsValid
                 );
                 ";
-            var count = cn.Execute(sql, command);
+            cn.Execute(deletesql, command);
+            var count = cn.Execute(insertsql, command);
             if (count != command.Count) { throw new Exception("InsertDetailAsync"); }
         }
+
         public async Task DeleteAsync(IEnumerable<ShipmentOrderDto> model)
         {
             var sql = @"
