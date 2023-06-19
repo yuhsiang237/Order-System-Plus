@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Transactions;
+﻿using System.Transactions;
 using AutoMapper;
 
 using OrderSystemPlus.DataAccessor;
@@ -14,14 +13,14 @@ namespace OrderSystemPlus.BusinessActor
         private readonly IProductRepository _productRepository;
         private readonly IProductTypeRelationshipRepository _productTypeRelationshipRepository;
 
-        private readonly IProductInventoryManageHandler _productInventoryControlHandler;
+        private readonly IProductInventoryManageHandler _productInventoryManageHandler;
 
         public ProductManageHandler(
             IProductInventoryManageHandler productInventoryControlHandler,
             IProductRepository productRepository,
             IProductTypeRelationshipRepository productTypeRelationshipRepository)
         {
-            _productInventoryControlHandler = productInventoryControlHandler;
+            _productInventoryManageHandler = productInventoryControlHandler;
             _productRepository = productRepository;
             _productTypeRelationshipRepository = productTypeRelationshipRepository;
         }
@@ -41,7 +40,7 @@ namespace OrderSystemPlus.BusinessActor
 
             foreach (var item in rsp)
             {
-                item.Quantity = await _productInventoryControlHandler.GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
+                item.Quantity = await _productInventoryManageHandler.GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
                 {
                     ProductId = item.Id,
                 });
@@ -66,7 +65,7 @@ namespace OrderSystemPlus.BusinessActor
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
             var rsp = mapper.Map<ProductDto, RspGetProductInfo>(data);
-            rsp.Quantity = await _productInventoryControlHandler.GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
+            rsp.Quantity = await _productInventoryManageHandler.GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
             {
                 ProductId = req.Id,
             });
@@ -121,7 +120,7 @@ namespace OrderSystemPlus.BusinessActor
                     Description = "商品建立庫存。"
                 });
             }
-            var inventoryResult = await _productInventoryControlHandler.HandleAsync(inventoryDtoList);
+            var inventoryResult = await _productInventoryManageHandler.HandleAsync(inventoryDtoList);
             if (inventoryResult == false)
                 throw new Exception("AdjustProductInventoryAsync Error");
 

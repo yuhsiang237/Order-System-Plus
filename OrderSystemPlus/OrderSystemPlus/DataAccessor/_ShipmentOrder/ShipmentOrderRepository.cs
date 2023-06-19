@@ -225,9 +225,20 @@ namespace OrderSystemPlus.DataAccessor
                 WHERE
                     [OrderNumber] = @OrderNumber
                 ";
+
+            var sqlDetail = @"
+                UPDATE [dbo].[ShipmentOrderDetail]
+                SET
+                    [IsValid] = 0,
+                    [UpdatedOn] = @UpdatedOn
+                WHERE
+                    [OrderNumber] = @OrderNumber
+                ";
+
             using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
                 await conn.ExecuteAsync(sql, model);
+                await conn.ExecuteAsync(sqlDetail, model);
             }
         }
     }

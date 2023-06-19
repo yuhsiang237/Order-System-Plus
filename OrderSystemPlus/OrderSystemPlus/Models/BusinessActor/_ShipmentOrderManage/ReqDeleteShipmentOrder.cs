@@ -5,5 +5,6 @@
     /// </summary>
     public class ReqDeleteShipmentOrder
     {
+        public List<string> OrderNumber { get; set; }
     }
 }

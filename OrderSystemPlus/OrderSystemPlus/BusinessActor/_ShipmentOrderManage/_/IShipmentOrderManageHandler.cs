@@ -2,9 +2,9 @@
 
 namespace OrderSystemPlus.BusinessActor
 {
-    public interface IShipmentOrderManageManageHandler
+    public interface IShipmentOrderManageHandler
     {
-        Task HandleAsync(ReqCreateShipmentOrder req);
+        Task<string> HandleAsync(ReqCreateShipmentOrder req);
         Task HandleAsync(ReqUpdateShipmentOrder req);
         Task HandleAsync(ReqDeleteShipmentOrder req);
         Task<RspGetShipmentOrderInfo> GetShipmentOrderInfoAsync(ReqGetShipmentOrderInfo req);

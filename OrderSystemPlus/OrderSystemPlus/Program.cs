@@ -39,7 +39,8 @@ void AddHandler()
         .AddSingleton<IUserManageHandler, UserManageHandler>()
         .AddSingleton<IProductManageHandler, ProductManageHandler>()
         .AddSingleton<IProductInventoryManageHandler, ProductInventoryManageHandler>()
-        .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>();
+        .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>()
+        .AddSingleton<IShipmentOrderManageHandler, ShipmentOrderManageHandler>(); ;
 }
 
 
