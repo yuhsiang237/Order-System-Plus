@@ -124,7 +124,7 @@ namespace OrderSystemPlus.BusinessActor
                            TotalAmount = totalAmount,
                            OperatorUserId = 123, // TODO
                            RecipientName = req.RecipientName,
-                           Status = 1, // TODO
+                           Status = req.FinishDate == null ? Enums.ShipmentOrderStatus.Processing : Enums.ShipmentOrderStatus.Finish,
                            FinishDate = req.FinishDate,
                            DeliveryDate = req.DeliveryDate,
                            Address = req.Address,
@@ -153,7 +153,7 @@ namespace OrderSystemPlus.BusinessActor
             orderDto.OrderNumber = req.OrderNumber;
             orderDto.RecipientName = req.RecipientName;
             orderDto.OperatorUserId = 123; // TODO
-            orderDto.Status = 123; // TODO
+            orderDto.Status = req.FinishDate == null ? Enums.ShipmentOrderStatus.Processing : Enums.ShipmentOrderStatus.Finish;
             orderDto.FinishDate = req.FinishDate;
             orderDto.DeliveryDate = req.DeliveryDate;
             orderDto.Address = req.Address;

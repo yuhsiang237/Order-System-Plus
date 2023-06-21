@@ -1,4 +1,6 @@
-﻿namespace OrderSystemPlus.Models.DataAccessor
+﻿using OrderSystemPlus.Enums;
+
+namespace OrderSystemPlus.Models.DataAccessor
 {
     /// <summary>
     /// ShipmentOrderDto
@@ -9,7 +11,7 @@
         public decimal? TotalAmount { get; set; }
         public string? RecipientName { get; set; }
         public int? OperatorUserId { get; set; }
-        public int? Status { get; set; }
+        public ShipmentOrderStatus? Status { get; set; }
         public DateTime? FinishDate { get; set; }
         public DateTime? DeliveryDate { get; set; }
 
