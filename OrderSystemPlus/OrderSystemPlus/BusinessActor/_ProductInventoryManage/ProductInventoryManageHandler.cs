@@ -28,7 +28,6 @@ namespace OrderSystemPlus.BusinessActor
                 var now = DateTime.Now;
                 for (var i = 0; i < req.Count; i++)
                 {
-
                     var item = req[i];
                     if (!await isProductExist(item.ProductId.Value))
                         throw new Exception($"Not found product id:{item.ProductId}");

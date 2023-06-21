@@ -16,12 +16,15 @@ namespace OrderSystemPlusTest.BusinessActor
     {
         private IProductInventoryManageHandler _handler;
         private readonly Mock<IProductInventoryRepository> _productInventoryRepository;
+        private readonly Mock<IProductRepository> _productRepository;
 
         public ProductInventoryManageHandlerTest()
         {
             _productInventoryRepository = new Mock<IProductInventoryRepository>();
+            _productRepository = new Mock<IProductRepository>();
             _handler = new ProductInventoryManageHandler(
-              _productInventoryRepository.Object);
+              _productInventoryRepository.Object,
+              _productRepository.Object);
         }
 
         [Fact]
@@ -71,6 +74,16 @@ namespace OrderSystemPlusTest.BusinessActor
         [Fact]
         public async Task UpdateProductInventory()
         {
+            _productRepository
+           .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
+           .ReturnsAsync(new List<ProductDto> {
+                new ProductDto{
+                    Id = 99999,
+                    Name = "Test",
+                    Description = "Test",
+                    Number = "TEST",
+                }});
+
             _productInventoryRepository.Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<int?>()))
                 .ReturnsAsync(new List<ProductInventoryDto>
             {
@@ -95,6 +108,7 @@ namespace OrderSystemPlusTest.BusinessActor
                     Type = AdjustProductInventoryType.Force,
                 }
             });
+            _productRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
             _productInventoryRepository.Verify(x => x.InsertAsync(It.IsAny<List<ProductInventoryDto>>()), Times.Once());
             _productInventoryRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<int?>()), Times.Once());
         }

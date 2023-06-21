@@ -13,11 +13,7 @@
         public List<ShipmentOrderDetailModel> Details { get; set; }
         public class ShipmentOrderDetailModel
         {
-            public string OrderNumber { get; set; }
             public int? ProductId { get; set; }
-            public string ProductNumber { get; set; }
-            public string ProductName { get; set; }
-            public decimal? ProductPrice { get; set; }
             public decimal? ProductQuantity { get; set; }
             public string Remarks { get; set; }
         }

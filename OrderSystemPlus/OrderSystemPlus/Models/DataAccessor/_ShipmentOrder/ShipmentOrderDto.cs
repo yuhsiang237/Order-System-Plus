@@ -6,7 +6,6 @@
     public class ShipmentOrderDto
     {
         public string OrderNumber { get; set; }
-        public int? OrderType { get; set; }
         public decimal? TotalAmount { get; set; }
         public string? RecipientName { get; set; }
 

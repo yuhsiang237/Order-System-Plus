@@ -31,7 +31,6 @@ namespace OrderSystemPlusTest.DataAccessor
             var insertResult = await _repository.FindByOptionsAsync(GetInsertModel().OrderNumber);
             insertResult.Count.Should().Be(1);
             insertResult.First().OrderNumber.Should().Be(GetInsertModel().OrderNumber);
-            insertResult.First().OrderType.Should().Be(GetInsertModel().OrderType);
             insertResult.First().TotalAmount.Should().Be(GetInsertModel().TotalAmount);
             insertResult.First().RecipientName.Should().Be(GetInsertModel().RecipientName);
             insertResult.First().OperatorUserId.Should().Be(GetInsertModel().OperatorUserId);
@@ -53,7 +52,6 @@ namespace OrderSystemPlusTest.DataAccessor
             await _repository.UpdateAsync(new List<ShipmentOrderDto> { GetUpdateModel() });
             var updateResult = await _repository.FindByOptionsAsync(GetUpdateModel().OrderNumber);
             updateResult.First().OrderNumber.Should().Be(GetUpdateModel().OrderNumber);
-            updateResult.First().OrderType.Should().Be(GetUpdateModel().OrderType);
             updateResult.First().TotalAmount.Should().Be(GetUpdateModel().TotalAmount);
             updateResult.First().RecipientName.Should().Be(GetUpdateModel().RecipientName);
             updateResult.First().OperatorUserId.Should().Be(GetUpdateModel().OperatorUserId);
@@ -81,7 +79,6 @@ namespace OrderSystemPlusTest.DataAccessor
                 new ShipmentOrderDto
                 {
                     OrderNumber = _orderNumber,
-                    OrderType = 1,
                     TotalAmount = 100000,
                     RecipientName = "接收人",
                     OperatorUserId = 5,
@@ -115,7 +112,6 @@ namespace OrderSystemPlusTest.DataAccessor
                 new ShipmentOrderDto
                 {
                     OrderNumber = _orderNumber,
-                    OrderType = 1,
                     TotalAmount = 100000,
                     RecipientName = "接收人",
                     OperatorUserId = 5,

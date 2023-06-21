@@ -16,7 +16,6 @@ namespace OrderSystemPlus.DataAccessor
             string sql = @"
                            SELECT
                                 [OrderNumber]
-                                ,[OrderType]
                                 ,[TotalAmount]
                                 ,[RecipientName]
                                 ,[OperatorUserId]
@@ -93,7 +92,6 @@ namespace OrderSystemPlus.DataAccessor
             var sql = @"
                 UPDATE [dbo].[ShipmentOrder]
                 SET
-                   [OrderType] = @OrderType,
                    [TotalAmount] = @TotalAmount,
                    [RecipientName] = @RecipientName,
                    [OperatorUserId] = @OperatorUserId,
@@ -140,7 +138,6 @@ namespace OrderSystemPlus.DataAccessor
                 INSERT INTO [dbo].[ShipmentOrder]
                 (
                     [OrderNumber]
-                    ,[OrderType]
                     ,[TotalAmount]
                     ,[RecipientName]
                     ,[OperatorUserId]
@@ -155,7 +152,6 @@ namespace OrderSystemPlus.DataAccessor
                 ) VALUES
                 (
                     @OrderNumber
-                    ,@OrderType
                     ,@TotalAmount
                     ,@RecipientName
                     ,@OperatorUserId

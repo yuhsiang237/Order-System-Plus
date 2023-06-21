@@ -54,7 +54,7 @@ namespace OrderSystemPlus.BusinessActor
                                                     {
                                                         Type = Enums.AdjustProductInventoryType.IncreaseDecrease,
                                                         ProductId = x.ProductId,
-                                                        AdjustQuantity = x.ProductQuantity,
+                                                        AdjustQuantity = -1 * Math.Abs(x.ProductQuantity.Value),
                                                         Description = $"ShipmentOrder : {orderNumber}。",
                                                     })
                                                 .ToList();
@@ -67,7 +67,10 @@ namespace OrderSystemPlus.BusinessActor
                 var totalAmount = 0M;
                 foreach (var item in req?.Details)
                 {
-                    var product = (await _productRepository.FindByOptionsAsync()).FirstOrDefault();
+                    var product = (await _productRepository
+                        .FindByOptionsAsync(id: item.ProductId))
+                        .FirstOrDefault();
+
                     if (product != null)
                     {
                         totalAmount += product.Price * item.ProductQuantity.Value;
