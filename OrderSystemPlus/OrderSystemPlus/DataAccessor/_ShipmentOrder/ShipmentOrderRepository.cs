@@ -92,7 +92,6 @@ namespace OrderSystemPlus.DataAccessor
             var sql = @"
                 UPDATE [dbo].[ShipmentOrder]
                 SET
-                   [TotalAmount] = @TotalAmount,
                    [RecipientName] = @RecipientName,
                    [OperatorUserId] = @OperatorUserId,
                    [Status] = @Status,
@@ -108,10 +107,6 @@ namespace OrderSystemPlus.DataAccessor
             using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
                 await conn.ExecuteAsync(sql, model);
-                foreach (var item in model)
-                {
-                    UpdateInsertDetailAsync(item.Details, conn);
-                }
             }
         }
         public async Task<List<string>> InsertAsync(IEnumerable<ShipmentOrderDto> model)

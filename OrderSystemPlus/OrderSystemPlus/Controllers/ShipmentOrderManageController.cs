@@ -24,6 +24,13 @@ namespace OrderSystemPlus.Controllers
             return rsp;
         }
 
+        [HttpPost("UpdateShipmentOrder")]
+        public async Task<IActionResult> UpdateShipmentOrder([FromBody] ReqUpdateShipmentOrder req)
+        {
+            await _shipmentOrderHandler.HandleAsync(req);
+            return StatusCode(200);
+        }
+
         [HttpPost("GetShipmentOrderInfo")]
         public async Task<RspGetShipmentOrderInfo> GetShipmentOrderInfo([FromBody] ReqGetShipmentOrderInfo req)
         {
