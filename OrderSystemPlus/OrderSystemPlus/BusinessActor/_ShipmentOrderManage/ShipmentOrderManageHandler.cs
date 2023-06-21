@@ -26,6 +26,18 @@ namespace OrderSystemPlus.BusinessActor
             _productRepository = productRepository;
             _productInventoryManageHandler = productInventoryManageHandler;
         }
+        public async Task<List<RspGetShipmentOrderList>> GetShipmentOrderListAsync(ReqGetShipmentOrderList req)
+        {
+            var data = await _ShipmentOrderRepository.FindByOptionsAsync();
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ShipmentOrderDto, RspGetShipmentOrderList>();
+            });
+            config.AssertConfigurationIsValid();
+            var mapper = config.CreateMapper();
+            var rsp = mapper.Map<List<ShipmentOrderDto>, List<RspGetShipmentOrderList>>(data);
+            return rsp;
+        }
 
         public async Task<RspGetShipmentOrderInfo> GetShipmentOrderInfoAsync(ReqGetShipmentOrderInfo req)
         {
@@ -128,7 +140,7 @@ namespace OrderSystemPlus.BusinessActor
         public async Task HandleAsync(ReqUpdateShipmentOrder req)
         {
             var now = DateTime.Now;
-            await  _ShipmentOrderRepository.UpdateAsync(new List<ShipmentOrderDto>
+            await _ShipmentOrderRepository.UpdateAsync(new List<ShipmentOrderDto>
             {
                 new ShipmentOrderDto
                 {
