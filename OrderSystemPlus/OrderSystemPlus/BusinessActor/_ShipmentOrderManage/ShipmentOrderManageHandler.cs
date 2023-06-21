@@ -140,20 +140,21 @@ namespace OrderSystemPlus.BusinessActor
         public async Task HandleAsync(ReqUpdateShipmentOrder req)
         {
             var now = DateTime.Now;
+            var orderDto = (await _ShipmentOrderRepository.FindByOptionsAsync(req.OrderNumber))
+                        .FirstOrDefault();
+            orderDto.OrderNumber = req.OrderNumber;
+            orderDto.RecipientName = req.RecipientName;
+            orderDto.OperatorUserId = 123; // TODO
+            orderDto.Status = 123; // TODO
+            orderDto.FinishDate = req.FinishDate;
+            orderDto.DeliveryDate = req.DeliveryDate;
+            orderDto.Address = req.Address;
+            orderDto.Remark = req.Remark;
+            orderDto.UpdatedOn = now;
+
             await _ShipmentOrderRepository.UpdateAsync(new List<ShipmentOrderDto>
             {
-                new ShipmentOrderDto
-                {
-                    OrderNumber = req.OrderNumber,
-                    RecipientName = req.RecipientName,
-                    OperatorUserId = 123, // TODO
-                    Status = 123, // TODO
-                    FinishDate =req.FinishDate,
-                    DeliveryDate = req.DeliveryDate,
-                    Address= req.Address,
-                    Remark = req.Remark,
-                    UpdatedOn = now,
-                }
+              orderDto,
             });
         }
 
