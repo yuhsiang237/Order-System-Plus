@@ -81,6 +81,7 @@ namespace OrderSystemPlusTest.BusinessActor
             _shipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>()), Times.Once());
         }
 
+        [Fact]
         public async Task GetShipmentOrderInfoAsync()
         {
             _shipmentOrderRepository
