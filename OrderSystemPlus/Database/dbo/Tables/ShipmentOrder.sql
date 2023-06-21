@@ -14,6 +14,11 @@
 );
 
 
+GO
+
+CREATE CLUSTERED INDEX [CX_ShipmentOrder]
+    ON [dbo].[ShipmentOrder]([CreatedOn] DESC);
+
 
 
 GO
@@ -125,6 +130,4 @@ EXEC sp_addextendedproperty @name = N'MS_Description',
     @level2type = N'COLUMN',
     @level2name = N'OperatorUserId'
 GO
-CREATE NONCLUSTERED INDEX [IX_ShipmentOrder]
-    ON [dbo].[ShipmentOrder]([OrderNumber] ASC);
 
