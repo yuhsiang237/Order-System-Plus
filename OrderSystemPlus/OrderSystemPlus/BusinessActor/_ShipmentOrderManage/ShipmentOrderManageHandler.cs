@@ -1,10 +1,11 @@
-﻿using AutoMapper;
+﻿using System.Transactions;
+
+using AutoMapper;
 
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Models.DataAccessor;
 using OrderSystemPlus.Utils.OrderNumberTool;
-using System.Transactions;
 
 namespace OrderSystemPlus.BusinessActor
 {
@@ -32,6 +33,7 @@ namespace OrderSystemPlus.BusinessActor
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ShipmentOrderDto, RspGetShipmentOrderInfo>();
+                cfg.CreateMap<ShipmentOrderDetailDto, RspShipmentOrderDetail>();
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();

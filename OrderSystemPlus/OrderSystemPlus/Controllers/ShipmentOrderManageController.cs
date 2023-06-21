@@ -23,5 +23,12 @@ namespace OrderSystemPlus.Controllers
             var rsp = await _shipmentOrderHandler.HandleAsync(req);
             return rsp;
         }
+
+        [HttpPost("GetShipmentOrderInfo")]
+        public async Task<RspGetShipmentOrderInfo> GetShipmentOrderInfo([FromBody] ReqGetShipmentOrderInfo req)
+        {
+            var rsp = await _shipmentOrderHandler.GetShipmentOrderInfoAsync(req);
+            return rsp;
+        }
     }
 }
