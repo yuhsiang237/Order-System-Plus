@@ -59,7 +59,15 @@ namespace OrderSystemPlus.BusinessActor
             try
             {
                 using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-                var orderNumber = OrderNumberTool.GenerateNumber(OrderNumberTool.Type.Shipment);
+                var orderNumber = string.Empty;
+                while (string.IsNullOrEmpty(orderNumber))
+                {
+                    var newOrderNumber = OrderNumberTool.GenerateNumber(OrderNumberTool.Type.Shipment);
+                    var isExistOrderNumber = (await _ShipmentOrderRepository.FindByOptionsAsync(newOrderNumber)).Any();
+                    if (isExistOrderNumber == false)
+                        orderNumber = newOrderNumber;
+                }
+
                 var now = DateTime.Now;
                 // Deduct product inventory
                 var updateProductInventory = req?.Details
