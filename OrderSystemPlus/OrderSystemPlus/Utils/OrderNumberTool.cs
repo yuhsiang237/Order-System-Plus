@@ -31,14 +31,13 @@
             if (type == Type.ReturnShipment)
                 typePrefix = "R";
 
-            string date = DateTime.Now.ToString("yyyyMMdd");
-            string randStr = "";
-            Random rnd = new Random();
-            for (int i = 0; i < 5; i++)
-            {
-                randStr += ASCII(rnd.Next(65, 91)); // ASCII 65~90 A~Z
-            }
-            return typePrefix + date + randStr;
+            DateTime now = DateTime.Now;
+            Guid guid = Guid.NewGuid();
+
+            string timePart = now.ToString("yyyyMMdd");
+            string guidPart = guid.ToString().Substring(0, 6).ToUpper();
+            string orderNumber = typePrefix + timePart + guidPart;
+            return orderNumber;
         }
     }
 }
