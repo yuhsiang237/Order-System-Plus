@@ -37,5 +37,12 @@ namespace OrderSystemPlus.Controllers
             var rsp = await _shipmentOrderHandler.GetShipmentOrderInfoAsync(req);
             return rsp;
         }
+
+        [HttpPost("DeleteShipmentOrder")]
+        public async Task<IActionResult> DeleteShipmentOrder([FromBody] ReqDeleteShipmentOrder req)
+        {
+            await _shipmentOrderHandler.HandleAsync(req);
+            return StatusCode(200);
+        }
     }
 }
