@@ -2,11 +2,12 @@
 {
     public static class OrderNumberTool
     {
-       public class Type
+        public enum Type
         {
-            public static string Shipment = "S";
-            public static string Return = "R";
+            Shipment = 1,
+            ReturnShipment = 2,
         }
+
         /// <summary>
         /// generate ASCII string
         /// </summary>
@@ -22,16 +23,21 @@
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static string GenerateNumber(string type)
+        public static string GenerateNumber(Type type)
         {
-            string date = DateTime.Now.ToString("yyyyMMdd");
-            string randStr = "";
-            Random rnd = new Random();
-            for (int i = 0; i < 5; i++)
-            {
-                randStr += ASCII(rnd.Next(65, 91)); // ASCII 65~90 A~Z
-            }
-            return type + date + randStr;
+            var typePrefix = "";
+            if (type == Type.Shipment)
+                typePrefix = "S";
+            if (type == Type.ReturnShipment)
+                typePrefix = "R";
+
+            DateTime now = DateTime.Now;
+            Guid guid = Guid.NewGuid();
+
+            string timePart = now.ToString("yyyyMMdd");
+            string guidPart = guid.ToString().Substring(0, 6).ToUpper();
+            string orderNumber = typePrefix + timePart + guidPart;
+            return orderNumber;
         }
     }
 }

@@ -8,12 +8,15 @@ namespace OrderSystemPlus.BusinessActor
     public class ProductInventoryManageHandler : IProductInventoryManageHandler
     {
         private readonly IProductInventoryRepository _productInventoryRepository;
+        private readonly IProductRepository _productRepository;
         private static SemaphoreSlim _updateProductInventorySemaphoreSlim;
         public ProductInventoryManageHandler(
-            IProductInventoryRepository productInventoryRepository)
+            IProductInventoryRepository productInventoryRepository,
+            IProductRepository productRepository)
         {
             _updateProductInventorySemaphoreSlim = new SemaphoreSlim(1, 1);
             _productInventoryRepository = productInventoryRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<bool> HandleAsync(List<ReqUpdateProductInventory> req)
@@ -26,6 +29,9 @@ namespace OrderSystemPlus.BusinessActor
                 for (var i = 0; i < req.Count; i++)
                 {
                     var item = req[i];
+                    if (!await isProductExist(item.ProductId.Value))
+                        throw new Exception($"Not found product id:{item.ProductId}");
+
                     var currentQuantity = (await GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
                     {
                         ProductId = req[i].ProductId.Value
@@ -110,6 +116,11 @@ namespace OrderSystemPlus.BusinessActor
                 .OrderByDescending(o => o.CreatedOn)
                 .ThenByDescending(o => o.Id)
                 .ToList();
+        }
+
+        private async Task<bool> isProductExist(int productId)
+        {
+            return (await _productRepository.FindByOptionsAsync(id: productId)).Any();
         }
     }
 }

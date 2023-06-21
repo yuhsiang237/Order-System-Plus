@@ -39,7 +39,8 @@ void AddHandler()
         .AddSingleton<IUserManageHandler, UserManageHandler>()
         .AddSingleton<IProductManageHandler, ProductManageHandler>()
         .AddSingleton<IProductInventoryManageHandler, ProductInventoryManageHandler>()
-        .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>();
+        .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>()
+        .AddSingleton<IShipmentOrderManageHandler, ShipmentOrderManageHandler>(); ;
 }
 
 
@@ -53,6 +54,7 @@ void AddRepository()
           .AddSingleton<IProductRepository, ProductRepository>()
           .AddSingleton<IProductInventoryRepository, ProductInventoryRepository>()
           .AddSingleton<IProductTypeRepository, ProductTypeRepository>()
+                    .AddSingleton<IShipmentOrderRepository, ShipmentOrderRepository>()
           .AddSingleton<IProductTypeRelationshipRepository, ProductTypeRelationshipRepository>();
 
 }
