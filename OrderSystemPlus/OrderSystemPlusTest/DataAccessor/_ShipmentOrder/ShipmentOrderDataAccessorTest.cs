@@ -122,12 +122,6 @@ namespace OrderSystemPlusTest.DataAccessor
                         new ShipmentOrderDetailDto
                         {
                             Id = _updateShipmentOrderDetailId,
-                            OrderNumber = _orderNumber,
-                            ProductId = 3,
-                            ProductNumber = "TEST",
-                            ProductName = "TESTNAME",
-                            ProductPrice= 300,
-                            ProductQuantity = 53,
                             Remarks = "備註更新",
                             CreatedOn = new DateTime(2023, 06, 16),
                             UpdatedOn = new DateTime(2023, 06, 16),
