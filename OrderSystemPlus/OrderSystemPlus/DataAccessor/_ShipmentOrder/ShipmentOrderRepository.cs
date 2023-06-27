@@ -62,7 +62,8 @@ namespace OrderSystemPlus.DataAccessor
         {
             string sql = @"
                            SELECT
-                                [OrderNumber]
+                                [Id]
+                                ,[OrderNumber]
                                 ,[ProductId]
                                 ,[ProductNumber]
                                 ,[ProductName]
@@ -170,13 +171,8 @@ namespace OrderSystemPlus.DataAccessor
 
         private void UpdateInsertDetailAsync(List<ShipmentOrderDetailDto> command, IDbConnection cn)
         {
-            var deletesql = @"
-                UPDATE [dbo].[ShipmentOrderDetail]
-                SET
-                    [IsValid] = 0,
-                    [UpdatedOn] = @UpdatedOn
-                WHERE
-                    [OrderNumber] = @OrderNumber";
+            var insertList = command.Where(s => s.Id == 0).ToList();
+            var updateList = command.Where(s => s.Id != 0).ToList();
 
             var insertsql = @"
                 INSERT INTO [dbo].[ShipmentOrderDetail]
@@ -205,9 +201,22 @@ namespace OrderSystemPlus.DataAccessor
                     ,@IsValid
                 );
                 ";
-            cn.Execute(deletesql, command);
-            var count = cn.Execute(insertsql, command);
-            if (count != command.Count) { throw new Exception("InsertDetailAsync"); }
+
+            var updateSql = @"
+                UPDATE [dbo].[ShipmentOrderDetail]
+                SET
+                    [Remarks] = @Remarks,
+                    [UpdatedOn] = @UpdatedOn
+                WHERE
+                    [Id] = @Id";
+
+            var insertCount = cn.Execute(insertsql, insertList);
+            var updateCount = cn.Execute(updateSql, updateList);
+            if (!(insertList.Count == insertCount &&
+                updateList.Count == updateCount))
+            {
+                throw new Exception("UpdateInsertDetailAsync Error");
+            }
         }
 
         public async Task DeleteAsync(IEnumerable<ShipmentOrderDto> model)

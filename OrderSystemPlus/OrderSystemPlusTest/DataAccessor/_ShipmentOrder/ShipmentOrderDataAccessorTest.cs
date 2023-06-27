@@ -17,6 +17,7 @@ namespace OrderSystemPlusTest.DataAccessor
         private IShipmentOrderRepository _repository;
         private DateTime _now;
         private readonly string _orderNumber;
+        private int _updateShipmentOrderDetailId;
         public ShipmentOrderDataAccessorTest()
         {
             _now = DateTime.Now;
@@ -49,6 +50,8 @@ namespace OrderSystemPlusTest.DataAccessor
             insertDetailResult.ProductQuantity.Should().Be(GetInsertModel().Details.First().ProductQuantity);
             insertDetailResult.Remarks.Should().Be(GetInsertModel().Details.First().Remarks);
 
+            _updateShipmentOrderDetailId = insertDetailResult.Id;
+
             await _repository.UpdateAsync(new List<ShipmentOrderDto> { GetUpdateModel() });
             var updateResult = await _repository.FindByOptionsAsync(GetUpdateModel().OrderNumber);
             updateResult.First().OrderNumber.Should().Be(GetUpdateModel().OrderNumber);
@@ -62,12 +65,6 @@ namespace OrderSystemPlusTest.DataAccessor
             updateResult.First().Remark.Should().Be(GetUpdateModel().Remark);
 
             var updateDetailResult = updateResult.First().Details.First();
-            updateDetailResult.OrderNumber.Should().Be(GetUpdateModel().Details.First().OrderNumber);
-            updateDetailResult.ProductId.Should().Be(GetUpdateModel().Details.First().ProductId);
-            updateDetailResult.ProductNumber.Should().Be(GetUpdateModel().Details.First().ProductNumber);
-            updateDetailResult.ProductName.Should().Be(GetUpdateModel().Details.First().ProductName);
-            updateDetailResult.ProductPrice.Should().Be(GetUpdateModel().Details.First().ProductPrice);
-            updateDetailResult.ProductQuantity.Should().Be(GetUpdateModel().Details.First().ProductQuantity);
             updateDetailResult.Remarks.Should().Be(GetUpdateModel().Details.First().Remarks);
 
             await _repository.DeleteAsync(new List<ShipmentOrderDto> { GetDeleteModel() });
@@ -124,13 +121,14 @@ namespace OrderSystemPlusTest.DataAccessor
                     {
                         new ShipmentOrderDetailDto
                         {
+                            Id = _updateShipmentOrderDetailId,
                             OrderNumber = _orderNumber,
-                            ProductId = 65,
+                            ProductId = 3,
                             ProductNumber = "TEST",
                             ProductName = "TESTNAME",
-                            ProductPrice= 30,
-                            ProductQuantity = 5,
-                            Remarks = "備註",
+                            ProductPrice= 300,
+                            ProductQuantity = 53,
+                            Remarks = "備註更新",
                             CreatedOn = new DateTime(2023, 06, 16),
                             UpdatedOn = new DateTime(2023, 06, 16),
                             IsValid = true,

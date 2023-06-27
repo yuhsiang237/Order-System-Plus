@@ -159,10 +159,16 @@ namespace OrderSystemPlus.BusinessActor
             orderDto.Address = req.Address;
             orderDto.Remark = req.Remark;
             orderDto.UpdatedOn = now;
+            orderDto.Details = req?.Details?.Select(s => new ShipmentOrderDetailDto
+            {
+                Id = s.Id,
+                Remarks = s.Remarks,
+                UpdatedOn = now,
+            }).ToList();
 
             await _ShipmentOrderRepository.UpdateAsync(new List<ShipmentOrderDto>
             {
-              orderDto,
+                orderDto,
             });
         }
 

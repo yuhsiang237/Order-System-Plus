@@ -18,6 +18,7 @@
     }
     public class RspShipmentOrderDetail
     {
+        public int Id { get; set; }
         public string OrderNumber { get; set; }
         public int? ProductId { get; set; }
         public string ProductNumber { get; set; }
