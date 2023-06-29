@@ -1,8 +1,8 @@
 ﻿CREATE TABLE [dbo].[ShipmentOrder] (
     [OrderNumber]    VARCHAR (100)   NOT NULL,
     [TotalAmount]    DECIMAL (18, 4) NULL,
-    [RecipientName]  NVARCHAR (100)  NULL,
-    [OperatorUserId] NVARCHAR (100)  NULL,
+    [RecipientName]  NVARCHAR (100)  NOT NULL,
+    [OperatorUserId] INT             NULL,
     [Status]         INT             NULL,
     [FinishDate]     DATETIME        NULL,
     [DeliveryDate]   DATETIME        NULL,
@@ -12,6 +12,8 @@
     [UpdatedOn]      DATETIME        NOT NULL,
     [IsValid]        BIT             NOT NULL
 );
+
+
 
 
 GO

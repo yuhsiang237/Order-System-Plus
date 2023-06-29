@@ -10,6 +10,7 @@
         public DateTime? ReturnDate { get; set; }
         public string Remark { get; set; }
         public decimal? TotalReturnAmount { get; set; }
+        public int? OperatorUserId { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
         public bool IsValid { get; set; }

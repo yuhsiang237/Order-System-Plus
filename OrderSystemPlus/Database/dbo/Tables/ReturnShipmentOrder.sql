@@ -4,11 +4,14 @@
     [TotalReturnAmount]         DECIMAL (18, 4) NULL,
     [ReturnDate]                DATETIME        NULL,
     [Remark]                    NVARCHAR (500)  NULL,
+    [OperatorUserId]            INT             NULL,
     [IsValid]                   BIT             NOT NULL,
     [CreatedOn]                 DATETIME        NOT NULL,
     [UpdatedOn]                 DATETIME        NOT NULL,
     CONSTRAINT [PK_ReturnShipmentOrder] PRIMARY KEY CLUSTERED ([ReturnShipmentOrderNumber] ASC)
 );
+
+
 
 
 GO

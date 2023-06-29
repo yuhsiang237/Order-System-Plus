@@ -18,6 +18,7 @@ namespace OrderSystemPlus.DataAccessor
                                 [ReturnShipmentOrderNumber]
                                 ,[ShipmentOrderNumber]
                                 ,[TotalReturnAmount]
+                                ,[OperatorUserId]
                                 ,[ReturnDate]
                                 ,[Remark]
                                 ,[IsValid]
@@ -88,6 +89,7 @@ namespace OrderSystemPlus.DataAccessor
                 SET
                    [TotalReturnAmount] = @TotalReturnAmount,
                    [ReturnDate] = @ReturnDate,
+                   [OperatorUserId] = @OperatorUserId,
                    [Remark] = @Remark,
                    [UpdatedOn] = @UpdatedOn
                 WHERE
@@ -131,6 +133,7 @@ namespace OrderSystemPlus.DataAccessor
                     ,[TotalReturnAmount]
                     ,[ReturnDate]
                     ,[Remark]
+                    ,[OperatorUserId]
                     ,[IsValid]
                     ,[CreatedOn]
                     ,[UpdatedOn]
@@ -141,6 +144,7 @@ namespace OrderSystemPlus.DataAccessor
                     ,@TotalReturnAmount
                     ,@ReturnDate
                     ,@Remark
+                    ,@OperatorUserId
                     ,@IsValid
                     ,@CreatedOn
                     ,@UpdatedOn
@@ -200,6 +204,7 @@ namespace OrderSystemPlus.DataAccessor
             var sql = @"
                 UPDATE [dbo].[ReturnShipmentOrder]
                 SET
+                    [OperatorUserId] = @OperatorUserId,
                     [IsValid] = 0,
                     [UpdatedOn] = @UpdatedOn
                 WHERE

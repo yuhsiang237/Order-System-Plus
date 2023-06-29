@@ -38,7 +38,8 @@ namespace OrderSystemPlusTest.DataAccessor
             insertResult.First().TotalReturnAmount.Should().Be(GetInsertModel().TotalReturnAmount);
             insertResult.First().ReturnDate.Should().Be(GetInsertModel().ReturnDate);
             insertResult.First().Remark.Should().Be(GetInsertModel().Remark);
-          
+            insertResult.First().OperatorUserId.Should().Be(GetInsertModel().OperatorUserId);
+
             var insertDetailResult = insertResult.First().Details.First();
             insertDetailResult.ReturnShipmentOrderNumber.Should().Be(GetInsertModel().Details.First().ReturnShipmentOrderNumber);
             insertDetailResult.ShipmentOrderDetailId.Should().Be(GetInsertModel().Details.First().ShipmentOrderDetailId);
@@ -53,7 +54,8 @@ namespace OrderSystemPlusTest.DataAccessor
             updateResult.First().TotalReturnAmount.Should().Be(GetUpdateModel().TotalReturnAmount);
             updateResult.First().ReturnDate.Should().Be(GetUpdateModel().ReturnDate);
             updateResult.First().Remark.Should().Be(GetUpdateModel().Remark);
-       
+            updateResult.First().OperatorUserId.Should().Be(GetUpdateModel().OperatorUserId);
+
             var updateDetailResult = updateResult.First().Details.First();
             updateDetailResult.Remarks.Should().Be(GetUpdateModel().Details.First().Remarks);
             updateDetailResult.ReturnProductQuantity.Should().Be(GetUpdateModel().Details.First().ReturnProductQuantity);
@@ -69,6 +71,7 @@ namespace OrderSystemPlusTest.DataAccessor
                     ReturnShipmentOrderNumber = _returnShipmentOrderNumber,
                     ShipmentOrderNumber = _shipmentOrderNumber,
                     TotalReturnAmount = 10000,
+                    OperatorUserId = 999,
                     ReturnDate = new DateTime(2023, 06, 11),
                     Remark = "測試",
                     IsValid = true,
@@ -95,6 +98,7 @@ namespace OrderSystemPlusTest.DataAccessor
                     ReturnShipmentOrderNumber = _returnShipmentOrderNumber,
                     ShipmentOrderNumber = _shipmentOrderNumber,
                     TotalReturnAmount = 10000,
+                    OperatorUserId = 7777,
                     ReturnDate = new DateTime(2023, 06, 29),
                     Remark = "測試更新",
                     IsValid = true,
@@ -117,6 +121,7 @@ namespace OrderSystemPlusTest.DataAccessor
         public ReturnShipmentOrderDto GetDeleteModel() =>
                  new ReturnShipmentOrderDto
                  {
+                     OperatorUserId = 999,
                      ReturnShipmentOrderNumber = _returnShipmentOrderNumber,
                      UpdatedOn = _now,
                  };
