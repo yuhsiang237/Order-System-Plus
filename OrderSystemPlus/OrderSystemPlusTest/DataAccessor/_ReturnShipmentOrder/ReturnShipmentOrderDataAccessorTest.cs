@@ -1,0 +1,124 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
+
+using Xunit;
+using FluentAssertions;
+
+using OrderSystemPlus.DataAccessor;
+using OrderSystemPlus.Models.DataAccessor;
+using OrderSystemPlus.Utils.OrderNumberTool;
+
+namespace OrderSystemPlusTest.DataAccessor
+{
+    public class ReturnShipmentOrderDataAccessorTest
+    {
+        private IReturnShipmentOrderRepository _repository;
+        private DateTime _now;
+        private readonly string _returnShipmentOrderNumber;
+        private readonly string _shipmentOrderNumber;
+        private int _updateReturnShipmentOrderDetailId;
+        public ReturnShipmentOrderDataAccessorTest()
+        {
+            _now = DateTime.Now;
+            _returnShipmentOrderNumber = OrderNumberTool.GenerateNumber(OrderNumberTool.Type.ReturnShipment);
+            _shipmentOrderNumber = OrderNumberTool.GenerateNumber(OrderNumberTool.Type.Shipment);
+            _repository = new ReturnShipmentOrderRepository();
+        }
+
+        [Fact]
+        public async Task RunAsync()
+        {
+            await _repository.InsertAsync(new List<ReturnShipmentOrderDto> { GetInsertModel() });
+            var insertResult = await _repository.FindByOptionsAsync(GetInsertModel().ReturnShipmentOrderNumber);
+            insertResult.Count.Should().Be(1);
+            insertResult.First().ReturnShipmentOrderNumber.Should().Be(GetInsertModel().ReturnShipmentOrderNumber);
+            insertResult.First().ShipmentOrderNumber.Should().Be(GetInsertModel().ShipmentOrderNumber);
+            insertResult.First().TotalReturnAmount.Should().Be(GetInsertModel().TotalReturnAmount);
+            insertResult.First().ReturnDate.Should().Be(GetInsertModel().ReturnDate);
+            insertResult.First().Remark.Should().Be(GetInsertModel().Remark);
+          
+            var insertDetailResult = insertResult.First().Details.First();
+            insertDetailResult.ReturnShipmentOrderNumber.Should().Be(GetInsertModel().Details.First().ReturnShipmentOrderNumber);
+            insertDetailResult.ShipmentOrderDetailId.Should().Be(GetInsertModel().Details.First().ShipmentOrderDetailId);
+            insertDetailResult.ReturnProductQuantity.Should().Be(GetInsertModel().Details.First().ReturnProductQuantity);
+            insertDetailResult.Remarks.Should().Be(GetInsertModel().Details.First().Remarks);
+            _updateReturnShipmentOrderDetailId = insertDetailResult.Id;
+
+            await _repository.UpdateAsync(new List<ReturnShipmentOrderDto> { GetUpdateModel() });
+            var updateResult = await _repository.FindByOptionsAsync(GetUpdateModel().ReturnShipmentOrderNumber);
+            updateResult.First().ReturnShipmentOrderNumber.Should().Be(GetUpdateModel().ReturnShipmentOrderNumber);
+            updateResult.First().ShipmentOrderNumber.Should().Be(GetUpdateModel().ShipmentOrderNumber);
+            updateResult.First().TotalReturnAmount.Should().Be(GetUpdateModel().TotalReturnAmount);
+            updateResult.First().ReturnDate.Should().Be(GetUpdateModel().ReturnDate);
+            updateResult.First().Remark.Should().Be(GetUpdateModel().Remark);
+       
+            var updateDetailResult = updateResult.First().Details.First();
+            updateDetailResult.Remarks.Should().Be(GetUpdateModel().Details.First().Remarks);
+            updateDetailResult.ReturnProductQuantity.Should().Be(GetUpdateModel().Details.First().ReturnProductQuantity);
+
+            await _repository.DeleteAsync(new List<ReturnShipmentOrderDto> { GetDeleteModel() });
+            var deleteResult = await _repository.FindByOptionsAsync(_returnShipmentOrderNumber);
+            deleteResult.Count.Should().Be(0);
+        }
+
+        public ReturnShipmentOrderDto GetInsertModel() =>
+                new ReturnShipmentOrderDto
+                {
+                    ReturnShipmentOrderNumber = _returnShipmentOrderNumber,
+                    ShipmentOrderNumber = _shipmentOrderNumber,
+                    TotalReturnAmount = 10000,
+                    ReturnDate = new DateTime(2023, 06, 11),
+                    Remark = "測試",
+                    IsValid = true,
+                    CreatedOn = _now,
+                    UpdatedOn = _now,
+                    Details = new List<ReturnShipmentOrderDetailDto>
+                    {
+                        new ReturnShipmentOrderDetailDto
+                        {
+                            ReturnShipmentOrderNumber = _returnShipmentOrderNumber,
+                            ShipmentOrderDetailId = 99999999,
+                            ReturnProductQuantity = 1,
+                            Remarks = "test",
+                            CreatedOn = new DateTime(2023, 06, 11),
+                            UpdatedOn = new DateTime(2023, 06, 11),
+                            IsValid = true,
+                        }
+                    },
+                };
+
+        public ReturnShipmentOrderDto GetUpdateModel() =>
+                new ReturnShipmentOrderDto
+                {
+                    ReturnShipmentOrderNumber = _returnShipmentOrderNumber,
+                    ShipmentOrderNumber = _shipmentOrderNumber,
+                    TotalReturnAmount = 10000,
+                    ReturnDate = new DateTime(2023, 06, 29),
+                    Remark = "測試更新",
+                    IsValid = true,
+                    UpdatedOn = _now,
+                    Details = new List<ReturnShipmentOrderDetailDto>
+                    {
+                        new ReturnShipmentOrderDetailDto
+                        {
+                            Id = _updateReturnShipmentOrderDetailId,
+                            Remarks = "備註更新",
+                            ShipmentOrderDetailId = 99999999,
+                            ReturnProductQuantity = 30,
+                            CreatedOn = new DateTime(2023, 06, 29),
+                            UpdatedOn = new DateTime(2023, 06, 29),
+                            IsValid = true,
+                        }
+                    },
+                };
+
+        public ReturnShipmentOrderDto GetDeleteModel() =>
+                 new ReturnShipmentOrderDto
+                 {
+                     ReturnShipmentOrderNumber = _returnShipmentOrderNumber,
+                     UpdatedOn = _now,
+                 };
+    }
+}

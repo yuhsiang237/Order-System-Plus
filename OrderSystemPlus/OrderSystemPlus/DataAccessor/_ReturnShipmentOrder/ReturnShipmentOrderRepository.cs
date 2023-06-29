@@ -167,7 +167,7 @@ namespace OrderSystemPlus.DataAccessor
                     ,[IsValid]
                 ) VALUES
                 (
-                    ,@ReturnShipmentOrderNumber
+                    @ReturnShipmentOrderNumber
                     ,@ShipmentOrderDetailId
                     ,@ReturnProductQuantity
                     ,@Remarks
