@@ -8,8 +8,8 @@
         public string ShipmentOrderNumber { get; set; }
         public DateTime? ReturnDate { get; set; }
         public string Remark { get; set; }
-        public List<ReturnShipmentOrderDetail> Details { get; set; }
-        public class ReturnShipmentOrderDetail
+        public List<ReturnShipmentOrderDetail2> Details { get; set; }
+        public class ReturnShipmentOrderDetail2
         {
             public int Id { get; set; }
             public int? ShipmentOrderDetailId { get; set; }

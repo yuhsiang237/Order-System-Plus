@@ -40,7 +40,8 @@ void AddHandler()
         .AddSingleton<IProductManageHandler, ProductManageHandler>()
         .AddSingleton<IProductInventoryManageHandler, ProductInventoryManageHandler>()
         .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>()
-        .AddSingleton<IShipmentOrderManageHandler, ShipmentOrderManageHandler>(); ;
+        .AddSingleton<IShipmentOrderManageHandler, ShipmentOrderManageHandler>()
+        .AddSingleton<IReturnShipmentOrderManageHandler, ReturnShipmentOrderManageHandler>();
 }
 
 
