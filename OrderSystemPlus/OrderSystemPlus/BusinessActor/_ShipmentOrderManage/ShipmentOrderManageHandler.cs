@@ -45,7 +45,7 @@ namespace OrderSystemPlus.BusinessActor
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ShipmentOrderDto, RspGetShipmentOrderInfo>();
-                cfg.CreateMap<ShipmentOrderDetailDto, RspShipmentOrderDetail>();
+                cfg.CreateMap<ShipmentOrderDetailDto, RspGetShipmentOrderInfo.ShipmentOrderDetail>();
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();

@@ -121,7 +121,7 @@ namespace OrderSystemPlusTest.DataAccessor
         public ReturnShipmentOrderDto GetDeleteModel() =>
                  new ReturnShipmentOrderDto
                  {
-                     OperatorUserId = 999,
+                     OperatorUserId = 7,
                      ReturnShipmentOrderNumber = _returnShipmentOrderNumber,
                      UpdatedOn = _now,
                  };

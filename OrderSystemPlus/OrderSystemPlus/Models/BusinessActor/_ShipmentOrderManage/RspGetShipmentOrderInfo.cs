@@ -14,17 +14,17 @@
         public DateTime? DeliveryDate { get; set; }
         public string Address { get; set; }
         public string Remark { get; set; }
-        public List<RspShipmentOrderDetail> Details { get; set; }
-    }
-    public class RspShipmentOrderDetail
-    {
-        public int Id { get; set; }
-        public string OrderNumber { get; set; }
-        public int? ProductId { get; set; }
-        public string ProductNumber { get; set; }
-        public string ProductName { get; set; }
-        public decimal? ProductPrice { get; set; }
-        public decimal? ProductQuantity { get; set; }
-        public string Remarks { get; set; }
+        public List<ShipmentOrderDetail> Details { get; set; }
+        public class ShipmentOrderDetail
+        {
+            public int Id { get; set; }
+            public string OrderNumber { get; set; }
+            public int? ProductId { get; set; }
+            public string ProductNumber { get; set; }
+            public string ProductName { get; set; }
+            public decimal? ProductPrice { get; set; }
+            public decimal? ProductQuantity { get; set; }
+            public string Remarks { get; set; }
+        }
     }
 }
