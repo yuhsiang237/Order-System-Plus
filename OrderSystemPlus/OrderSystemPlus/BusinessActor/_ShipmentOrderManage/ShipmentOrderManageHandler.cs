@@ -76,7 +76,7 @@ namespace OrderSystemPlus.BusinessActor
                                                     {
                                                         Type = Enums.AdjustProductInventoryType.IncreaseDecrease,
                                                         ProductId = x.ProductId,
-                                                        AdjustQuantity = -1 * Math.Abs(x.ProductQuantity.Value),
+                                                        AdjustQuantity = -1 * Math.Abs(x.ProductQuantity),
                                                         Description = $"ShipmentOrder : {orderNumber}。",
                                                     })
                                                 .ToList();
@@ -95,7 +95,7 @@ namespace OrderSystemPlus.BusinessActor
 
                     if (product != null)
                     {
-                        totalAmount += product.Price * item.ProductQuantity.Value;
+                        totalAmount += product.Price * item.ProductQuantity;
                         details.Add(new ShipmentOrderDetailDto
                         {
                             OrderNumber = orderNumber,
