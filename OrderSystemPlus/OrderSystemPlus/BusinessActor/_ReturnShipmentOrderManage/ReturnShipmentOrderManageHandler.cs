@@ -1,11 +1,11 @@
 ﻿using System.Transactions;
-using System.Linq;
 using AutoMapper;
 
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Models.DataAccessor;
 using OrderSystemPlus.Utils.OrderNumberTool;
+using OrderSystemPlus.Enums;
 
 namespace OrderSystemPlus.BusinessActor
 {
@@ -62,7 +62,6 @@ namespace OrderSystemPlus.BusinessActor
             try
             {
                 var now = DateTime.Now;
-                using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
                 // 1. Find target shipmentOrder & check unique
                 var shipmentOrder = (await _shipmentOrderRepository.FindByOptionsAsync(req.ShipmentOrderNumber)).FirstOrDefault();
                 if (shipmentOrder == null)
@@ -95,16 +94,16 @@ namespace OrderSystemPlus.BusinessActor
                 // 3. Create details
                 var detailDto = new List<ReturnShipmentOrderDetailDto>();
                 var totalReturnAmount = default(decimal);
-                foreach (var o in shipmentOrder.Details)
+                foreach (var o in shipmentOrder?.Details)
                 {
-                    var shipmentOrderDetail = req?.Details?.Find(f => f.ShipmentOrderDetailId == o.Id);
-                    totalReturnAmount += o.ProductPrice.Value * shipmentOrderDetail.ReturnProductQuantity.Value;
+                    var reqDetail = req?.Details?.Find(f => f.ShipmentOrderDetailId == o.Id);
+                    totalReturnAmount += o.ProductPrice.Value * reqDetail.ReturnProductQuantity.Value;
                     detailDto.Add(new ReturnShipmentOrderDetailDto
                     {
                         ReturnShipmentOrderNumber = returnShipmentOrderNumber,
-                        ShipmentOrderDetailId = shipmentOrderDetail.ShipmentOrderDetailId.Value,
-                        ReturnProductQuantity = shipmentOrderDetail.ReturnProductQuantity,
-                        Remarks = shipmentOrderDetail.Remarks,
+                        ShipmentOrderDetailId = o.Id,
+                        ReturnProductQuantity = reqDetail.ReturnProductQuantity,
+                        Remarks = reqDetail.Remarks,
                         CreatedOn = now,
                         UpdatedOn = now,
                         IsValid = true,
@@ -116,16 +115,32 @@ namespace OrderSystemPlus.BusinessActor
 
                 // 4.  Adjust inventory
                 var reqUpdateProductInventoryList = new List<ReqUpdateProductInventory>();
-                foreach (var o in shipmentOrder.Details)
+                foreach (var o in shipmentOrder?.Details)
                 {
-                    // TODO
-                }
-                await _productInventoryManageHandler.HandleAsync(reqUpdateProductInventoryList);
+                    var reqDetail = req?.Details?.Find(f => f.ShipmentOrderDetailId == o.Id);
+                    if (o.ProductQuantity < reqDetail.ReturnProductQuantity)
+                        throw new Exception("ReturnProductQuantity Error");
+                    if (reqDetail.ReturnProductQuantity < 0)
+                        throw new Exception("ReturnProductQuantity less than 0 Error");
 
+                    reqUpdateProductInventoryList
+                        .Add(new ReqUpdateProductInventory
+                        {
+                            Type = AdjustProductInventoryType.IncreaseDecrease,
+                            ProductId = o.ProductId,
+                            AdjustQuantity = reqDetail.ReturnProductQuantity,
+                            Description = $"ReturnShipmentOrder : {returnShipmentOrderNumber}。",
+                        });
+                }
+
+                using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+                var rsp = await _productInventoryManageHandler.HandleAsync(reqUpdateProductInventoryList);
+                if (rsp == false)
+                    throw new Exception("productInventory error");
                 await _returnShipmentOrderRepository.InsertAsync(
                               new List<ReturnShipmentOrderDto> { orderDto });
-
                 scope.Complete();
+
                 return returnShipmentOrderNumber;
             }
             finally
