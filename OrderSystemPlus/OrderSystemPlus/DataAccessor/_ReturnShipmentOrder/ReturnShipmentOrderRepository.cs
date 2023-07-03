@@ -11,7 +11,9 @@ namespace OrderSystemPlus.DataAccessor
 {
     public class ReturnShipmentOrderRepository : IReturnShipmentOrderRepository
     {
-        public async Task<List<ReturnShipmentOrderDto>> FindByOptionsAsync(string? returnShipmentOrderNumber = null)
+        public async Task<List<ReturnShipmentOrderDto>> FindByOptionsAsync(
+            string? returnShipmentOrderNumber = null, 
+            string? shipmentOrderNumber = null)
         {
             string sql = @"
                            SELECT
@@ -33,7 +35,9 @@ namespace OrderSystemPlus.DataAccessor
 
             if (!string.IsNullOrEmpty(returnShipmentOrderNumber))
                 conditions.Add("[ReturnShipmentOrderNumber] = @ReturnShipmentOrderNumber");
-
+            if (!string.IsNullOrEmpty(shipmentOrderNumber))
+                conditions.Add("[ShipmentOrderNumber] = @ShipmentOrderNumber");
+            
             if (conditions.Any())
                 sql = string.Concat(sql, $" WHERE {string.Join(" AND ", conditions)}");
 
@@ -44,6 +48,7 @@ namespace OrderSystemPlus.DataAccessor
                 {
                     IsValid = true,
                     ReturnShipmentOrderNumber = returnShipmentOrderNumber,
+                    ShipmentOrderNumber = shipmentOrderNumber,
                 })).ToList();
             }
 

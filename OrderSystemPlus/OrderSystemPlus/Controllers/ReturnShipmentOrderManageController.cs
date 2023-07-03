@@ -17,12 +17,12 @@ namespace OrderSystemPlus.Controllers
             _returnShipmentOrderHandler = returnShipmentOrderHandler;
         }
 
-        //[HttpPost("CreateReturnShipmentOrder")]
-        //public async Task<string> CreateReturnShipmentOrder([FromBody] ReqCreateReturnShipmentOrder req)
-        //{
-        //    var rsp = await _returnShipmentOrderHandler.HandleAsync(req);
-        //    return rsp;
-        //}
+        [HttpPost("CreateReturnShipmentOrder")]
+        public async Task<string> CreateReturnShipmentOrder([FromBody] ReqCreateReturnShipmentOrder req)
+        {
+            var rsp = await _returnShipmentOrderHandler.HandleAsync(req);
+            return rsp;
+        }
 
         //[HttpPost("UpdateReturnShipmentOrder")]
         //public async Task<IActionResult> UpdateReturnShipmentOrder([FromBody] ReqUpdateReturnShipmentOrder req)

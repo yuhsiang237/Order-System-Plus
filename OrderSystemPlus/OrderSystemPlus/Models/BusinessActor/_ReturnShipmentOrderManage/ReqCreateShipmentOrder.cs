@@ -11,7 +11,6 @@
         public List<ReturnShipmentOrderDetail2> Details { get; set; }
         public class ReturnShipmentOrderDetail2
         {
-            public int Id { get; set; }
             public int? ShipmentOrderDetailId { get; set; }
             public decimal? ReturnProductQuantity { get; set; }
             public string Remarks { get; set; }

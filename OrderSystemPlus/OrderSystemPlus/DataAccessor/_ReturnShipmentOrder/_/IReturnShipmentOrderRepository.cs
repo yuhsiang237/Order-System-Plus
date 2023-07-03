@@ -30,6 +30,8 @@ namespace OrderSystemPlus.DataAccessor
         /// </summary>
         /// <param name="orderNumber"></param>
         /// <returns></returns>
-        Task<List<ReturnShipmentOrderDto>> FindByOptionsAsync(string? returnShipmentOrderNumber = null);
+        Task<List<ReturnShipmentOrderDto>> FindByOptionsAsync(
+            string? returnShipmentOrderNumber = null,
+            string? shipmentOrderNumber = null);
     }
 }
