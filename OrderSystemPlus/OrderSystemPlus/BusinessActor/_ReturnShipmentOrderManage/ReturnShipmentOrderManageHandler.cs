@@ -193,14 +193,14 @@ namespace OrderSystemPlus.BusinessActor
 
                     if (o.ReturnProductQuantity.Value != reqDetail.ReturnProductQuantity.Value)
                     {
-                        var diffReturnProductQuantity = o.ReturnProductQuantity - reqDetail.ReturnProductQuantity;
+                        var diffReturnProductQuantity =  reqDetail.ReturnProductQuantity - o.ReturnProductQuantity;
 
                         reqUpdateProductInventoryList.Add(new ReqUpdateProductInventory
                         {
                             ProductId = shipmentOrderDetail.ProductId,
                             Type = AdjustProductInventoryType.IncreaseDecrease,
                             AdjustQuantity = diffReturnProductQuantity,
-                            Description = $"returnshiporder update ${o.ReturnProductQuantity} => ${reqDetail.ReturnProductQuantity}"
+                            Description = $"returnshiporder update {o.ReturnProductQuantity} => {reqDetail.ReturnProductQuantity}。"
                         });
                     }
                     o.ReturnProductQuantity = reqDetail.ReturnProductQuantity;
