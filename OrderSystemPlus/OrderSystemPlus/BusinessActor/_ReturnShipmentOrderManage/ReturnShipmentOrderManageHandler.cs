@@ -14,19 +14,16 @@ namespace OrderSystemPlus.BusinessActor
         private readonly IReturnShipmentOrderRepository _returnShipmentOrderRepository;
         private readonly IShipmentOrderRepository _shipmentOrderRepository;
         private readonly IProductInventoryManageHandler _productInventoryManageHandler;
-        private readonly IProductRepository _productRepository;
         private static SemaphoreSlim _actionSemaphoreSlim;
 
         public ReturnShipmentOrderManageHandler(
             IReturnShipmentOrderRepository returnShipmentOrderRepository,
             IShipmentOrderRepository shipmentOrderRepository,
-            IProductRepository productRepository,
             IProductInventoryManageHandler productInventoryManageHandler)
         {
             _actionSemaphoreSlim = new SemaphoreSlim(1, 1);
             _returnShipmentOrderRepository = returnShipmentOrderRepository;
             _shipmentOrderRepository = shipmentOrderRepository;
-            _productRepository = productRepository;
             _productInventoryManageHandler = productInventoryManageHandler;
         }
         public async Task<List<RspGetReturnShipmentOrderList>> GetReturnShipmentOrderListAsync(ReqGetReturnShipmentOrderList req)
