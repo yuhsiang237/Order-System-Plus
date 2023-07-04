@@ -24,12 +24,12 @@ namespace OrderSystemPlus.Controllers
             return rsp;
         }
 
-        //[HttpPost("UpdateReturnShipmentOrder")]
-        //public async Task<IActionResult> UpdateReturnShipmentOrder([FromBody] ReqUpdateReturnShipmentOrder req)
-        //{
-        //    await _returnShipmentOrderHandler.HandleAsync(req);
-        //    return StatusCode(200);
-        //}
+        [HttpPost("UpdateReturnShipmentOrder")]
+        public async Task<IActionResult> UpdateReturnShipmentOrder([FromBody] ReqUpdateReturnShipmentOrder req)
+        {
+            await _returnShipmentOrderHandler.HandleAsync(req);
+            return StatusCode(200);
+        }
 
         [HttpPost("GetReturnShipmentOrderList")]
         public async Task<List<RspGetReturnShipmentOrderList>> GetReturnShipmentOrderList([FromBody] ReqGetReturnShipmentOrderList req)

@@ -15,7 +15,7 @@ namespace OrderSystemPlus.BusinessActor
         private readonly IShipmentOrderRepository _shipmentOrderRepository;
         private readonly IProductInventoryManageHandler _productInventoryManageHandler;
         private readonly IProductRepository _productRepository;
-        private static SemaphoreSlim _createReturnOrderSemaphoreSlim;
+        private static SemaphoreSlim _actionSemaphoreSlim;
 
         public ReturnShipmentOrderManageHandler(
             IReturnShipmentOrderRepository returnShipmentOrderRepository,
@@ -23,7 +23,7 @@ namespace OrderSystemPlus.BusinessActor
             IProductRepository productRepository,
             IProductInventoryManageHandler productInventoryManageHandler)
         {
-            _createReturnOrderSemaphoreSlim = new SemaphoreSlim(1, 1);
+            _actionSemaphoreSlim = new SemaphoreSlim(1, 1);
             _returnShipmentOrderRepository = returnShipmentOrderRepository;
             _shipmentOrderRepository = shipmentOrderRepository;
             _productRepository = productRepository;
@@ -58,7 +58,7 @@ namespace OrderSystemPlus.BusinessActor
 
         public async Task<string> HandleAsync(ReqCreateReturnShipmentOrder req)
         {
-            await _createReturnOrderSemaphoreSlim.WaitAsync();
+            await _actionSemaphoreSlim.WaitAsync();
             try
             {
                 var now = DateTime.Now;
@@ -92,8 +92,8 @@ namespace OrderSystemPlus.BusinessActor
                 };
 
                 // 3. Create details
-                var detailDto = new List<ReturnShipmentOrderDetailDto>();
                 var totalReturnAmount = default(decimal);
+                var detailDto = new List<ReturnShipmentOrderDetailDto>();
                 foreach (var o in shipmentOrder?.Details)
                 {
                     var reqDetail = req?.Details?.Find(f => f.ShipmentOrderDetailId == o.Id);
@@ -145,14 +145,84 @@ namespace OrderSystemPlus.BusinessActor
             }
             finally
             {
-                _createReturnOrderSemaphoreSlim.Release();
+                _actionSemaphoreSlim.Release();
             }
         }
 
         public async Task HandleAsync(ReqUpdateReturnShipmentOrder req)
         {
-            var now = DateTime.Now;
-            //TODO
+            await _actionSemaphoreSlim.WaitAsync();
+            try
+            {
+                var now = DateTime.Now;
+                // 1. get returnShipmentOrder
+                var returnShipmentOrderDto = (await _returnShipmentOrderRepository.FindByOptionsAsync(req.ReturnShipmentOrderNumber))
+                    .ToList()
+                    .First();
+                if (returnShipmentOrderDto == null)
+                    throw new Exception("returnShipmentOrder not found");
+
+                // 2. update returnShipmentOrder
+                returnShipmentOrderDto.ReturnDate = req.ReturnDate;
+                returnShipmentOrderDto.Remark = req.Remark;
+
+                // 3. update returnShipmentOrder detail
+                var totalReturnAmount = default(decimal);
+                var shipmentOrderDetails = (await _shipmentOrderRepository.FindByOptionsAsync(returnShipmentOrderDto.ShipmentOrderNumber))
+                    ?.ToList()
+                    ?.FirstOrDefault()
+                    ?.Details ?? new List<ShipmentOrderDetailDto>();
+                var reqUpdateProductInventoryList = new List<ReqUpdateProductInventory>();
+
+                foreach (var o in returnShipmentOrderDto?.Details)
+                {
+                    var shipmentOrderDetail = shipmentOrderDetails.Find(f => f.Id == o.ShipmentOrderDetailId);
+                    var reqDetail = req.Details.Find(f => f.Id == o.Id);
+                    if (shipmentOrderDetail == null)
+                        throw new Exception("Not found shipmentOrderDetail");
+                    if (reqDetail == null)
+                        throw new Exception("Not found reqDetail");
+                    if (shipmentOrderDetail.ProductQuantity < reqDetail.ReturnProductQuantity)
+                        throw new Exception("ReturnProductQuantity Error");
+                    if (reqDetail.ReturnProductQuantity < 0)
+                        throw new Exception("ReturnProductQuantity less than 0 Error");
+
+                    totalReturnAmount += shipmentOrderDetail.ProductPrice.Value * reqDetail.ReturnProductQuantity.Value;
+                    o.Remarks = reqDetail.Remarks;
+                    o.UpdatedOn = now;
+
+                    if (o.ReturnProductQuantity.Value != reqDetail.ReturnProductQuantity.Value)
+                    {
+                        var diffReturnProductQuantity = o.ReturnProductQuantity - reqDetail.ReturnProductQuantity;
+
+                        reqUpdateProductInventoryList.Add(new ReqUpdateProductInventory
+                        {
+                            ProductId = shipmentOrderDetail.ProductId,
+                            Type = AdjustProductInventoryType.IncreaseDecrease,
+                            AdjustQuantity = diffReturnProductQuantity,
+                            Description = $"returnshiporder update ${o.ReturnProductQuantity} => ${reqDetail.ReturnProductQuantity}"
+                        });
+                    }
+                    o.ReturnProductQuantity = reqDetail.ReturnProductQuantity;
+
+                }
+                returnShipmentOrderDto.TotalReturnAmount = totalReturnAmount;
+                returnShipmentOrderDto.OperatorUserId = 999; // TODO
+                returnShipmentOrderDto.UpdatedOn = now;
+
+                // 4.  Adjust inventory
+                using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+                var rsp = await _productInventoryManageHandler.HandleAsync(reqUpdateProductInventoryList);
+                if (rsp == false)
+                    throw new Exception("productInventory error");
+                await _returnShipmentOrderRepository.UpdateAsync(
+                            new List<ReturnShipmentOrderDto> { returnShipmentOrderDto });
+                scope.Complete();
+            }
+            finally
+            {
+                _actionSemaphoreSlim.Release();
+            }
         }
 
         public async Task HandleAsync(ReqDeleteReturnShipmentOrder req)
