@@ -9,100 +9,96 @@ using OrderSystemPlus.Models.DataAccessor;
 
 namespace OrderSystemPlus.DataAccessor
 {
-    public class ShipmentOrderRepository : IShipmentOrderRepository
+    public class ReturnShipmentOrderRepository : IReturnShipmentOrderRepository
     {
-        public async Task<List<ShipmentOrderDto>> FindByOptionsAsync(string? orderNumber = null)
+        public async Task<List<ReturnShipmentOrderDto>> FindByOptionsAsync(
+            string? returnShipmentOrderNumber = null, 
+            string? shipmentOrderNumber = null)
         {
             string sql = @"
                            SELECT
-                                [OrderNumber]
-                                ,[TotalAmount]
-                                ,[RecipientName]
+                                [ReturnShipmentOrderNumber]
+                                ,[ShipmentOrderNumber]
+                                ,[TotalReturnAmount]
                                 ,[OperatorUserId]
-                                ,[Status]
-                                ,[FinishDate]
-                                ,[DeliveryDate]
-                                ,[Address]
+                                ,[ReturnDate]
                                 ,[Remark]
+                                ,[IsValid]
                                 ,[CreatedOn]
                                 ,[UpdatedOn]
-                                ,[IsValid]
-                           FROM [dbo].[ShipmentOrder]";
+                           FROM [dbo].[ReturnShipmentOrder]";
 
             var conditions = new List<string>
             {
                 "[IsValid] = @IsValid",
             };
 
-            if (!string.IsNullOrEmpty(orderNumber))
-                conditions.Add("[OrderNumber] = @OrderNumber");
-
+            if (!string.IsNullOrEmpty(returnShipmentOrderNumber))
+                conditions.Add("[ReturnShipmentOrderNumber] = @ReturnShipmentOrderNumber");
+            if (!string.IsNullOrEmpty(shipmentOrderNumber))
+                conditions.Add("[ShipmentOrderNumber] = @ShipmentOrderNumber");
+            
             if (conditions.Any())
                 sql = string.Concat(sql, $" WHERE {string.Join(" AND ", conditions)}");
 
-            var result = default(List<ShipmentOrderDto>);
+            var result = default(List<ReturnShipmentOrderDto>);
             using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
-                result = (await conn.QueryAsync<ShipmentOrderDto>(sql, new
+                result = (await conn.QueryAsync<ReturnShipmentOrderDto>(sql, new
                 {
                     IsValid = true,
-                    OrderNumber = orderNumber,
+                    ReturnShipmentOrderNumber = returnShipmentOrderNumber,
+                    ShipmentOrderNumber = shipmentOrderNumber,
                 })).ToList();
             }
 
             result.ForEach(x =>
             {
-                x.Details = GetDetails(x.OrderNumber);
+                x.Details = GetDetails(x.ReturnShipmentOrderNumber);
             });
 
             return result;
         }
 
-        public List<ShipmentOrderDetailDto> GetDetails(string orderNumber)
+        public List<ReturnShipmentOrderDetailDto> GetDetails(string returnShipmentOrderNumber)
         {
             string sql = @"
                            SELECT
                                 [Id]
-                                ,[OrderNumber]
-                                ,[ProductId]
-                                ,[ProductNumber]
-                                ,[ProductName]
-                                ,[ProductPrice]
-                                ,[ProductQuantity]
+                                ,[ReturnShipmentOrderNumber]
+                                ,[ShipmentOrderDetailId]
+                                ,[ReturnProductQuantity]
                                 ,[Remarks]
                                 ,[CreatedOn]
                                 ,[UpdatedOn]
                                 ,[IsValid]
-                           FROM [dbo].[ShipmentOrderDetail]
+                           FROM [dbo].[ReturnShipmentOrderDetail]
                            WHERE 
-                                [OrderNumber] = @OrderNumber
+                                [ReturnShipmentOrderNumber] = @ReturnShipmentOrderNumber
                                 AND [IsValid] = 1";
-            var result = default(List<ShipmentOrderDetailDto>);
+            var result = default(List<ReturnShipmentOrderDetailDto>);
             using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
-                result = (conn.Query<ShipmentOrderDetailDto>(sql, new
+                result = (conn.Query<ReturnShipmentOrderDetailDto>(sql, new
                 {
-                    OrderNumber = orderNumber,
+                    ReturnShipmentOrderNumber = returnShipmentOrderNumber,
                 })).ToList();
             }
             return result;
         }
 
-        public async Task UpdateAsync(IEnumerable<ShipmentOrderDto> model)
+        public async Task UpdateAsync(IEnumerable<ReturnShipmentOrderDto> model)
         {
             var sql = @"
-                UPDATE [dbo].[ShipmentOrder]
+                UPDATE [dbo].[ReturnShipmentOrder]
                 SET
-                   [RecipientName] = @RecipientName,
+                   [TotalReturnAmount] = @TotalReturnAmount,
+                   [ReturnDate] = @ReturnDate,
                    [OperatorUserId] = @OperatorUserId,
-                   [Status] = @Status,
-                   [FinishDate] = @FinishDate,
-                   [DeliveryDate] = @DeliveryDate,
-                   [Address]= @Address,
                    [Remark] = @Remark,
                    [UpdatedOn] = @UpdatedOn
                 WHERE
-                   [OrderNumber] = @OrderNumber
+                   [ReturnShipmentOrderNumber] = @ReturnShipmentOrderNumber
                    AND IsValid = 1
                 ";
             using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
@@ -114,7 +110,7 @@ namespace OrderSystemPlus.DataAccessor
                 }
             }
         }
-        public async Task<List<string>> InsertAsync(IEnumerable<ShipmentOrderDto> model)
+        public async Task<List<string>> InsertAsync(IEnumerable<ReturnShipmentOrderDto> model)
         {
             var result = new List<string>();
             using (var ts = new TransactionScope())
@@ -132,69 +128,57 @@ namespace OrderSystemPlus.DataAccessor
 
             return await Task.FromResult(result);
         }
-        private void InsertAsync(ShipmentOrderDto command, IDbConnection cn)
+        private void InsertAsync(ReturnShipmentOrderDto command, IDbConnection cn)
         {
             var sql = @"
-                INSERT INTO [dbo].[ShipmentOrder]
+                INSERT INTO [dbo].[ReturnShipmentOrder]
                 (
-                    [OrderNumber]
-                    ,[TotalAmount]
-                    ,[RecipientName]
-                    ,[OperatorUserId]
-                    ,[Status]
-                    ,[FinishDate]
-                    ,[DeliveryDate]
-                    ,[Address]
+                    [ReturnShipmentOrderNumber]
+                    ,[ShipmentOrderNumber]
+                    ,[TotalReturnAmount]
+                    ,[ReturnDate]
                     ,[Remark]
+                    ,[OperatorUserId]
+                    ,[IsValid]
                     ,[CreatedOn]
                     ,[UpdatedOn]
-                    ,[IsValid]
                 ) VALUES
                 (
-                    @OrderNumber
-                    ,@TotalAmount
-                    ,@RecipientName
-                    ,@OperatorUserId
-                    ,@Status
-                    ,@FinishDate
-                    ,@DeliveryDate
-                    ,@Address
+                    @ReturnShipmentOrderNumber
+                    ,@ShipmentOrderNumber
+                    ,@TotalReturnAmount
+                    ,@ReturnDate
                     ,@Remark
+                    ,@OperatorUserId
+                    ,@IsValid
                     ,@CreatedOn
                     ,@UpdatedOn
-                    ,@IsValid
                 );
                 ";
             var count = cn.Execute(sql, command);
             if (count != 1) { throw new Exception("InsertAsync"); }
         }
 
-        private void UpdateInsertDetailAsync(List<ShipmentOrderDetailDto> command, IDbConnection cn)
+        private void UpdateInsertDetailAsync(List<ReturnShipmentOrderDetailDto> command, IDbConnection cn)
         {
             var insertList = command.Where(s => s.Id == 0).ToList();
             var updateList = command.Where(s => s.Id != 0).ToList();
 
             var insertsql = @"
-                INSERT INTO [dbo].[ShipmentOrderDetail]
+                INSERT INTO [dbo].[ReturnShipmentOrderDetail]
                 (
-                    [OrderNumber]
-                    ,[ProductId]
-                    ,[ProductNumber]
-                    ,[ProductName]
-                    ,[ProductPrice]
-                    ,[ProductQuantity]
+                    [ReturnShipmentOrderNumber]
+                    ,[ShipmentOrderDetailId]
+                    ,[ReturnProductQuantity]
                     ,[Remarks]
                     ,[CreatedOn]
                     ,[UpdatedOn]
                     ,[IsValid]
                 ) VALUES
                 (
-                    @OrderNumber
-                    ,@ProductId
-                    ,@ProductNumber
-                    ,@ProductName
-                    ,@ProductPrice
-                    ,@ProductQuantity
+                    @ReturnShipmentOrderNumber
+                    ,@ShipmentOrderDetailId
+                    ,@ReturnProductQuantity
                     ,@Remarks
                     ,@CreatedOn
                     ,@UpdatedOn
@@ -203,9 +187,10 @@ namespace OrderSystemPlus.DataAccessor
                 ";
 
             var updateSql = @"
-                UPDATE [dbo].[ShipmentOrderDetail]
+                UPDATE [dbo].[ReturnShipmentOrderDetail]
                 SET
                     [Remarks] = @Remarks,
+                    [ReturnProductQuantity] = @ReturnProductQuantity,
                     [UpdatedOn] = @UpdatedOn
                 WHERE
                     [Id] = @Id";
@@ -219,24 +204,25 @@ namespace OrderSystemPlus.DataAccessor
             }
         }
 
-        public async Task DeleteAsync(IEnumerable<ShipmentOrderDto> model)
+        public async Task DeleteAsync(IEnumerable<ReturnShipmentOrderDto> model)
         {
             var sql = @"
-                UPDATE [dbo].[ShipmentOrder]
+                UPDATE [dbo].[ReturnShipmentOrder]
                 SET
+                    [OperatorUserId] = @OperatorUserId,
                     [IsValid] = 0,
                     [UpdatedOn] = @UpdatedOn
                 WHERE
-                    [OrderNumber] = @OrderNumber
+                    [ReturnShipmentOrderNumber] = @ReturnShipmentOrderNumber
                 ";
 
             var sqlDetail = @"
-                UPDATE [dbo].[ShipmentOrderDetail]
+                UPDATE [dbo].[ReturnShipmentOrderDetail]
                 SET
                     [IsValid] = 0,
                     [UpdatedOn] = @UpdatedOn
                 WHERE
-                    [OrderNumber] = @OrderNumber
+                    [ReturnShipmentOrderNumber] = @ReturnShipmentOrderNumber
                 ";
 
             using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
