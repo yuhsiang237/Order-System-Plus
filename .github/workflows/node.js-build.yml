@@ -20,7 +20,12 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Change to directory
+      run: cd ./OrderSystemPlus/OrderSystemPlus/App
+      
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -28,9 +33,7 @@ jobs:
         cache: 'npm'
 
     - name: npm install 
-      working-directory: ./OrderSystemPlus/OrderSystemPlus/App
       run: npm install
 
     - name: npm run build 
-      working-directory: ./OrderSystemPlus/OrderSystemPlus/App
       run: npm install
