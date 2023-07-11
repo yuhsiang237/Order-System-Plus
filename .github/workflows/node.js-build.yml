@@ -30,8 +30,9 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+        cache-dependency-path: 'OrderSystemPlus/OrderSystemPlus/App/package-lock.json'
         cache: 'npm'
-
+    
     - name: npm install 
       run: npm install
 
