@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [14.x, 16.x, 18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -30,9 +30,9 @@ jobs:
         cache-dependency-path: 'OrderSystemPlus/OrderSystemPlus/App/package-lock.json'
         cache: 'npm'
     
-    - name: npm install 
+    - name: npm ci 
       working-directory: ./OrderSystemPlus/OrderSystemPlus/App
-      run: npm install
+      run: npm ci
 
     - name: npm run build 
       working-directory: ./OrderSystemPlus/OrderSystemPlus/App
