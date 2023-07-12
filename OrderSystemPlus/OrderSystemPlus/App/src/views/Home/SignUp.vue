@@ -52,6 +52,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import axios, { AxiosResponse, AxiosError } from 'axios'
 
 export default defineComponent({
   name: 'sign-up',
@@ -59,6 +60,8 @@ export default defineComponent({
     RouterLink
   },
   setup() {
+    const fetchData = async () => {}
+    fetchData()
     return {}
   }
 })
