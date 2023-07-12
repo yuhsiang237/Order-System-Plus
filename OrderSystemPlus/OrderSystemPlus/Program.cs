@@ -1,13 +1,12 @@
-using FluentValidation;
 using FluentValidation.AspNetCore;
 
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.DataAccessor;
-using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Utils.JwtHelper;
 
 var builder = WebApplication.CreateBuilder(args);
 
+ValidatorConfiguration.Configure(builder);
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -20,28 +19,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 
 /// <summary>
-/// Add dependency Validactor
-/// </summary>
-void AddValidactor()
-{
-    builder.Services
-        .AddTransient<IValidator<ReqCreateUser>, ReqCreateUserValidator>()
-        .AddTransient<IValidator<ReqSignInUser>, ReqSignInUserValidator>()
-        .AddTransient<IValidator<ReqUpdateUser>, ReqUpdateUserValidator>();
-}
-
-/// <summary>
 /// Add dependency injection Handler
 /// </summary>
 void AddHandler()
 {
     builder.Services
-        .AddSingleton<IUserManageHandler, UserManageHandler>()
-        .AddSingleton<IProductManageHandler, ProductManageHandler>()
-        .AddSingleton<IProductInventoryManageHandler, ProductInventoryManageHandler>()
-        .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>()
-        .AddSingleton<IShipmentOrderManageHandler, ShipmentOrderManageHandler>()
-        .AddSingleton<IReturnShipmentOrderManageHandler, ReturnShipmentOrderManageHandler>();
+           .AddSingleton<IUserManageHandler, UserManageHandler>()
+           .AddSingleton<IProductManageHandler, ProductManageHandler>()
+           .AddSingleton<IProductInventoryManageHandler, ProductInventoryManageHandler>()
+           .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>()
+           .AddSingleton<IShipmentOrderManageHandler, ShipmentOrderManageHandler>()
+           .AddSingleton<IReturnShipmentOrderManageHandler, ReturnShipmentOrderManageHandler>();
 }
 
 
@@ -51,18 +39,16 @@ void AddHandler()
 void AddRepository()
 {
     builder.Services
-          .AddSingleton<IUserRepository, UserRepository>()
-          .AddSingleton<IProductRepository, ProductRepository>()
-          .AddSingleton<IProductInventoryRepository, ProductInventoryRepository>()
-          .AddSingleton<IProductTypeRepository, ProductTypeRepository>()
-          .AddSingleton<IShipmentOrderRepository, ShipmentOrderRepository>()
-          .AddSingleton<IReturnShipmentOrderRepository, ReturnShipmentOrderRepository>()
-          .AddSingleton<IProductTypeRelationshipRepository, ProductTypeRelationshipRepository>();
-
+         .AddSingleton<IUserRepository, UserRepository>()
+         .AddSingleton<IProductRepository, ProductRepository>()
+         .AddSingleton<IProductInventoryRepository, ProductInventoryRepository>()
+         .AddSingleton<IProductTypeRepository, ProductTypeRepository>()
+         .AddSingleton<IShipmentOrderRepository, ShipmentOrderRepository>()
+         .AddSingleton<IReturnShipmentOrderRepository, ReturnShipmentOrderRepository>()
+         .AddSingleton<IProductTypeRelationshipRepository, ProductTypeRelationshipRepository>();
 }
 
 // Custom DI
-AddValidactor();
 AddRepository();
 AddHandler();
 

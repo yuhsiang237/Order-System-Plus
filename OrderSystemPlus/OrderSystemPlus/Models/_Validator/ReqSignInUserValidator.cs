@@ -7,12 +7,10 @@ public class ReqSignInUserValidator : AbstractValidator<ReqSignInUser>
     public ReqSignInUserValidator()
     {
         RuleFor(x => x.Account)
-            .NotNull().WithMessage("不可為空")
-            .NotEmpty().WithMessage("不可為空");
+            .NotNull().WithMessage("必填")
+            .NotEmpty().WithMessage("必填");
         RuleFor(x => x.Password)
-            .NotNull()
-            .WithMessage("不可為空")
-            .NotEmpty()
-            .WithMessage("不可為空");
+            .NotNull().WithMessage("必填")
+            .NotEmpty().WithMessage("必填");
     }
 }
