@@ -1,13 +1,12 @@
-using FluentValidation;
 using FluentValidation.AspNetCore;
 
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.DataAccessor;
-using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Utils.JwtHelper;
 
 var builder = WebApplication.CreateBuilder(args);
 
+ValidatorConfiguration.Configure(builder);
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -18,17 +17,6 @@ builder.Services.AddSwaggerGen();
 
 // Add auto fluent validation
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
-
-/// <summary>
-/// Add dependency Validactor
-/// </summary>
-void AddValidactor()
-{
-    builder.Services
-        .AddTransient<IValidator<ReqCreateUser>, ReqCreateUserValidator>()
-        .AddTransient<IValidator<ReqSignInUser>, ReqSignInUserValidator>()
-        .AddTransient<IValidator<ReqUpdateUser>, ReqUpdateUserValidator>();
-}
 
 /// <summary>
 /// Add dependency injection Handler
@@ -54,13 +42,12 @@ void AddRepository()
           .AddSingleton<IProductRepository, ProductRepository>()
           .AddSingleton<IProductInventoryRepository, ProductInventoryRepository>()
           .AddSingleton<IProductTypeRepository, ProductTypeRepository>()
-                    .AddSingleton<IShipmentOrderRepository, ShipmentOrderRepository>()
+          .AddSingleton<IShipmentOrderRepository, ShipmentOrderRepository>()
           .AddSingleton<IProductTypeRelationshipRepository, ProductTypeRelationshipRepository>();
 
 }
 
 // Custom DI
-AddValidactor();
 AddRepository();
 AddHandler();
 

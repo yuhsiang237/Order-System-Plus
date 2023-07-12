@@ -61,9 +61,10 @@ namespace OrderSystemPlus.BusinessActor
                 var isExist = (await _userRepository.FindByOptionsAsync(null, null, req.Account))
                             .ToList()
                             .Any();
-                if (!isExist)
-                {
-                    result = await _userRepository.InsertAsync(
+                if (isExist)
+                    throw new BussinessException("使用者已存在");
+
+                result = await _userRepository.InsertAsync(
                         new UserDto
                         {
                             Name = req.Name,
@@ -76,11 +77,6 @@ namespace OrderSystemPlus.BusinessActor
                             CreatedOn = now,
                             UpdatedOn = now,
                         });
-                }
-                else
-                {
-                    throw new Exception("使用者已存在");
-                }
 
                 return await Task.FromResult(result);
             }
