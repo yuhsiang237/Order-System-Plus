@@ -24,11 +24,12 @@ builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyCont
 void AddHandler()
 {
     builder.Services
-        .AddSingleton<IUserManageHandler, UserManageHandler>()
-        .AddSingleton<IProductManageHandler, ProductManageHandler>()
-        .AddSingleton<IProductInventoryManageHandler, ProductInventoryManageHandler>()
-        .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>()
-        .AddSingleton<IShipmentOrderManageHandler, ShipmentOrderManageHandler>(); ;
+           .AddSingleton<IUserManageHandler, UserManageHandler>()
+           .AddSingleton<IProductManageHandler, ProductManageHandler>()
+           .AddSingleton<IProductInventoryManageHandler, ProductInventoryManageHandler>()
+           .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>()
+           .AddSingleton<IShipmentOrderManageHandler, ShipmentOrderManageHandler>()
+           .AddSingleton<IReturnShipmentOrderManageHandler, ReturnShipmentOrderManageHandler>();
 }
 
 
@@ -38,13 +39,13 @@ void AddHandler()
 void AddRepository()
 {
     builder.Services
-          .AddSingleton<IUserRepository, UserRepository>()
-          .AddSingleton<IProductRepository, ProductRepository>()
-          .AddSingleton<IProductInventoryRepository, ProductInventoryRepository>()
-          .AddSingleton<IProductTypeRepository, ProductTypeRepository>()
-          .AddSingleton<IShipmentOrderRepository, ShipmentOrderRepository>()
-          .AddSingleton<IProductTypeRelationshipRepository, ProductTypeRelationshipRepository>();
-
+         .AddSingleton<IUserRepository, UserRepository>()
+         .AddSingleton<IProductRepository, ProductRepository>()
+         .AddSingleton<IProductInventoryRepository, ProductInventoryRepository>()
+         .AddSingleton<IProductTypeRepository, ProductTypeRepository>()
+         .AddSingleton<IShipmentOrderRepository, ShipmentOrderRepository>()
+         .AddSingleton<IReturnShipmentOrderRepository, ReturnShipmentOrderRepository>()
+         .AddSingleton<IProductTypeRelationshipRepository, ProductTypeRelationshipRepository>();
 }
 
 // Custom DI

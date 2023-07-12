@@ -14,7 +14,7 @@
         public class ShipmentOrderDetailModel
         {
             public int? ProductId { get; set; }
-            public decimal? ProductQuantity { get; set; }
+            public decimal ProductQuantity { get; set; }
             public string Remarks { get; set; }
         }
     }

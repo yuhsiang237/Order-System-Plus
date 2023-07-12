@@ -11,5 +11,11 @@
         public DateTime? DeliveryDate { get; set; }
         public string Address { get; set; }
         public string Remark { get; set; }
+        public List<DetailModel> Details { get; set; }
+        public class DetailModel
+        {
+            public int Id { get; set; }
+            public string Remarks { get; set; }
+        }
     }
 }

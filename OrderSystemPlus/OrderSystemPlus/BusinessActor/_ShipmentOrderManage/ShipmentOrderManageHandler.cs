@@ -45,7 +45,7 @@ namespace OrderSystemPlus.BusinessActor
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ShipmentOrderDto, RspGetShipmentOrderInfo>();
-                cfg.CreateMap<ShipmentOrderDetailDto, RspShipmentOrderDetail>();
+                cfg.CreateMap<ShipmentOrderDetailDto, RspGetShipmentOrderInfo.ShipmentOrderDetail>();
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
@@ -76,7 +76,7 @@ namespace OrderSystemPlus.BusinessActor
                                                     {
                                                         Type = Enums.AdjustProductInventoryType.IncreaseDecrease,
                                                         ProductId = x.ProductId,
-                                                        AdjustQuantity = -1 * Math.Abs(x.ProductQuantity.Value),
+                                                        AdjustQuantity = -1 * Math.Abs(x.ProductQuantity),
                                                         Description = $"ShipmentOrder : {orderNumber}。",
                                                     })
                                                 .ToList();
@@ -95,7 +95,7 @@ namespace OrderSystemPlus.BusinessActor
 
                     if (product != null)
                     {
-                        totalAmount += product.Price * item.ProductQuantity.Value;
+                        totalAmount += product.Price * item.ProductQuantity;
                         details.Add(new ShipmentOrderDetailDto
                         {
                             OrderNumber = orderNumber,
@@ -159,10 +159,16 @@ namespace OrderSystemPlus.BusinessActor
             orderDto.Address = req.Address;
             orderDto.Remark = req.Remark;
             orderDto.UpdatedOn = now;
+            orderDto.Details = req?.Details?.Select(s => new ShipmentOrderDetailDto
+            {
+                Id = s.Id,
+                Remarks = s.Remarks,
+                UpdatedOn = now,
+            }).ToList();
 
             await _ShipmentOrderRepository.UpdateAsync(new List<ShipmentOrderDto>
             {
-              orderDto,
+                orderDto,
             });
         }
 
