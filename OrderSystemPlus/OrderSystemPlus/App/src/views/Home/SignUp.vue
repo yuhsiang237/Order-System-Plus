@@ -61,19 +61,20 @@ export default defineComponent({
   },
   setup() {
     const fetchData = async () => {
-    await axios.post('https://localhost:7268/UserManage/CreateUser', {
-      
-  "name": "string",
-  "email": "string",
-  "account": "string",
-  "password": "string"
-    })
-    .then(function (response) {
-      console.log(response);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+      const BASE_URL = 'https://localhost:7268'
+      await axios
+        .post(BASE_URL + import.meta.env.VITE_APP_AXIOS_USERMANAGE_CREATEUSER, {
+          name: 'string',
+          email: 'string',
+          account: 'string',
+          password: 'string'
+        })
+        .then(function (response) {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
     fetchData()
     return {}
