@@ -60,7 +60,21 @@ export default defineComponent({
     RouterLink
   },
   setup() {
-    const fetchData = async () => {}
+    const fetchData = async () => {
+    await axios.post('https://localhost:7268/UserManage/CreateUser', {
+      
+  "name": "string",
+  "email": "string",
+  "account": "string",
+  "password": "string"
+    })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    }
     fetchData()
     return {}
   }
