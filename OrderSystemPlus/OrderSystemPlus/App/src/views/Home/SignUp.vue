@@ -53,6 +53,7 @@
 import { defineComponent, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import axios, { AxiosResponse, AxiosError } from 'axios'
+import HttpClient from '@/utils/HttpClient.ts'
 
 export default defineComponent({
   name: 'sign-up',
@@ -67,20 +68,20 @@ export default defineComponent({
     const password2 = ref('')
 
     const register = async () => {
-      const BASE_URL = 'https://localhost:7268'
-      await axios
-        .post(BASE_URL + import.meta.env.VITE_APP_AXIOS_USERMANAGE_CREATEUSER, {
-          name: name.value,
-          email: email.value,
-          account: account.value,
-          password: password.value
-        })
-        .then(function (response) {
-          alert('success')
-        })
-        .catch(function (error) {
-          console.log(error.response.data)
-        })
+      try {
+        const response = await HttpClient.post(
+          import.meta.env.VITE_APP_AXIOS_USERMANAGE_CREATEUSER,
+          {
+            name: name.value,
+            email: email.value,
+            account: account.value,
+            password: password.value
+          }
+        )
+        alert('success')
+      } catch (error) {
+        alert(error?.response?.data?.message)
+      }
     }
     return {
       account,
