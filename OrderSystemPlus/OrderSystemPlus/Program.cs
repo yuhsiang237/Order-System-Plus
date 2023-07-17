@@ -1,5 +1,5 @@
 using FluentValidation.AspNetCore;
-
+using OrderSystemPlus.Exceptions;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Utils.JwtHelper;
@@ -76,7 +76,7 @@ app.UseCors(builder =>
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseExceptionMiddleware();
 app.MapControllers();
 
 app.Run();

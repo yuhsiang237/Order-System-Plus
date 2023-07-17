@@ -62,7 +62,7 @@ namespace OrderSystemPlus.BusinessActor
                             .ToList()
                             .Any();
                 if (isExist)
-                    throw new BussinessException("使用者已存在");
+                    throw new BusinessException("使用者已存在");
 
                 result = await _userRepository.InsertAsync(
                         new UserDto
