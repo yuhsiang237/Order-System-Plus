@@ -41,7 +41,6 @@
               <input type="submit" value="註冊" class="btn btn-main-color01" @click="register" />
             </div>
           </div>
-          <MessageBox></MessageBox>
           <div class="text-muted">
             <RouterLink to="/Home/SignIn">返回登入</RouterLink>
           </div>
