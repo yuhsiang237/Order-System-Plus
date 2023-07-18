@@ -41,6 +41,7 @@
               <input type="submit" value="註冊" class="btn btn-main-color01" @click="register" />
             </div>
           </div>
+          <MessageBox></MessageBox>
           <div class="text-muted">
             <RouterLink to="/Home/SignIn">返回登入</RouterLink>
           </div>
@@ -53,6 +54,7 @@
 import { defineComponent, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import HttpClient from '@/utils/HttpClient.ts'
+import MessageBox from '@/utils/MessageBox.ts'
 
 export default defineComponent({
   name: 'sign-up',
@@ -67,20 +69,13 @@ export default defineComponent({
     const password2 = ref('')
 
     const register = async () => {
-      try {
-        const response = await HttpClient.post(
-          import.meta.env.VITE_APP_AXIOS_USERMANAGE_CREATEUSER,
-          {
-            name: name.value,
-            email: email.value,
-            account: account.value,
-            password: password.value
-          }
-        )
-        alert('success')
-      } catch (error) {
-        alert(error?.response?.data?.message)
-      }
+      const response = await HttpClient.post(import.meta.env.VITE_APP_AXIOS_USERMANAGE_CREATEUSER, {
+        name: name.value,
+        email: email.value,
+        account: account.value,
+        password: password.value
+      })
+      MessageBox.showSuccessMessage('註冊成功')
     }
     return {
       account,
