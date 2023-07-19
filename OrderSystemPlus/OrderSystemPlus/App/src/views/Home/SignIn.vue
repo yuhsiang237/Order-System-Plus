@@ -17,10 +17,12 @@
             <div class="mb-3">
               <label>帳號</label>
               <input class="form-control" v-model="account" />
+              <error-message :errors="errors.account" />
             </div>
             <div class="mb-3">
               <label>密碼</label>
               <input class="form-control" type="password" v-model="password" />
+              <error-message :errors="errors.password" />
             </div>
             <div class="mb-3">
               <input type="submit" class="btn btn-main-color01" @click="signIn" v value="登入" />
@@ -41,15 +43,19 @@ import { defineComponent, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import HttpClient from '@/utils/HttpClient.ts'
 import { encrypt } from '@/utils/Encryption.ts'
+import MessageBox from '@/utils/MessageBox.ts'
+import ErrorMessage from '@/components/commons/ErrorMessage.vue'
 
 export default defineComponent({
   name: 'sign-in',
   components: {
-    RouterLink
+    RouterLink,
+    ErrorMessage
   },
   setup() {
     const account = ref('')
     const password = ref('')
+    const errors = ref({})
 
     const signIn = async () => {
       try {
@@ -61,15 +67,16 @@ export default defineComponent({
           }
         )
         localStorage.setItem('token', encrypt(response.token))
-        alert('success')
-      } catch (error) {
-        alert(error?.response?.data?.message)
+      } catch (ex) {
+        errors.value = ex?.response?.data?.errors ?? {}
+        console.log(errors.value)
       }
     }
     return {
       account,
       password,
-      signIn
+      signIn,
+      errors
     }
   }
 })

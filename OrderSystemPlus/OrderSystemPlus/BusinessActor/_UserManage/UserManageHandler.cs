@@ -115,7 +115,7 @@ namespace OrderSystemPlus.BusinessActor
         public async Task<RspSignInUser> HandleAsync(ReqSignInUser req)
         {
             var user = (await _userRepository.FindByOptionsAsync(null, null, req.Account))
-                .FirstOrDefault();
+                .FirstOrDefault() ?? new UserDto();
             var isValid = HashSaltTool.Validate(req.Password,
                                                     user.Salt,
                                                     user.Password);
@@ -128,10 +128,7 @@ namespace OrderSystemPlus.BusinessActor
             }
             else
             {
-                return new RspSignInUser
-                {
-                    Token = String.Empty,
-                };
+                throw new BusinessException("登入失敗，請確認帳號密碼是否正確。");
             }
         }
     }
