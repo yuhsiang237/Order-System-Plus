@@ -1,22 +1,15 @@
 import Swal from 'sweetalert2'
 
 function messageBox() {
-  async function showErrorMessage(message: string) {
-    return await Swal.fire({
+  function showErrorMessage(message: string) {
+    return Swal.fire({
       text: message,
       icon: 'error',
       confirmButtonColor: '#a37d1b',
       confirmButtonText: '確定'
     })
   }
-  function showSuccess() {
-    return Swal.fire({
-      icon: 'success',
-      text: '成功',
-      confirmButtonColor: '#a37d1b',
-      confirmButtonText: '確定'
-    })
-  }
+
   function showSuccessMessage(message: string) {
     return Swal.fire({
       icon: 'success',
@@ -26,7 +19,6 @@ function messageBox() {
     })
   }
   return {
-    showSuccess,
     showSuccessMessage,
     showErrorMessage
   }
