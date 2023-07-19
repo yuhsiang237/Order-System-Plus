@@ -16,7 +16,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Add auto fluent validation
-builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
+builder.Services.AddFluentValidation(fv => {
+    fv.RegisterValidatorsFromAssemblyContaining<Program>();
+    fv.ValidatorOptions.PropertyNameResolver = OrderSystemPlus.Models.CamelCasePropertyNameResolver.ResolvePropertyName;
+});
+
+
 
 /// <summary>
 /// Add dependency injection Handler

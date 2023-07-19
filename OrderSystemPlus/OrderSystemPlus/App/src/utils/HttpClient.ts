@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import MessageBox from '@/utils/MessageBox.ts'
 
 class HttpClient {
   private axiosInstance: AxiosInstance
@@ -16,8 +17,20 @@ class HttpClient {
   }
 
   public async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response: AxiosResponse<T> = await this.axiosInstance.post(url, data, config)
-    return response.data
+    try {
+      const response: AxiosResponse<T> = await this.axiosInstance.post(url, data, config)
+      return response.data
+    } catch (error) {
+      if (error?.response?.status === 500) {
+        var message = error?.response?.data?.message
+        if (message != '') {
+          MessageBox.showErrorMessage(message)
+        } else {
+          MessageBox.showErrorMessage('Internal Server Error')
+        }
+      }
+      throw error
+    }
   }
 }
 
