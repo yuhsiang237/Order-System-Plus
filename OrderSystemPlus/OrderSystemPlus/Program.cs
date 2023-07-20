@@ -1,9 +1,10 @@
 using FluentValidation.AspNetCore;
+using Microsoft.OpenApi.Models;
+
 using OrderSystemPlus.Exceptions;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Utils.JwtHelper;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
