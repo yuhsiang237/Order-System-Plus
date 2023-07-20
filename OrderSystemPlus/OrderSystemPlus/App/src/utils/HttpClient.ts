@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import MessageBox from '@/utils/MessageBox.ts'
+import { decrypt } from '@/utils/Encryption.ts'
 
 class HttpClient {
   private axiosInstance: AxiosInstance
@@ -11,13 +12,22 @@ class HttpClient {
     })
   }
 
+  public getConfig = (): AxiosRequestConfig => {
+    const config = {} as AxiosRequestConfig
+    config.headers = {}
+    const bearerToken = decrypt(localStorage.getItem('token'))
+    if (bearerToken) config.headers['Authorization'] = `Bearer ${bearerToken}`
+    return config
+  }
+
   public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response: AxiosResponse<T> = await this.axiosInstance.get(url, config)
     return response.data
   }
 
-  public async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  public async post<T>(url: string, data?: any): Promise<T> {
     try {
+      const config = this.getConfig()
       const response: AxiosResponse<T> = await this.axiosInstance.post(url, data, config)
       return response.data
     } catch (error) {

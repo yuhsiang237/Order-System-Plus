@@ -67,6 +67,9 @@ export default defineComponent({
           }
         )
         localStorage.setItem('token', encrypt(response.token))
+        await MessageBox.showSuccessMessage('登入成功!', false, 1500)
+        // TODO
+        console.log('導向')
       } catch (ex) {
         errors.value = ex?.response?.data?.errors ?? {}
         console.log(errors.value)

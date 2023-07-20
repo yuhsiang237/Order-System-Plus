@@ -10,13 +10,21 @@ function messageBox() {
     })
   }
 
-  function showSuccessMessage(message: string) {
-    return Swal.fire({
+  function showSuccessMessage(message?: string, hasConfirm?: boolean, timer?: number) {
+    const swalOptions = {
       icon: 'success',
       text: message,
       confirmButtonColor: '#a37d1b',
       confirmButtonText: '確定'
-    })
+    }
+
+    if (message) Object.assign(swalOptions, { text: message })
+
+    if (hasConfirm == false) Object.assign(swalOptions, { showConfirmButton: false })
+
+    if (timer) Object.assign(swalOptions, { timer: timer })
+
+    return Swal.fire(swalOptions as SweetAlertOptions)
   }
   return {
     showSuccessMessage,
