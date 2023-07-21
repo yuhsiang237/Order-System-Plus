@@ -8,6 +8,9 @@ namespace OrderSystemPlus.BusinessActor
         Task<int> HandleAsync(ReqCreateUser req);
         Task HandleAsync(ReqUpdateUser req);
         Task HandleAsync(ReqDeleteUser req);
+        Task HandleAsync(ReqRefreshAccessToken req);
+        Task HandleAsync(ReqValidateAccessToken req);
+
         Task<RspGetUserInfo> GetUserInfoAsync(ReqGetUserInfo req);
         Task<List<RspGetUserList>> GetUserListAsync(ReqGetUserList req);
     }

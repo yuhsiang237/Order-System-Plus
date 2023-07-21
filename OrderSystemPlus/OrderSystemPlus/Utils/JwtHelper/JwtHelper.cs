@@ -8,40 +8,68 @@ namespace OrderSystemPlus.Utils.JwtHelper
 {
     public class JwtHelper : IJwtHelper
     {
+        private readonly string secretKey;
         private IConfiguration _configuration;
-        private readonly string _issuer;
-        private readonly string _signKey;
-        private readonly int _expireMinutes;
+
         public JwtHelper(IConfiguration configuration)
         {
             _configuration = configuration;
-            _signKey = _configuration.GetValue<string>("JwtSettings:SignKey");
-            _issuer = _configuration.GetValue<string>("JwtSettings:Issuer");
-            _expireMinutes = _configuration.GetValue<int>("JwtSettings:ExpireMinutes");
+            secretKey = _configuration.GetValue<string>("JwtSettings:SecretKey");
         }
-        public string GenerateToken(string account)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_signKey));
-            var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
 
-            // Add Token Desc
+
+        // 生成 Access Token
+        public string GenerateAccessToken(string userId, string username, int expiresInMinutes = 30)
+        {
+            // 设置 Token 的有效期
+            DateTime expires = DateTime.UtcNow.AddMinutes(expiresInMinutes);
+
+            // 设置 Token 的身份信息（用户ID和用户名等）
+            var claims = new[]
+            {
+            new Claim(ClaimTypes.NameIdentifier, userId),
+            new Claim(ClaimTypes.Name, username),
+            // 添加其他自定义的 Claim
+        };
+
+            // 创建 JWT Token
+            var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Issuer = _issuer,
-                Subject = new ClaimsIdentity(new[]
-                {
-                  new Claim(JwtRegisteredClaimNames.Sub, account), // User identity Key
-                  new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT ID
-                }),
-                Expires = DateTime.Now.AddMinutes(_expireMinutes),
-                SigningCredentials = signingCredentials
+                Subject = new ClaimsIdentity(claims),
+                Expires = expires,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-            var serializeToken = tokenHandler.WriteToken(securityToken);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
 
-            return serializeToken;
+        // 生成 Refresh Token
+        public string GenerateRefreshToken(string userId, string username, int expiresInDays = 14)
+        {
+            // 设置 Token 的有效期
+            DateTime expires = DateTime.UtcNow.AddDays(expiresInDays);
+
+            // 设置 Token 的身份信息（用户ID和用户名等）
+            var claims = new[]
+            {
+            new Claim(ClaimTypes.NameIdentifier, userId),
+            new Claim(ClaimTypes.Name, username),
+            // 添加其他自定义的 Claim
+        };
+
+            // 创建 JWT Token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = expires,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }

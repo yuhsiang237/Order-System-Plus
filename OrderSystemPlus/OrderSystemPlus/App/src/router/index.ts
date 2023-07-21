@@ -23,4 +23,9 @@ const router = createRouter({
   ]
 })
 
+router.beforeEach(async (to, from, next) => {
+  // TODO Refresh & Access機制
+  next();
+});
+
 export default router

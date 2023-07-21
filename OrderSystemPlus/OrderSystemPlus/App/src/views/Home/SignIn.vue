@@ -66,8 +66,17 @@ export default defineComponent({
             password: password.value
           }
         )
-        localStorage.setItem('token', encrypt(response.token))
         await MessageBox.showSuccessMessage('登入成功!', false, 1500)
+
+        const refreshToken = response.refreshToken;
+        const accessToken = response.accessToken;
+        
+        // Access token 儲存於localStorage
+        localStorage.setItem('accessToken', accessToken);
+
+        // Refresh Token 儲存於 HttpOnly Cookie
+        document.cookie = `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Strict`;
+
         // TODO
         console.log('導向')
       } catch (ex) {

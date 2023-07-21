@@ -121,15 +121,28 @@ namespace OrderSystemPlus.BusinessActor
                                                     user.Password);
             if (isValid)
             {
+                var refreshToken = _jwtHelper.GenerateRefreshToken(user.Id.ToString(), user.Account);
+                var accessToken = _jwtHelper.GenerateAccessToken(user.Id.ToString(), user.Account);
+
                 return new RspSignInUser
                 {
-                    Token = _jwtHelper.GenerateToken(user.Account),
+                    RefreshToken = refreshToken,
+                    AccessToken = accessToken,
                 };
             }
             else
             {
                 throw new BusinessException("登入失敗，請確認帳號密碼是否正確。");
             }
+        }
+
+        public async Task HandleAsync(ReqRefreshAccessToken req)
+        {
+
+        }
+
+        public async Task HandleAsync(ReqValidateAccessToken req)
+        {
         }
     }
 }
