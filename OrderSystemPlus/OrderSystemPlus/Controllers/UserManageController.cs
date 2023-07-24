@@ -36,8 +36,22 @@ namespace OrderSystemPlus.Controllers
         }
 
         [HttpPost("SignInUser")]
-        public async Task<RspSignInUser> SignInUser([FromBody] ReqSignInUser req)
-            => await _userHandler.HandleAsync(req);
+        public async Task<IActionResult> SignInUser([FromBody] ReqSignInUser req)
+        {
+            var rsp = await _userHandler.HandleAsync(req);
+            // 设置 HttpOnly Cookie
+            CookieOptions options = new CookieOptions
+            {
+                IsEssential = true,
+                SameSite = SameSiteMode.None,
+                Secure = true,
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(14) // 设置过期时间，例如14天
+            };
+
+            Response.Cookies.Append("refreshToken", rsp.RefreshToken, options);
+            return Ok(rsp);
+        }
 
         [HttpPost("UpdateUser")]
         public async Task<IActionResult> UpdateUser([FromBody] ReqUpdateUser req)
@@ -106,12 +120,17 @@ namespace OrderSystemPlus.Controllers
                 return Unauthorized(new { message = "Access Token 无效。" });
             }
 
-    }
+        }
 
         [HttpPost("RefreshAccessToken")]
         public IActionResult RefreshAccessToken([FromBody] ReqRefreshAccessToken req)
         {
-            // TODO
+            // TODO I Can't get any cookie here
+            // # https://www.youtube.com/watch?v=ROg1p0UZL0M&ab_channel=IsraelQuiroz
+            var refreshToken = HttpContext.Request.Cookies["refreshToken"];
+            //string a = HttpContext.Request.Cookies["cookieName"] ;
+            // string refreshToken = Request.Cookies["refreshToken"];
+
             return Ok();
         }
     }

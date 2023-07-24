@@ -8,7 +8,8 @@ class HttpClient {
   constructor(baseURL: string) {
     this.axiosInstance = axios.create({
       baseURL: baseURL,
-      timeout: 10000
+      timeout: 10000,
+      //withCredentials: true,
     })
   }
 

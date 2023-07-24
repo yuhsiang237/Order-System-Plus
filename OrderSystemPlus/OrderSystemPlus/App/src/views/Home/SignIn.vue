@@ -45,6 +45,7 @@ import HttpClient from '@/utils/HttpClient.ts'
 import { encrypt } from '@/utils/Encryption.ts'
 import MessageBox from '@/utils/MessageBox.ts'
 import ErrorMessage from '@/components/commons/ErrorMessage.vue'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export default defineComponent({
   name: 'sign-in',
@@ -59,26 +60,35 @@ export default defineComponent({
 
     const signIn = async () => {
       try {
-        const response = await HttpClient.post(
-          import.meta.env.VITE_APP_AXIOS_USERMANAGE_SIGNINUSER,
-          {
+        const axiosInstance = axios.create({
+          withCredentials: true
+        })
+        var response = await axiosInstance.post(
+        import.meta.env.VITE_APP_AXIOS_BASE_URL+
+        import.meta.env.VITE_APP_AXIOS_USERMANAGE_SIGNINUSER, {
             account: account.value,
             password: password.value
-          }
-        )
+          }, { withCredentials: true })
+
         await MessageBox.showSuccessMessage('登入成功!', false, 1500)
 
-        const refreshToken = response.refreshToken;
         const accessToken = response.accessToken;
         
         // Access token 儲存於localStorage
         localStorage.setItem('accessToken', accessToken);
 
-        // Refresh Token 儲存於 HttpOnly Cookie
-        document.cookie = `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Strict`;
-
         // TODO
         console.log('導向')
+        // 測refresh token
+        var res =await axiosInstance.post(
+        
+        import.meta.env.VITE_APP_AXIOS_BASE_URL+
+        import.meta.env.VITE_APP_AXIOS_USERMANAGE_REFRESHACCESSTOKEN, {
+            account: account.value,
+            password: password.value
+          }, { withCredentials: true })
+
+        console.log(res)
       } catch (ex) {
         errors.value = ex?.response?.data?.errors ?? {}
         console.log(errors.value)

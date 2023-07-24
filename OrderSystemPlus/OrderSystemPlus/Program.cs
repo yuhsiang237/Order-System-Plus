@@ -1,10 +1,12 @@
-using FluentValidation.AspNetCore;
+﻿using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
 
 using OrderSystemPlus.Exceptions;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Utils.JwtHelper;
+using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,7 +56,6 @@ builder.Services.AddFluentValidation(fv =>
 });
 
 
-
 /// <summary>
 /// Add dependency injection Handler
 /// </summary>
@@ -68,6 +69,12 @@ void AddHandler()
            .AddSingleton<IShipmentOrderManageHandler, ShipmentOrderManageHandler>()
            .AddSingleton<IReturnShipmentOrderManageHandler, ReturnShipmentOrderManageHandler>();
 }
+builder.Services
+.Configure<CookiePolicyOptions>(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.HttpOnly = HttpOnlyPolicy.Always; // 确保设置为 Always
+});
 
 
 /// <summary>
@@ -92,6 +99,20 @@ AddHandler();
 // Add JWT
 builder.Services.AddSingleton<IJwtHelper, JwtHelper>();
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "CorsPolicy",
+                      policy =>
+                      {
+                           policy
+                          .WithOrigins(new string []{ "https://localhost:3000" ,"http://localhost:3000"})
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowCredentials();
+                      });
+});
+
 
 var app = builder.Build();
 
@@ -102,18 +123,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// CORS
-app.UseCors(builder =>
+app.UseCookiePolicy(new CookiePolicyOptions
 {
-    builder.AllowAnyOrigin()
-           .AllowAnyHeader()
-           .AllowAnyMethod();
+    Secure = CookieSecurePolicy.Always
 });
-
+app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
+
 app.UseExceptionMiddleware();
 app.MapControllers();
-
 app.Run();
