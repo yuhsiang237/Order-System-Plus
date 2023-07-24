@@ -9,7 +9,7 @@ class HttpClient {
     this.axiosInstance = axios.create({
       baseURL: baseURL,
       timeout: 10000,
-      //withCredentials: true,
+      withCredentials: true,
     })
   }
 
@@ -26,7 +26,7 @@ class HttpClient {
     return response.data
   }
 
-  public async post<T>(url: string, data?: any): Promise<T> {
+  public async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     try {
       const config = this.getConfig()
       const response: AxiosResponse<T> = await this.axiosInstance.post(url, data, config)

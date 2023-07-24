@@ -63,12 +63,11 @@ export default defineComponent({
         const axiosInstance = axios.create({
           withCredentials: true
         })
-        var response = await axiosInstance.post(
-        import.meta.env.VITE_APP_AXIOS_BASE_URL+
-        import.meta.env.VITE_APP_AXIOS_USERMANAGE_SIGNINUSER, {
+        var response = await HttpClient.post(
+          import.meta.env.VITE_APP_AXIOS_USERMANAGE_SIGNINUSER,{
             account: account.value,
             password: password.value
-          }, { withCredentials: true })
+          })
 
         await MessageBox.showSuccessMessage('登入成功!', false, 1500)
 
@@ -80,13 +79,8 @@ export default defineComponent({
         // TODO
         console.log('導向')
         // 測refresh token
-        var res =await axiosInstance.post(
-        
-        import.meta.env.VITE_APP_AXIOS_BASE_URL+
-        import.meta.env.VITE_APP_AXIOS_USERMANAGE_REFRESHACCESSTOKEN, {
-            account: account.value,
-            password: password.value
-          }, { withCredentials: true })
+        var res = await HttpClient.post(
+          import.meta.env.VITE_APP_AXIOS_USERMANAGE_REFRESHACCESSTOKEN,{})
 
         console.log(res)
       } catch (ex) {
