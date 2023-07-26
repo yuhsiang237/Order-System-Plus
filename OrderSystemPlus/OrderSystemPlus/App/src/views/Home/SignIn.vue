@@ -25,7 +25,10 @@
               <error-message :errors="errors.password" />
             </div>
             <div class="mb-3">
-              <input type="submit" class="btn btn-main-color01" @click="signIn" v value="登入" />
+              <input type="submit" class="btn btn-main-color01" @click="signIn" value="登入" />
+              <button class="btn btn-main-color01" @click="signOut" >
+                登出
+                </button>
             </div>
 
             <div class="text-muted">
@@ -35,6 +38,7 @@
         </div>
       </div>
     </div>
+   
   </div>
 </template>
 
@@ -57,14 +61,18 @@ export default defineComponent({
     const account = ref('')
     const password = ref('')
     const errors = ref({})
-
+    const signOut = async() =>{
+      var res = await HttpClient.post(
+          import.meta.env.VITE_APP_AXIOS_AUTH_SIGNOUT,{});
+      console.log(res);
+    }
     const signIn = async () => {
       try {
         const axiosInstance = axios.create({
           withCredentials: true
         })
         var response = await HttpClient.post(
-          import.meta.env.VITE_APP_AXIOS_USERMANAGE_SIGNINUSER,{
+          import.meta.env.VITE_APP_AXIOS_AUTH_SIGNIN,{
             account: account.value,
             password: password.value
           })
@@ -80,7 +88,7 @@ export default defineComponent({
         console.log('導向')
         // 測refresh token
         var res = await HttpClient.post(
-          import.meta.env.VITE_APP_AXIOS_USERMANAGE_REFRESHACCESSTOKEN,{})
+          import.meta.env.VITE_APP_AXIOS_AUTH_REFRESHACCESSTOKEN,{})
 
         console.log(res)
       } catch (ex) {
@@ -92,7 +100,8 @@ export default defineComponent({
       account,
       password,
       signIn,
-      errors
+      errors,
+      signOut
     }
   }
 })

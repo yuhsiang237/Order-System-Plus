@@ -67,6 +67,7 @@ void AddHandler()
            .AddSingleton<IProductInventoryManageHandler, ProductInventoryManageHandler>()
            .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>()
            .AddSingleton<IShipmentOrderManageHandler, ShipmentOrderManageHandler>()
+           .AddSingleton<IAuthHandler, AuthHandler>()
            .AddSingleton<IReturnShipmentOrderManageHandler, ReturnShipmentOrderManageHandler>();
 }
 builder.Services

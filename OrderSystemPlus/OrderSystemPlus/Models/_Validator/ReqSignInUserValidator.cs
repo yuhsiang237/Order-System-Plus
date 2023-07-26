@@ -2,7 +2,7 @@
 
 using OrderSystemPlus.Models.BusinessActor;
 
-public class ReqSignInUserValidator : AbstractValidator<ReqSignInUser>
+public class ReqSignInUserValidator : AbstractValidator<ReqSignIn>
 {
     public ReqSignInUserValidator()
     {

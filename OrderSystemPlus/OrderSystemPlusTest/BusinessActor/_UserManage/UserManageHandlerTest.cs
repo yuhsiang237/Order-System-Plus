@@ -45,7 +45,7 @@ namespace OrderSystemPlusTest.BusinessActor
                 .Setup(x => x.GenerateToken(It.IsAny<string?>()))
                 .Returns("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHJpbmciLCJqdGkiOiJjM2FiYzgyYy03ZGU1LTQ5ODgtYjRmNy1kZmIxZDNlNGU0YjMiLCJuYmYiOjE2Nzc3MjU0MjgsImV4cCI6MTY3NzcyNzIyOCwiaWF0IjoxNjc3NzI1NDI4LCJpc3MiOiJKd3RBdXRoIn0.fWcFRo7G5q7Ro5imY-QOtdJvL1_8EcNOuFV_HA-QbAo");
 
-            var rsp = await _handler.HandleAsync(new ReqSignInUser
+            var rsp = await _handler.HandleAsync(new ReqSignIn
             {
                 Password = "testpwd605",
                 Account = "testAccount",
