@@ -26,9 +26,7 @@
             </div>
             <div class="mb-3">
               <input type="submit" class="btn btn-main-color01" @click="signIn" value="登入" />
-              <button class="btn btn-main-color01" @click="signOut" >
-                登出
-                </button>
+              <button class="btn btn-main-color01" @click="signOut">登出</button>
             </div>
 
             <div class="text-muted">
@@ -38,7 +36,6 @@
         </div>
       </div>
     </div>
-   
   </div>
 </template>
 
@@ -61,26 +58,24 @@ export default defineComponent({
     const account = ref('')
     const password = ref('')
     const errors = ref({})
-    const signOut = async() =>{
-      var res = await HttpClient.post(
-          import.meta.env.VITE_APP_AXIOS_AUTH_SIGNOUT,{});
-      console.log(res);
+    const signOut = async () => {
+      var res = await HttpClient.post(import.meta.env.VITE_APP_AXIOS_AUTH_SIGNOUT, {})
+      console.log(res)
     }
     const signIn = async () => {
       try {
         const axiosInstance = axios.create({
           withCredentials: true
         })
-        const response = await HttpClient.post(
-          import.meta.env.VITE_APP_AXIOS_AUTH_SIGNIN,{
-            account: account.value,
-            password: password.value
-          })
+        const response = await HttpClient.post(import.meta.env.VITE_APP_AXIOS_AUTH_SIGNIN, {
+          account: account.value,
+          password: password.value
+        })
 
         await MessageBox.showSuccessMessage('登入成功!', false, 1500)
-        const accessToken = response.accessToken;
+        const accessToken = response.accessToken
         // Access token 儲存於localStorage
-        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('accessToken', accessToken)
 
         // TODO
         console.log('導向')

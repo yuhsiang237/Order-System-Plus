@@ -8,7 +8,7 @@ class HttpClient {
     this.axiosInstance = axios.create({
       baseURL: baseURL,
       timeout: 10000,
-      withCredentials: true,
+      withCredentials: true
     })
   }
 
