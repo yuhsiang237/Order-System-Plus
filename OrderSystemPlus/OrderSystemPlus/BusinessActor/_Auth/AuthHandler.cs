@@ -19,7 +19,7 @@ namespace OrderSystemPlus.BusinessActor
             _jwtHelper = jwtHelper;
         }
 
-        public async Task<(string AccessToken,string RefreshToken)> HandleAsync(ReqSignIn req)
+        public async Task<(string AccessToken, string RefreshToken)> HandleAsync(ReqSignIn req)
         {
             var user = (await _userRepository.FindByOptionsAsync(null, null, req.Account))
                 .FirstOrDefault() ?? new UserDto();
@@ -29,7 +29,7 @@ namespace OrderSystemPlus.BusinessActor
             if (isValid)
             {
                 var refreshToken = _jwtHelper.GenerateRefreshToken(user.Id.ToString(), user.Account);
-                var accessToken = _jwtHelper.GenerateAccessToken(user.Id.ToString(), user.Account);
+                var accessToken = _jwtHelper.GenerateAccessToken(user.Id.ToString(), user.Account, 1);
 
                 return (accessToken, refreshToken);
             }

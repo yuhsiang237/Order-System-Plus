@@ -19,48 +19,30 @@ namespace OrderSystemPlus.Utils.JwtHelper
 
 
         // 生成 Access Token
-        public string GenerateAccessToken(string userId, string userAccount, int expiresInMinutes = 1)
+        public string GenerateAccessToken(string userId, string userAccount, int expiresInMinutes)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+            // 设置 Token 的有效期
+            DateTime expires = DateTime.Now.AddMinutes(expiresInMinutes);
+
+            // 设置 Token 的身份信息（用户ID和用户名等）
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId),
+                new Claim(ClaimTypes.Name, userAccount),
+                // 添加其他自定义的 Claim
+            };
+
+            // 创建 JWT Token
+            var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                       {
-                              new Claim(ClaimTypes.NameIdentifier, userId),
-                                new Claim(ClaimTypes.Name, userAccount),
-                        }),
-                Expires = DateTime.UtcNow.AddMinutes(expiresInMinutes),
-                SigningCredentials = signingCredentials
+                Subject = new ClaimsIdentity(claims),
+                Expires =  expires,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)), SecurityAlgorithms.HmacSha256Signature)
             };
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-            var serializeToken = tokenHandler.WriteToken(securityToken);
-            return serializeToken;
 
-            //====
-            //    // 设置 Token 的有效期
-            //    DateTime expires = DateTime.Now.AddMinutes(expiresInMinutes);
-
-            //    // 设置 Token 的身份信息（用户ID和用户名等）
-            //    var claims = new[]
-            //    {
-            //    new Claim(ClaimTypes.NameIdentifier, userId),
-            //    new Claim(ClaimTypes.Name, userAccount),
-            //    // 添加其他自定义的 Claim
-            //};
-
-            //    // 创建 JWT Token
-            //    var tokenHandler = new JwtSecurityTokenHandler();
-            //    var tokenDescriptor = new SecurityTokenDescriptor
-            //    {
-            //        Subject = new ClaimsIdentity(claims),
-            //        Expires = DateTime.Now.AddMinutes(1),
-            //        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)), SecurityAlgorithms.HmacSha256Signature)
-            //    };
-
-            //    var token = tokenHandler.CreateToken(tokenDescriptor);
-            //    return tokenHandler.WriteToken(token);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
         // 生成 Refresh Token

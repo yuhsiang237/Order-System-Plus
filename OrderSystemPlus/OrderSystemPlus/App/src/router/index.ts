@@ -41,10 +41,21 @@ router.beforeEach(async (to, from, next) => {
     import.meta.env.VITE_APP_AXIOS_AUTH_VALIDATEACCESSTOKEN,{})
     next()
   }catch(ex){
-    console.log(ex)
-    var res = await HttpClient.post(
-     import.meta.env.VITE_APP_AXIOS_AUTH_REFRESHACCESSTOKEN,{})
-      
+    try{
+      const response = await HttpClient.post(
+        import.meta.env.VITE_APP_AXIOS_AUTH_REFRESHACCESSTOKEN,{});
+          // 将新的 Access Token 存储在 LocalStorage
+       localStorage.setItem('accessToken', response.accessToken);
+   
+       // 重新执行请求，检查新的 Access Token 是否有效
+       const res = await HttpClient.post(
+         import.meta.env.VITE_APP_AXIOS_AUTH_VALIDATEACCESSTOKEN,{})
+          // 如果新的 Access Token 有效，则允许访问该页面
+       next();
+     }catch (refreshError) {
+       // 如果刷新 Token 也失败，则跳转到登录页面
+       next({ path: '/login' });
+     }
   }
 
   // ./Auth check

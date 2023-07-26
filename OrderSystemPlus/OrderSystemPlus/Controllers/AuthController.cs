@@ -132,7 +132,7 @@ namespace OrderSystemPlus.Controllers
             string userId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             string username = claimsPrincipal.FindFirst(ClaimTypes.Name)?.Value;
             
-            var accessToken = _jwtHelper.GenerateAccessToken(userId, username);
+            var accessToken = _jwtHelper.GenerateAccessToken(userId, username,1);
 
             return Ok(new RspRefreshAccessToken
             {
