@@ -71,26 +71,24 @@ export default defineComponent({
         const axiosInstance = axios.create({
           withCredentials: true
         })
-        var response = await HttpClient.post(
+        const response = await HttpClient.post(
           import.meta.env.VITE_APP_AXIOS_AUTH_SIGNIN,{
             account: account.value,
             password: password.value
           })
 
         await MessageBox.showSuccessMessage('登入成功!', false, 1500)
-
         const accessToken = response.accessToken;
-        
         // Access token 儲存於localStorage
         localStorage.setItem('accessToken', accessToken);
 
         // TODO
         console.log('導向')
         // 測refresh token
-        var res = await HttpClient.post(
-          import.meta.env.VITE_APP_AXIOS_AUTH_REFRESHACCESSTOKEN,{})
+        // var res = await HttpClient.post(
+        //   import.meta.env.VITE_APP_AXIOS_AUTH_REFRESHACCESSTOKEN,{})
 
-        console.log(res)
+        // console.log(res)
       } catch (ex) {
         errors.value = ex?.response?.data?.errors ?? {}
         console.log(errors.value)

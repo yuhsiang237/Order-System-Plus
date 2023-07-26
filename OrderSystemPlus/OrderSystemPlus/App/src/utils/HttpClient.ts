@@ -1,6 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import MessageBox from '@/utils/MessageBox.ts'
-import { decrypt } from '@/utils/Encryption.ts'
 
 class HttpClient {
   private axiosInstance: AxiosInstance
@@ -16,7 +15,7 @@ class HttpClient {
   public getConfig = (): AxiosRequestConfig => {
     const config = {} as AxiosRequestConfig
     config.headers = {}
-    const bearerToken = decrypt(localStorage.getItem('token'))
+    const bearerToken = localStorage.getItem('accessToken')
     if (bearerToken) config.headers['Authorization'] = `Bearer ${bearerToken}`
     return config
   }

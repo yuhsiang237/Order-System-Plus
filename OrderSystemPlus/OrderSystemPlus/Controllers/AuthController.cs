@@ -16,14 +16,17 @@ namespace OrderSystemPlus.Controllers
         private readonly IAuthHandler _authHandler;
         private readonly string secretKey;
         private IConfiguration _configuration;
+        private readonly IJwtHelper _jwtHelper;
 
         public AuthController(
             IAuthHandler authHandler,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IJwtHelper jwtHelper)
         {
             _authHandler = authHandler;
             _configuration = configuration;
             secretKey = _configuration.GetValue<string>("JwtSettings:SecretKey");
+            _jwtHelper = jwtHelper;
         }
 
         [HttpPost("SignIn")]
@@ -81,20 +84,19 @@ namespace OrderSystemPlus.Controllers
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var validationParameters = new TokenValidationParameters
                 {
+                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero // 不允许任何时钟偏差
                 };
-
                 // 验证 Access Token，如果验证通过，会将 Token 的 Claims 存储在 ClaimsPrincipal 中
                 ClaimsPrincipal claimsPrincipal = tokenHandler.ValidateToken(accessToken, validationParameters, out SecurityToken validatedToken);
 
                 // 在这里可以获取 Token 中的身份信息和其他相关信息
                 string userId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 string username = claimsPrincipal.FindFirst(ClaimTypes.Name)?.Value;
-                // 获取其他自定义的 Claim
 
                 // Access Token 有效
                 return Ok();
@@ -129,10 +131,13 @@ namespace OrderSystemPlus.Controllers
             // 在这里可以获取 Token 中的身份信息和其他相关信息
             string userId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             string username = claimsPrincipal.FindFirst(ClaimTypes.Name)?.Value;
-            //string a = HttpContext.Request.Cookies["cookieName"] ;
-            // string refreshToken = Request.Cookies["refreshToken"];
+            
+            var accessToken = _jwtHelper.GenerateAccessToken(userId, username);
 
-            return Ok();
+            return Ok(new RspRefreshAccessToken
+            {
+                AccessToken = accessToken,
+            });
         }
     }
 }
