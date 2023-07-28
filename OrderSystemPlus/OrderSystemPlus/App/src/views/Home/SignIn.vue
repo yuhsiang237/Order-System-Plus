@@ -26,9 +26,7 @@
             </div>
             <div class="mb-3">
               <input type="submit" class="btn btn-main-color01" @click="signIn" value="登入" />
-              <button class="btn btn-main-color01" @click="signOut">登出</button>
             </div>
-
             <div class="text-muted">
               還沒有帳號嗎? <RouterLink to="/Home/SignUp">註冊帳號</RouterLink>
             </div>
@@ -47,6 +45,8 @@ import { encrypt } from '@/utils/Encryption.ts'
 import MessageBox from '@/utils/MessageBox.ts'
 import ErrorMessage from '@/components/commons/ErrorMessage.vue'
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import { useRouter } from 'vue-router'
+
 
 export default defineComponent({
   name: 'sign-in',
@@ -55,13 +55,11 @@ export default defineComponent({
     ErrorMessage
   },
   setup() {
+    const router = useRouter()
     const account = ref('')
     const password = ref('')
     const errors = ref({})
-    const signOut = async () => {
-      var res = await HttpClient.post(import.meta.env.VITE_APP_AXIOS_AUTH_SIGNOUT, {})
-      console.log(res)
-    }
+  
     const signIn = async () => {
       try {
         const axiosInstance = axios.create({
@@ -74,16 +72,10 @@ export default defineComponent({
 
         await MessageBox.showSuccessMessage('登入成功!', false, 1500)
         const accessToken = response.accessToken
-        // Access token 儲存於localStorage
+        // access token save to localStorage
         localStorage.setItem('accessToken', accessToken)
-
-        // TODO
-        console.log('導向')
-        // 測refresh token
-        // var res = await HttpClient.post(
-        //   import.meta.env.VITE_APP_AXIOS_AUTH_REFRESHACCESSTOKEN,{})
-
-        // console.log(res)
+        // login direct
+        router.push({ name: "dashboard" });
       } catch (ex) {
         errors.value = ex?.response?.data?.errors ?? {}
         console.log(errors.value)
@@ -94,7 +86,6 @@ export default defineComponent({
       password,
       signIn,
       errors,
-      signOut
     }
   }
 })
