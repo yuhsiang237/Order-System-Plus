@@ -1,6 +1,8 @@
 <template>
-  <div class="container-fluid sign-in-page">Dashboard
-    <div class="mb-3">11
+  <div class="container-fluid sign-in-page">
+    Dashboard
+    <div class="mb-3">
+      11
       <button class="btn btn-main-color01" @click="signOut">登出</button>
     </div>
   </div>
@@ -21,10 +23,10 @@ export default defineComponent({
       var res = await HttpClient.post(import.meta.env.VITE_APP_AXIOS_AUTH_SIGNOUT, {})
       localStorage.removeItem('accessToken')
       console.log(res)
-        // login direct
-        router.push({ name: "signIn" });
+      // login direct
+      router.push({ name: 'signIn' })
     }
-    return {signOut}
+    return { signOut }
   }
 })
 </script>

@@ -22,7 +22,7 @@ const router = createRouter({
       name: 'signUp',
       component: SignUp
     },
-    { path: '/dashboard',  name: 'dashboard', component: Dashboard, meta: { requiresAuth: true } }
+    { path: '/dashboard', name: 'dashboard', component: Dashboard, meta: { requiresAuth: true } }
   ]
 })
 
@@ -57,7 +57,7 @@ router.beforeEach(async (to, from, next) => {
         // 如果新的 Access Token 有效，则允许访问该页面
         next()
       } catch (refreshError) {
-        console.error("Refresh token error.Direct to SignIn.")
+        console.error('Refresh token error.Direct to SignIn.')
         // 如果刷新 Token 也失败，则跳转到登录页面
         next({ name: 'signIn' })
       }

@@ -47,7 +47,6 @@ import ErrorMessage from '@/components/commons/ErrorMessage.vue'
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { useRouter } from 'vue-router'
 
-
 export default defineComponent({
   name: 'sign-in',
   components: {
@@ -59,7 +58,7 @@ export default defineComponent({
     const account = ref('')
     const password = ref('')
     const errors = ref({})
-  
+
     const signIn = async () => {
       try {
         const axiosInstance = axios.create({
@@ -75,7 +74,7 @@ export default defineComponent({
         // access token save to localStorage
         localStorage.setItem('accessToken', accessToken)
         // login direct
-        router.push({ name: "dashboard" });
+        router.push({ name: 'dashboard' })
       } catch (ex) {
         errors.value = ex?.response?.data?.errors ?? {}
         console.log(errors.value)
@@ -85,7 +84,7 @@ export default defineComponent({
       account,
       password,
       signIn,
-      errors,
+      errors
     }
   }
 })
