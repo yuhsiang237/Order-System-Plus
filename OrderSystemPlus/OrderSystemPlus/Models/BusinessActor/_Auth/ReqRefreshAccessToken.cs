@@ -2,5 +2,6 @@
 {
     public class ReqRefreshAccessToken
     {
+        public string RefreshToken { get; set; }
     }
 }

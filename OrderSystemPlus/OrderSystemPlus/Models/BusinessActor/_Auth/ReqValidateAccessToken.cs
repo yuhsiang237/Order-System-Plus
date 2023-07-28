@@ -2,5 +2,6 @@
 {
     public class ReqValidateAccessToken
     {
+        public string AccessToken { get; set; }
     }
 }
