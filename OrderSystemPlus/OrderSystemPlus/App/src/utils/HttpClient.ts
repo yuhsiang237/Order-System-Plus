@@ -38,8 +38,10 @@ class HttpClient {
         } else {
           MessageBox.showErrorMessage('Internal Server Error')
         }
+        throw error
+      } else {
+        throw error
       }
-      throw error
     }
   }
 }
