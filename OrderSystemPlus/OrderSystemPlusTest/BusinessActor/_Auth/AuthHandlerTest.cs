@@ -18,14 +18,14 @@ namespace OrderSystemPlusTest.BusinessActor
     {
         private IAuthHandler _handler;
         private readonly Mock<IUserRepository> _userRepository;
-        private readonly Mock<IJwtHelper> _jwtHelp;
+        private readonly Mock<IJwtHelper> _jwtHelpMock;
         private readonly IConfiguration _configuration;
         public AuthHandlerTest()
         {
             _userRepository = new Mock<IUserRepository>();
-            _jwtHelp = new Mock<IJwtHelper>();
+            _jwtHelpMock = new Mock<IJwtHelper>();
             var inMemorySettings = new Dictionary<string, string> {
-                {"JwtSettings:SecretKey", "testkey123"},
+                {"JwtSettings:SecretKey", "testkey123testkey123"},
             };
             _configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(inMemorySettings)
@@ -33,7 +33,7 @@ namespace OrderSystemPlusTest.BusinessActor
 
             _handler = new AuthHandler(
               _userRepository.Object,
-              _jwtHelp.Object,
+              _jwtHelpMock.Object,
               _configuration);
         }
 
@@ -50,10 +50,10 @@ namespace OrderSystemPlusTest.BusinessActor
                     Salt = "*lZzd8@KB8*[/v]"
                 }});
 
-            _jwtHelp
+            _jwtHelpMock
                 .Setup(x => x.GenerateAccessToken(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int>()))
                 .Returns("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHJpbmciLCJqdGkiOiJjM2FiYzgyYy03ZGU1LTQ5ODgtYjRmNy1kZmIxZDNlNGU0YjMiLCJuYmYiOjE2Nzc3MjU0MjgsImV4cCI6MTY3NzcyNzIyOCwiaWF0IjoxNjc3NzI1NDI4LCJpc3MiOiJKd3RBdXRoIn0.fWcFRo7G5q7Ro5imY-QOtdJvL1_8EcNOuFV_HA-QbAo");
-            _jwtHelp
+            _jwtHelpMock
              .Setup(x => x.GenerateRefreshToken(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int>()))
              .Returns("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHJpbmciLCJqdGkiOiJjM2FiYzgyYy03ZGU1LTQ5ODgtYjRmNy1kZmIxZDNlNGU0YjMiLCJuYmYiOjE2Nzc3MjU0MjgsImV4cCI6MTY3NzcyNzIyOCwiaWF0IjoxNjc3NzI1NDI4LCJpc3MiOiJKd3RBdXRoIn0.fWcFRo7G5q7Ro5imY-QOtdJvL1_8EcNOuFV_HA-QbAo");
 
@@ -65,21 +65,42 @@ namespace OrderSystemPlusTest.BusinessActor
 
             rsp.AccessToken.Should().NotBeNullOrEmpty();
 
-            _jwtHelp.Verify(x => x.GenerateAccessToken(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int>()), Times.Once());
-            _jwtHelp.Verify(x => x.GenerateRefreshToken(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int>()), Times.Once());
+            _jwtHelpMock.Verify(x => x.GenerateAccessToken(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int>()), Times.Once());
+            _jwtHelpMock.Verify(x => x.GenerateRefreshToken(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int>()), Times.Once());
             _userRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
         }
 
         [Fact]
         public async Task RefreshAccessToken()
         {
-            // TODO
+            JwtHelper jwtHelper = new JwtHelper(_configuration);
+            var handler = new AuthHandler(
+             _userRepository.Object,
+             jwtHelper,
+             _configuration);
+            var refreshToken = jwtHelper.GenerateRefreshToken("1", "accounttest", 14);
+            var rsp = await handler.HandleAsync(new ReqRefreshAccessToken
+            {
+                RefreshToken = refreshToken,
+            });
+            rsp.AccessToken.Should().NotBeNullOrEmpty();
         }
 
         [Fact]
         public async Task ValidateAccessToken()
         {
-            // TODO
+            JwtHelper jwtHelper = new JwtHelper(_configuration);
+            var handler = new AuthHandler(
+             _userRepository.Object,
+             jwtHelper,
+             _configuration);
+
+            var accessToken = jwtHelper.GenerateAccessToken("1", "accounttest", 15);
+            var rsp = await handler.HandleAsync(new ReqValidateAccessToken
+            {
+                AccessToken = accessToken,
+            });
+            rsp.Should().BeTrue();
         }
     }
 }
