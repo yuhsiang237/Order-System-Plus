@@ -27,13 +27,12 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  // Auth check
-  // 检查 Access Token 是否存在
-
+  // --- 登入驗證機制開始 ---
   if (to.meta.requiresAuth) {
+    // 檢查 Access Token 是否存在
     const accessToken = localStorage.getItem('accessToken')
     if (!accessToken) {
-      // 如果 Access Token 不存在，则跳转到登录页面
+      // 如果 Access Token 不存在，跳轉登入頁面
       next({ name: 'signIn' })
       return
     }
@@ -46,26 +45,26 @@ router.beforeEach(async (to, from, next) => {
           import.meta.env.VITE_APP_AXIOS_AUTH_REFRESHACCESSTOKEN,
           {}
         )
-        // 将新的 Access Token 存储在 LocalStorage
+        // 將新的 Access Token 儲存 LocalStorage
         localStorage.setItem('accessToken', response.accessToken)
 
-        // 重新执行请求，检查新的 Access Token 是否有效
+        // 重新驗證 Access Token 是否有效
         const res = await HttpClient.post(
           import.meta.env.VITE_APP_AXIOS_AUTH_VALIDATEACCESSTOKEN,
           {}
         )
-        // 如果新的 Access Token 有效，则允许访问该页面
+        // 如果 Access Token 有效，允許訪問頁面
         next()
       } catch (refreshError) {
         console.error('Refresh token error.Direct to SignIn.')
-        // 如果刷新 Token 也失败，则跳转到登录页面
+        // 刷新Token失敗跳轉回登入頁面
         next({ name: 'signIn' })
       }
     }
   } else {
     next()
   }
-  // ./Auth check
+  // --- 登入驗證機制結束 ---
 })
 
 export default router
