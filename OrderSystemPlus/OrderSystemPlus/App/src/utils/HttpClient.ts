@@ -31,7 +31,10 @@ class HttpClient {
       const response: AxiosResponse<T> = await this.axiosInstance.post(url, data, config)
       return response.data
     } catch (error) {
-      if (error?.response?.status === 500) {
+      if(error?.response?.status === 401){
+        // TODO Auto Reresh Token
+      }
+      else if (error?.response?.status === 500) {
         var message = error?.response?.data?.message
         if (message != '') {
           MessageBox.showErrorMessage(message)
