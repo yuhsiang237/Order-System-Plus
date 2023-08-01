@@ -1,4 +1,6 @@
-﻿using FluentValidation.AspNetCore;
+﻿using System.Text;
+
+using FluentValidation.AspNetCore;
 using Microsoft.OpenApi.Models;
 
 using OrderSystemPlus.Exceptions;
@@ -6,7 +8,8 @@ using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Utils.JwtHelper;
 using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +50,22 @@ builder.Services.AddSwaggerGen(options =>
             }
         });
 });
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"])),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero,
+        };
+    }); ;
+
 
 // Add auto fluent validation
 builder.Services.AddFluentValidation(fv =>
@@ -106,14 +125,13 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "CorsPolicy",
                       policy =>
                       {
-                           policy
-                          .WithOrigins(new string []{ "https://localhost:3000" ,"http://localhost:3000"})
-                           .AllowAnyHeader()
-                           .AllowAnyMethod()
-                           .AllowCredentials();
+                          policy
+                         .WithOrigins(new string[] { "https://localhost:3000", "http://localhost:3000" })
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
                       });
 });
-
 
 var app = builder.Build();
 

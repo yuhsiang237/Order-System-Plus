@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.Models.BusinessActor;
 
@@ -42,6 +45,7 @@ namespace OrderSystemPlus.Controllers
             return await _userHandler.GetUserInfoAsync(req);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("GetUserList")]
         public async Task<List<RspGetUserList>> GetUserList([FromBody] ReqGetUserList req)
             => await _userHandler.GetUserListAsync(req);
