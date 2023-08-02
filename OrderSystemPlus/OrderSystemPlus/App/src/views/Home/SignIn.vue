@@ -64,10 +64,13 @@ export default defineComponent({
         const axiosInstance = axios.create({
           withCredentials: true
         })
-        const response = await HttpClient.post(import.meta.env.VITE_APP_AXIOS_AUTH_SIGNIN, {
-          account: account.value,
-          password: password.value
-        })
+        const response = await HttpClient.postWithCredentials(
+          import.meta.env.VITE_APP_AXIOS_AUTH_SIGNIN,
+          {
+            account: account.value,
+            password: password.value
+          }
+        )
 
         await MessageBox.showSuccessMessage('登入成功!', false, 1500)
         const accessToken = response.accessToken
