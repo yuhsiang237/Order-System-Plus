@@ -25,9 +25,8 @@
               <error-message :errors="errors.password" />
             </div>
             <div class="mb-3">
-              <input type="submit" class="btn btn-main-color01" @click="signIn" v value="登入" />
+              <input type="submit" class="btn btn-main-color01" @click="signIn" value="登入" />
             </div>
-
             <div class="text-muted">
               還沒有帳號嗎? <RouterLink to="/Home/SignUp">註冊帳號</RouterLink>
             </div>
@@ -45,6 +44,8 @@ import HttpClient from '@/utils/HttpClient.ts'
 import { encrypt } from '@/utils/Encryption.ts'
 import MessageBox from '@/utils/MessageBox.ts'
 import ErrorMessage from '@/components/commons/ErrorMessage.vue'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'sign-in',
@@ -53,20 +54,30 @@ export default defineComponent({
     ErrorMessage
   },
   setup() {
+    const router = useRouter()
     const account = ref('')
     const password = ref('')
     const errors = ref({})
 
     const signIn = async () => {
       try {
-        const response = await HttpClient.post(
-          import.meta.env.VITE_APP_AXIOS_USERMANAGE_SIGNINUSER,
+        const axiosInstance = axios.create({
+          withCredentials: true
+        })
+        const response = await HttpClient.postWithCredentials(
+          import.meta.env.VITE_APP_AXIOS_AUTH_SIGNIN,
           {
             account: account.value,
             password: password.value
           }
         )
-        localStorage.setItem('token', encrypt(response.token))
+
+        await MessageBox.showSuccessMessage('登入成功!', false, 1500)
+        const accessToken = response.accessToken
+        // access token save to localStorage
+        localStorage.setItem('accessToken', accessToken)
+        // login direct
+        router.push({ name: 'dashboard' })
       } catch (ex) {
         errors.value = ex?.response?.data?.errors ?? {}
         console.log(errors.value)

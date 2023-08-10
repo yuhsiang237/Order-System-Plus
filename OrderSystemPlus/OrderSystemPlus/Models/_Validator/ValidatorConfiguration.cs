@@ -8,7 +8,7 @@ public static class ValidatorConfiguration
     {
         builder.Services
             .AddTransient<IValidator<ReqCreateUser>, ReqCreateUserValidator>()
-            .AddTransient<IValidator<ReqSignInUser>, ReqSignInUserValidator>()
+            .AddTransient<IValidator<ReqSignIn>, ReqSignInUserValidator>()
             .AddTransient<IValidator<ReqUpdateUser>, ReqUpdateUserValidator>()
             .AddTransient<IValidator<ReqDeleteUser>, ReqDeleteUserValidator>();
     }

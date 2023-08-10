@@ -1,8 +1,15 @@
+﻿using System.Text;
+
 using FluentValidation.AspNetCore;
+using Microsoft.OpenApi.Models;
+
 using OrderSystemPlus.Exceptions;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Utils.JwtHelper;
+using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,14 +20,59 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Add Bearer token setting
+    options.AddSecurityDefinition("Bearer",
+        new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JWT Authorization"
+        });
+    // Add Bearer token to all API
+    options.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[] {}
+            }
+        });
+});
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"])),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero,
+        };
+    }); ;
+
 
 // Add auto fluent validation
-builder.Services.AddFluentValidation(fv => {
+builder.Services.AddFluentValidation(fv =>
+{
     fv.RegisterValidatorsFromAssemblyContaining<Program>();
     fv.ValidatorOptions.PropertyNameResolver = OrderSystemPlus.Models.CamelCasePropertyNameResolver.ResolvePropertyName;
 });
-
 
 
 /// <summary>
@@ -34,8 +86,15 @@ void AddHandler()
            .AddSingleton<IProductInventoryManageHandler, ProductInventoryManageHandler>()
            .AddSingleton<IProductTypeManageHandler, ProductTypeManageHandler>()
            .AddSingleton<IShipmentOrderManageHandler, ShipmentOrderManageHandler>()
+           .AddSingleton<IAuthHandler, AuthHandler>()
            .AddSingleton<IReturnShipmentOrderManageHandler, ReturnShipmentOrderManageHandler>();
 }
+builder.Services
+.Configure<CookiePolicyOptions>(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.HttpOnly = HttpOnlyPolicy.Always; // 确保设置为 Always
+});
 
 
 /// <summary>
@@ -60,6 +119,19 @@ AddHandler();
 // Add JWT
 builder.Services.AddSingleton<IJwtHelper, JwtHelper>();
 
+// Add CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "CorsPolicy",
+                      policy =>
+                      {
+                          policy
+                         .WithOrigins(new string[] { "https://localhost:3000", "http://localhost:3000" })
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                      });
+});
 
 var app = builder.Build();
 
@@ -70,18 +142,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// CORS
-app.UseCors(builder =>
+app.UseCookiePolicy(new CookiePolicyOptions
 {
-    builder.AllowAnyOrigin()
-           .AllowAnyHeader()
-           .AllowAnyMethod();
+    Secure = CookieSecurePolicy.Always
 });
-
+app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
+
 app.UseExceptionMiddleware();
 app.MapControllers();
-
 app.Run();

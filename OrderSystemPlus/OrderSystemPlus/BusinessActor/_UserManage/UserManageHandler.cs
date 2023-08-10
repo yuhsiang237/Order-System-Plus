@@ -11,17 +11,14 @@ namespace OrderSystemPlus.BusinessActor
 {
     public class UserManageHandler : IUserManageHandler
     {
-        private readonly IJwtHelper _jwtHelper;
         private readonly IUserRepository _userRepository;
         private static SemaphoreSlim _userCreateSemaphoreSlim;
 
         public UserManageHandler(
-            IUserRepository userRepository,
-            IJwtHelper jwtHelper)
+            IUserRepository userRepository)
         {
             _userCreateSemaphoreSlim = new SemaphoreSlim(1, 1);
             _userRepository = userRepository;
-            _jwtHelper = jwtHelper;
         }
 
         public async Task<List<RspGetUserList>> GetUserListAsync(ReqGetUserList req)
@@ -110,26 +107,6 @@ namespace OrderSystemPlus.BusinessActor
             };
             await _userRepository.DeleteAsync(
                 new List<UserDto> { dto });
-        }
-
-        public async Task<RspSignInUser> HandleAsync(ReqSignInUser req)
-        {
-            var user = (await _userRepository.FindByOptionsAsync(null, null, req.Account))
-                .FirstOrDefault() ?? new UserDto();
-            var isValid = HashSaltTool.Validate(req.Password,
-                                                    user.Salt,
-                                                    user.Password);
-            if (isValid)
-            {
-                return new RspSignInUser
-                {
-                    Token = _jwtHelper.GenerateToken(user.Account),
-                };
-            }
-            else
-            {
-                throw new BusinessException("登入失敗，請確認帳號密碼是否正確。");
-            }
         }
     }
 }

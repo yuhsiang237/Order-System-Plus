@@ -1,3 +1,5 @@
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using OrderSystemPlus.BusinessActor;
@@ -23,10 +25,6 @@ namespace OrderSystemPlus.Controllers
             return await _userHandler.HandleAsync(req);
         }
 
-        [HttpPost("SignInUser")]
-        public async Task<RspSignInUser> SignInUser([FromBody] ReqSignInUser req)
-            => await _userHandler.HandleAsync(req);
-
         [HttpPost("UpdateUser")]
         public async Task<IActionResult> UpdateUser([FromBody] ReqUpdateUser req)
         {
@@ -47,6 +45,7 @@ namespace OrderSystemPlus.Controllers
             return await _userHandler.GetUserInfoAsync(req);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("GetUserList")]
         public async Task<List<RspGetUserList>> GetUserList([FromBody] ReqGetUserList req)
             => await _userHandler.GetUserListAsync(req);

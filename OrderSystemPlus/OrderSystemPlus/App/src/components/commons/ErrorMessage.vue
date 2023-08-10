@@ -11,8 +11,7 @@ export default defineComponent({
   name: 'error-message',
   props: {
     errors: {
-      type: Array,
-      required: true
+      type: Array
     }
   },
   setup() {
