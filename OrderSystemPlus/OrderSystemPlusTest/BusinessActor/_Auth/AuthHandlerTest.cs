@@ -26,6 +26,8 @@ namespace OrderSystemPlusTest.BusinessActor
             _jwtHelpMock = new Mock<IJwtHelper>();
             var inMemorySettings = new Dictionary<string, string> {
                 {"JwtSettings:SecretKey", "testkey123testkey123"},
+                {"JwtSettings:RefreshTokenExpireDay", "14"},
+                {"JwtSettings:AccessTokenExpireMinute", "15"},
             };
             _configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(inMemorySettings)
