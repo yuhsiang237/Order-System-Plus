@@ -18,6 +18,8 @@ namespace OrderSystemPlus.BusinessActor
         private readonly IUserRepository _userRepository;
         private readonly string secretKey;
         private IConfiguration _configuration;
+        private readonly int _accessTokenExpireMinute;
+
         public AuthHandler(
             IUserRepository userRepository,
             IJwtHelper jwtHelper,
@@ -27,6 +29,7 @@ namespace OrderSystemPlus.BusinessActor
             _jwtHelper = jwtHelper;
             _configuration = configuration;
             secretKey = _configuration.GetValue<string>("JwtSettings:SecretKey");
+            _accessTokenExpireMinute = _configuration.GetValue<int>("JwtSettings:AccessTokenExpireMinute");
         }
 
         public async Task<(string AccessToken, string RefreshToken)> HandleAsync(ReqSignIn req)
@@ -39,7 +42,7 @@ namespace OrderSystemPlus.BusinessActor
             if (isValid)
             {
                 var refreshToken = _jwtHelper.GenerateRefreshToken(user.Id.ToString(), user.Account);
-                var accessToken = _jwtHelper.GenerateAccessToken(user.Id.ToString(), user.Account, 1);
+                var accessToken = _jwtHelper.GenerateAccessToken(user.Id.ToString(), user.Account, _accessTokenExpireMinute);
 
                 return (accessToken, refreshToken);
             }
@@ -71,7 +74,7 @@ namespace OrderSystemPlus.BusinessActor
 
                 string userId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
                 string username = claimsPrincipal.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
-                var accessToken = _jwtHelper.GenerateAccessToken(userId, username, 1);
+                var accessToken = _jwtHelper.GenerateAccessToken(userId, username, _accessTokenExpireMinute);
 
                 return await Task.FromResult(new RspRefreshAccessToken
                 {
