@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import SignIn from '@/views/Home/SignIn.vue'
-import SignUp from '@/views/Home/SignUp.vue'
-import Dashboard from '@/views/Home/dashboard.vue'
+import SignIn from '@/views/home/SignIn.vue'
+import SignUp from '@/views/home/SignUp.vue'
+import Dashboard from '@/views/home/Dashboard.vue'
+import Backend from '@/views/Backend/Backend.vue'
 import HttpClient from '@/utils/HttpClient.ts'
 
 const router = createRouter({
@@ -9,20 +10,32 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Default',
+      name: 'default',
       component: SignIn
     },
     {
-      path: '/Home/SignIn',
+      path: '/home/signIn',
       name: 'signIn',
       component: SignIn
     },
     {
-      path: '/Home/SignUp',
+      path: '/home/signUp',
       name: 'signUp',
       component: SignUp
     },
-    { path: '/dashboard', name: 'dashboard', component: Dashboard, meta: { requiresAuth: true } }
+    {
+      path: '/backend',
+      name: 'backend',
+      component: Backend,
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: 'dashboard',
+          name: 'dashboard',
+          component: Dashboard
+        }
+      ]
+    }
   ]
 })
 
