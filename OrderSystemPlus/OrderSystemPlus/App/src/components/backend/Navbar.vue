@@ -21,13 +21,9 @@
         <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row">
           <ul class="navbar-nav flex-grow-1">
             <li class="nav-item">
-              <a
-                class="nav-link text-dark"
-                asp-area=""
-                asp-controller="Dashboard"
-                asp-action="Index"
-                >總覽</a
-              >
+              <router-link class="nav-link text-dark" :to="{ name: 'dashboard' }">
+                總覽
+              </router-link>
             </li>
             <li class="nav-item dropdown">
               <a
@@ -61,23 +57,9 @@
                 >商品管理</a
               >
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuProductLink">
-                <a
-                  class="nav-link text-dark"
-                  asp-area=""
-                  asp-controller="Product"
-                  asp-action="Search"
-                >
-                  商品項目管理
-                </a>
-
-                <a
-                  class="nav-link text-dark"
-                  asp-area=""
-                  asp-controller="Product"
-                  asp-action="SearchProductCategory"
-                >
+                <router-link class="nav-link text-dark" :to="{ name: 'productTypeSearch' }">
                   商品分類管理
-                </a>
+                </router-link>
 
                 <a
                   class="nav-link text-dark"

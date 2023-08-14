@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import SignIn from '@/views/home/SignIn.vue'
 import SignUp from '@/views/home/SignUp.vue'
 import Dashboard from '@/views/home/Dashboard.vue'
+import ProductTypeSearch from '@/views/backend/productTypeManage/ProductTypeSearch.vue'
 import Backend from '@/views/Backend/Backend.vue'
 import HttpClient from '@/utils/HttpClient.ts'
 
@@ -33,6 +34,17 @@ const router = createRouter({
           path: 'dashboard',
           name: 'dashboard',
           component: Dashboard
+        },
+        {
+          path: 'productTypeManage',
+          name: 'productTypeManage',
+          children: [
+            {
+              path: 'productTypeSearch',
+              name: 'productTypeSearch',
+              component: ProductTypeSearch
+            }
+          ]
         }
       ]
     }
