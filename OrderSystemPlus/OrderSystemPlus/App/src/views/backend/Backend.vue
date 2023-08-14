@@ -1,7 +1,7 @@
 <template>
   <navbar></navbar>
   <router-view></router-view>
-  <footer></footer>
+  <backend-footer></backend-footer>
 </template>
 
 <script lang="ts">
@@ -14,7 +14,7 @@ export default defineComponent({
   name: 'backend',
   components: {
     Navbar,
-    Footer,
+    'backend-footer': Footer,
     RouterView
   },
   setup() {}
