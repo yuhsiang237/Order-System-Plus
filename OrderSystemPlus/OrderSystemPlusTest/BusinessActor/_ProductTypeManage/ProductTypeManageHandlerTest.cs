@@ -8,6 +8,7 @@ using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.DataAccessor;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.Models.BusinessActor;
+using OrderSystemPlus.Enums;
 
 namespace OrderSystemPlusTest.BusinessActor
 {
@@ -44,15 +45,29 @@ namespace OrderSystemPlusTest.BusinessActor
         public async Task GetProductTypeListAsync()
         {
             _productRepository
-            .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>()))
-            .ReturnsAsync(new List<ProductTypeDto> {
+            .Setup(x => x.FindByOptionsAsync(
+                It.IsAny<int?>(),
+                It.IsAny<string?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<string?>(),
+                It.IsAny<SortType?>()
+            ))
+            .ReturnsAsync((1,
+            new List<ProductTypeDto> {
                 new ProductTypeDto{
                     Name = "Test",
                     Description = "Test",
-                }});
+                }}));
 
             var rsp = await _handler.GetProductTypeListAsync(new ReqGetProductTypeList { });
-            _productRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>()), Times.Once());
+            _productRepository.Verify(x => 
+                x.FindByOptionsAsync(It.IsAny<int?>(),
+                It.IsAny<string?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<string?>(),
+                It.IsAny<SortType?>()), Times.Once());
         }
 
         [Fact]

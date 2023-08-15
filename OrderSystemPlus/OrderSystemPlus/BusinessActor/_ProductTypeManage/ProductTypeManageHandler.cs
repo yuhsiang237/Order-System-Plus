@@ -15,17 +15,29 @@ namespace OrderSystemPlus.BusinessActor
             _ProductTypeRepository = ProductTypeRepository;
         }
 
-        public async Task<List<RspGetProductTypeList>> GetProductTypeListAsync(ReqGetProductTypeList req)
+        public async Task<RspGetProductTypeList> GetProductTypeListAsync(ReqGetProductTypeList req)
         {
-            var data = await _ProductTypeRepository.FindByOptionsAsync(null, null);
+            var (totalCount, data) = await _ProductTypeRepository
+                                            .FindByOptionsAsync(name: req.Name,
+                                                                id: req.Id,
+                                                                pageIndex: req.PageIndex,
+                                                                pageSize: req.PageSize,
+                                                                sortField: req.SortField,
+                                                                sortType: req.SortType);
+
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ProductTypeDto, RspGetProductTypeList>();
+                cfg.CreateMap<ProductTypeDto, RspGetProductTypeListItem>();
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
-            var rsp = mapper.Map<List<ProductTypeDto>, List<RspGetProductTypeList>>(data);
-            return rsp.ToList();
+            var rsp = mapper.Map<List<ProductTypeDto>, List<RspGetProductTypeListItem>>(data);
+
+            return new RspGetProductTypeList
+            {
+                Data = rsp,
+                TotalCount = totalCount,
+            };
         }
 
         public async Task HandleAsync(List<ReqCreateProductType> req)

@@ -7,6 +7,6 @@ namespace OrderSystemPlus.BusinessActor
         Task HandleAsync(List<ReqCreateProductType> req);
         Task HandleAsync(List<ReqUpdateProductType> req);
         Task HandleAsync(List<ReqDeleteProductType> req);
-        Task<List<RspGetProductTypeList>> GetProductTypeListAsync(ReqGetProductTypeList req);
+        Task<RspGetProductTypeList> GetProductTypeListAsync(ReqGetProductTypeList req);
     }
 }
