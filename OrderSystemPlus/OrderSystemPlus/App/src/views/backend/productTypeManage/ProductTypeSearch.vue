@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form asp-action="SearchProductCategory" id="form_search" method="get">
+    <div>
       <div class="search-area">
         <div class="container">
           <div class="row">
@@ -24,7 +24,7 @@
                 </div>
               </div>
               <div class="text-right">
-                <button type="submit" class="btn btn-main-color01 mb-2 mr-1">查詢資料</button>
+                <button @click="search" class="btn btn-main-color01 mb-2 mr-1">查詢資料</button>
                 <button id="btn-clearSearch" class="btn btn-main-color02 outline-btn mb-2">
                   清空查詢
                 </button>
@@ -93,7 +93,8 @@
         <div class="form-inline text-center">
           <div class="mx-auto">
             每頁
-            <select id="select_changePageSize" class="custom-select" name="pageSize">
+            <select class="custom-select" name="pageSize" v-model="pageSize">
+              <option value="3">3</option>
               <option value="10">10</option>
               <option value="30">30</option>
               <option value="50">50</option></select
@@ -108,16 +109,36 @@
           </div>
         </div>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import HttpClient from '@/utils/HttpClient.ts'
 
 export default defineComponent({
   name: 'productTypeSearch',
   components: {},
-  setup() {}
+  setup() {
+    const pageIndex = ref(1)
+    const pageSize = ref(3)
+
+    const search = async () => {
+      var res = await HttpClient.post(
+        import.meta.env.VITE_APP_AXIOS_PRODUCTTYPEMANAGE_GETPRODUCTTYPELIST,
+        {
+          pageSize: pageSize.value,
+          pageIndex: pageIndex.value
+        }
+      )
+      console.log(res)
+    }
+
+    return {
+      search,
+      pageSize
+    }
+  }
 })
 </script>
