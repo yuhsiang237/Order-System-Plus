@@ -18,6 +18,7 @@
                         type="text"
                         class="form-control mr-2"
                         name="searchStringName"
+                        v-model="searchfilter.name"
                       />
                     </div>
                   </div>
@@ -25,7 +26,7 @@
               </div>
               <div class="text-right">
                 <button @click="search" class="btn btn-main-color01 mb-2 mr-1">查詢資料</button>
-                <button id="btn-clearSearch" class="btn btn-main-color02 outline-btn mb-2">
+                <button @click="resetSearch" class="btn btn-main-color02 outline-btn mb-2">
                   清空查詢
                 </button>
               </div>
@@ -151,6 +152,7 @@ export default defineComponent({
   name: 'productTypeSearch',
   components: {},
   setup() {
+    const searchfilter = ref({})
     const pageIndex = ref(1)
     const pageSize = ref(3)
     const totalCount = ref(0)
@@ -164,24 +166,34 @@ export default defineComponent({
 
     const sortChange = async ($event) => {
       currentSort.value = Number($event.target.value)
-      await search()
+      await fetchData()
     }
     const goPage = async (event) => {
       pageIndex.value = Number(event.target.value)
-      await search()
+      await fetchData()
     }
     const prevPage = async () => {
       pageIndex.value = pageIndex.value - 1
-      await search()
+      await fetchData()
     }
     const nextPage = async () => {
       pageIndex.value = pageIndex.value + 1
-      await search()
+      await fetchData()
     }
     const search = async () => {
+      pageIndex.value = 1
+      await fetchData()
+    }
+    const resetSearch = async () => {
+      searchfilter.value = {}
+      pageIndex.value = 1
+      await fetchData()
+    }
+    const fetchData = async () => {
       var res = await HttpClient.post(
         import.meta.env.VITE_APP_AXIOS_PRODUCTTYPEMANAGE_GETPRODUCTTYPELIST,
         {
+          name: searchfilter.value?.name,
           pageSize: pageSize.value,
           pageIndex: pageIndex.value,
           sortField: sortData.value[currentSort.value]?.sortField,
@@ -195,7 +207,7 @@ export default defineComponent({
     const pageSizeChange = async (event) => {
       pageIndex.value = 1
       pageSize.value = event.target.value
-      await search()
+      await fetchData()
     }
     return {
       search,
@@ -209,7 +221,9 @@ export default defineComponent({
       listData,
       sortData,
       sortChange,
-      currentSort
+      currentSort,
+      searchfilter,
+      resetSearch
     }
   }
 })
