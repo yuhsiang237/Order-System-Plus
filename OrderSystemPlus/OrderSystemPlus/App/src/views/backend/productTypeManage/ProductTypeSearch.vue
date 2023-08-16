@@ -33,14 +33,15 @@
               <div class="d-flex justify-content-end">
                 <div class="col-12 col-sm-2 px-0">
                   <div class="form-group">
-                    <select class="form-control" name="sortOrder">
-                      <option value="0">預設排序</option>
-                      <option value="1">商品名稱 高→低</option>
-                      <option value="2">商品名稱 低→高</option>
-                      <option value="3">商品庫存量 高→低</option>
-                      <option value="4">商品庫存量 低→高</option>
-                      <option value="5">商品價格 高→高</option>
-                      <option value="6">商品價格 低→高</option>
+                    <select
+                      v-model="currentSort"
+                      @change="sortChange($event)"
+                      class="form-control"
+                      name="sortOrder"
+                    >
+                      <option v-for="(item, index) in sortData" :value="index">
+                        {{ item.label }}
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -144,6 +145,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import HttpClient from '@/utils/HttpClient.ts'
+import { SortType } from '@/enums/SortType.ts'
 
 export default defineComponent({
   name: 'productTypeSearch',
@@ -153,7 +155,17 @@ export default defineComponent({
     const pageSize = ref(3)
     const totalCount = ref(0)
     const listData = ref([])
+    const sortData = ref([
+      { sortField: null, sortType: null, label: '預設排序' },
+      { sortField: 'name', sortType: SortType.DESC, label: '分類名稱 高→低' },
+      { sortField: 'name', sortType: SortType.ASC, label: '分類名稱 低→高' }
+    ])
+    const currentSort = ref(0)
 
+    const sortChange = async ($event) => {
+      currentSort.value = Number($event.target.value)
+      await search()
+    }
     const goPage = async (event) => {
       pageIndex.value = Number(event.target.value)
       await search()
@@ -171,7 +183,9 @@ export default defineComponent({
         import.meta.env.VITE_APP_AXIOS_PRODUCTTYPEMANAGE_GETPRODUCTTYPELIST,
         {
           pageSize: pageSize.value,
-          pageIndex: pageIndex.value
+          pageIndex: pageIndex.value,
+          sortField: sortData.value[currentSort.value]?.sortField,
+          sortType: sortData.value[currentSort.value]?.sortType
         }
       )
       totalCount.value = res.totalCount
@@ -192,7 +206,10 @@ export default defineComponent({
       nextPage,
       goPage,
       pageSizeChange,
-      listData
+      listData,
+      sortData,
+      sortChange,
+      currentSort
     }
   }
 })
