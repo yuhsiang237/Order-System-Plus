@@ -72,9 +72,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>111</td>
-                    <td>111</td>
+                  <tr v-for="(item, index) in listData">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.description }}</td>
                     <td>
                       <button type="button" class="mr-1 btn btn-main-color02 outline-btn">
                         編輯
@@ -93,19 +93,47 @@
         <div class="form-inline text-center">
           <div class="mx-auto">
             每頁
-            <select class="custom-select" name="pageSize" v-model="pageSize">
+            <select
+              @change="pageSizeChange($event)"
+              class="custom-select"
+              name="pageSize"
+              v-model="pageSize"
+            >
               <option value="3">3</option>
               <option value="10">10</option>
               <option value="30">30</option>
               <option value="50">50</option></select
-            >，第 <span>1</span> 頁，共 <span></span> 頁，
-            <a class="btn btn-outline-secondary btn-sm @prevDisabled"> 上一頁 </a>｜跳至第
-            <select id="select_goToPage" class="custom-select" name="goToPageNumber">
-              <option>選擇</option>
-              <option value="@i">@i</option>
+            >，第 <span>{{ pageIndex }}</span> 頁，共
+            <span>{{ Math.ceil(totalCount / pageSize) }}</span> 頁，
+            <span v-if="pageIndex - 1 > 0">
+              <a class="btn btn-outline-secondary btn-sm @prevDisabled" @click="prevPage">
+                上一頁
+              </a>
+              跳至第 ｜</span
+            >
+            <select
+              @change="goPage($event)"
+              v-model="pageIndex"
+              class="custom-select"
+              name="goToPageNumber"
+            >
+              <option
+                v-for="(item, index) in Array.from(
+                  { length: Math.ceil(totalCount / pageSize) },
+                  (_, i) => i + 1
+                )"
+                :value="item"
+              >
+                {{ item }}
+              </option>
             </select>
-            頁｜
-            <a class="btn btn-outline-secondary btn-sm @nextDisabled"> 下一頁 </a>
+            頁
+            <span v-if="pageIndex + 1 <= Math.ceil(totalCount / pageSize)"
+              >｜
+              <a class="btn btn-outline-secondary btn-sm @nextDisabled" @click="nextPage">
+                下一頁
+              </a>
+            </span>
           </div>
         </div>
       </div>
@@ -123,7 +151,21 @@ export default defineComponent({
   setup() {
     const pageIndex = ref(1)
     const pageSize = ref(3)
+    const totalCount = ref(0)
+    const listData = ref([])
 
+    const goPage = async (event) => {
+      pageIndex.value = Number(event.target.value)
+      await search()
+    }
+    const prevPage = async () => {
+      pageIndex.value = pageIndex.value - 1
+      await search()
+    }
+    const nextPage = async () => {
+      pageIndex.value = pageIndex.value + 1
+      await search()
+    }
     const search = async () => {
       var res = await HttpClient.post(
         import.meta.env.VITE_APP_AXIOS_PRODUCTTYPEMANAGE_GETPRODUCTTYPELIST,
@@ -132,12 +174,25 @@ export default defineComponent({
           pageIndex: pageIndex.value
         }
       )
+      totalCount.value = res.totalCount
+      listData.value = res.data
       console.log(res)
     }
-
+    const pageSizeChange = async (event) => {
+      pageIndex.value = 1
+      pageSize.value = event.target.value
+      await search()
+    }
     return {
       search,
-      pageSize
+      pageIndex,
+      pageSize,
+      totalCount,
+      prevPage,
+      nextPage,
+      goPage,
+      pageSizeChange,
+      listData
     }
   }
 })
