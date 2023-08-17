@@ -58,7 +58,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { pageIndex, pageSize, totalCount } = toRefs(props)
 
-    const pageSizeOption = ref([2, 3, 10, 30, 50])
+    const pageSizeOption = ref([10, 15, 30, 50])
 
     const goPage = async (event) => {
       emit('change', { pageIndex: Number(event.target.value), pageSize: pageSize.value })

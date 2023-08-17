@@ -73,7 +73,13 @@
                     <th>操作</th>
                   </tr>
                 </thead>
-                <tbody>
+                <loading
+                  v-model:active="isLoading"
+                  :can-cancel="false"
+                  :on-cancel="onCancel"
+                  :is-full-page="false"
+                />
+                <tbody v-if="isLoading == false">
                   <tr v-for="(item, index) in listData">
                     <td>{{ item.name }}</td>
                     <td>{{ item.description }}</td>
@@ -86,16 +92,21 @@
                   </tr>
                 </tbody>
               </table>
+              <div v-if="isLoading == false && listData.length > 0">
+                <pagination
+                  @change="pageOnChange"
+                  :pageIndex="pageIndex"
+                  :pageSize="pageSize"
+                  :totalCount="totalCount"
+                ></pagination>
+              </div>
+              <div v-else class="text-center text-muted">
+                <h2>沒有資料</h2>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <pagination
-        @change="pageOnChange"
-        :pageIndex="pageIndex"
-        :pageSize="pageSize"
-        :totalCount="totalCount"
-      ></pagination>
     </div>
   </div>
 </template>
@@ -105,16 +116,19 @@ import { defineComponent, ref } from 'vue'
 import HttpClient from '@/utils/HttpClient.ts'
 import { SortType } from '@/enums/SortType.ts'
 import Pagination from '@/components/commons/Pagination.vue'
+import Loading from 'vue-loading-overlay'
 
 export default defineComponent({
   name: 'productTypeSearch',
   components: {
-    Pagination
+    Pagination,
+    Loading
   },
   setup() {
+    const isLoading = ref(false)
     const searchfilter = ref({})
     const pageIndex = ref(1)
-    const pageSize = ref(3)
+    const pageSize = ref(10)
     const totalCount = ref(0)
     const listData = ref([])
     const currentSort = ref(0)
@@ -143,6 +157,7 @@ export default defineComponent({
       await fetchData()
     }
     const fetchData = async () => {
+      isLoading.value = true
       var res = await HttpClient.post(
         import.meta.env.VITE_APP_AXIOS_PRODUCTTYPEMANAGE_GETPRODUCTTYPELIST,
         {
@@ -155,10 +170,14 @@ export default defineComponent({
       )
       totalCount.value = res.totalCount
       listData.value = res.data
+      isLoading.value = false
       console.log(res)
     }
 
+    search()
+
     return {
+      isLoading,
       pageOnChange,
       search,
       pageIndex,
