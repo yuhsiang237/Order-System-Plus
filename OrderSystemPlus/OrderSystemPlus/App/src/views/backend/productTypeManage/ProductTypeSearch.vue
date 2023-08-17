@@ -96,54 +96,6 @@
         :pageSize="pageSize"
         :totalCount="totalCount"
       ></pagination>
-      <!-- <div class="list-pagination mt-3">
-        <div class="form-inline text-center">
-          <div class="mx-auto">
-            每頁
-            <select
-              @change="pageSizeChange($event)"
-              class="custom-select"
-              name="pageSize"
-              v-model="pageSize"
-            >
-              <option value="3">3</option>
-              <option value="10">10</option>
-              <option value="30">30</option>
-              <option value="50">50</option></select
-            >，第 <span>{{ pageIndex }}</span> 頁，共
-            <span>{{ Math.ceil(totalCount / pageSize) }}</span> 頁，
-            <span v-if="pageIndex - 1 > 0">
-              <a class="btn btn-outline-secondary btn-sm @prevDisabled" @click="prevPage">
-                上一頁
-              </a>
-              跳至第 ｜</span
-            >
-            <select
-              @change="goPage($event)"
-              v-model="pageIndex"
-              class="custom-select"
-              name="goToPageNumber"
-            >
-              <option
-                v-for="(item, index) in Array.from(
-                  { length: Math.ceil(totalCount / pageSize) },
-                  (_, i) => i + 1
-                )"
-                :value="item"
-              >
-                {{ item }}
-              </option>
-            </select>
-            頁
-            <span v-if="pageIndex + 1 <= Math.ceil(totalCount / pageSize)"
-              >｜
-              <a class="btn btn-outline-secondary btn-sm @nextDisabled" @click="nextPage">
-                下一頁
-              </a>
-            </span>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
@@ -165,12 +117,12 @@ export default defineComponent({
     const pageSize = ref(3)
     const totalCount = ref(0)
     const listData = ref([])
+    const currentSort = ref(0)
     const sortData = ref([
       { sortField: null, sortType: null, label: '預設排序' },
       { sortField: 'name', sortType: SortType.DESC, label: '分類名稱 高→低' },
       { sortField: 'name', sortType: SortType.ASC, label: '分類名稱 低→高' }
     ])
-    const currentSort = ref(0)
 
     const sortChange = async ($event) => {
       currentSort.value = Number($event.target.value)
@@ -181,7 +133,6 @@ export default defineComponent({
       pageSize.value = $event.pageSize
       await fetchData()
     }
-
     const search = async () => {
       pageIndex.value = 1
       await fetchData()
