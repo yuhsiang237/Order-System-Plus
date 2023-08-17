@@ -90,8 +90,13 @@
           </div>
         </div>
       </div>
-
-      <div class="list-pagination mt-3">
+      <pagination
+        @change="pageOnChange"
+        :pageIndex="pageIndex"
+        :pageSize="pageSize"
+        :totalCount="totalCount"
+      ></pagination>
+      <!-- <div class="list-pagination mt-3">
         <div class="form-inline text-center">
           <div class="mx-auto">
             每頁
@@ -138,7 +143,7 @@
             </span>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -147,10 +152,13 @@
 import { defineComponent, ref } from 'vue'
 import HttpClient from '@/utils/HttpClient.ts'
 import { SortType } from '@/enums/SortType.ts'
+import Pagination from '@/components/commons/Pagination.vue'
 
 export default defineComponent({
   name: 'productTypeSearch',
-  components: {},
+  components: {
+    Pagination
+  },
   setup() {
     const searchfilter = ref({})
     const pageIndex = ref(1)
@@ -168,18 +176,12 @@ export default defineComponent({
       currentSort.value = Number($event.target.value)
       await fetchData()
     }
-    const goPage = async (event) => {
-      pageIndex.value = Number(event.target.value)
+    const pageOnChange = async ($event) => {
+      pageIndex.value = $event.pageIndex
+      pageSize.value = $event.pageSize
       await fetchData()
     }
-    const prevPage = async () => {
-      pageIndex.value = pageIndex.value - 1
-      await fetchData()
-    }
-    const nextPage = async () => {
-      pageIndex.value = pageIndex.value + 1
-      await fetchData()
-    }
+
     const search = async () => {
       pageIndex.value = 1
       await fetchData()
@@ -204,20 +206,13 @@ export default defineComponent({
       listData.value = res.data
       console.log(res)
     }
-    const pageSizeChange = async (event) => {
-      pageIndex.value = 1
-      pageSize.value = event.target.value
-      await fetchData()
-    }
+
     return {
+      pageOnChange,
       search,
       pageIndex,
       pageSize,
       totalCount,
-      prevPage,
-      nextPage,
-      goPage,
-      pageSizeChange,
       listData,
       sortData,
       sortChange,
