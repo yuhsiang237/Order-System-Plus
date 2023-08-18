@@ -56,7 +56,7 @@
         <div class="row my-3">
           <div class="col">
             <div class="text-right">
-              <button id="btn_productCategoryModal" type="button" class="btn btn-main-color01">
+              <button @click="showModal('createModal')" type="button" class="btn btn-main-color01">
                 新增分類
               </button>
             </div>
@@ -109,6 +109,36 @@
       </div>
     </div>
   </div>
+  <custom-modal modalname="createModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">新增分類</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-2">
+            <label>分類名稱</label>
+            <input class="form-control" />
+            <error-message />
+          </div>
+          <div class="mb-2">
+            <label>描述</label>
+            <input class="form-control" />
+            <error-message />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="mr-1 btn btn-main-color02 outline-btn" data-dismiss="modal">
+            取消
+          </button>
+          <button type="button" class="btn btn-main-color01">新增</button>
+        </div>
+      </div>
+    </div>
+  </custom-modal>
 </template>
 
 <script lang="ts">
@@ -117,12 +147,16 @@ import HttpClient from '@/utils/HttpClient.ts'
 import { SortType } from '@/enums/SortType.ts'
 import Pagination from '@/components/commons/Pagination.vue'
 import Loading from 'vue-loading-overlay'
+import CustomModal, { toggleModal, showModal } from '@/components/commons/CustomModal.vue'
+import ErrorMessage from '@/components/commons/ErrorMessage.vue'
 
 export default defineComponent({
   name: 'productTypeSearch',
   components: {
     Pagination,
-    Loading
+    Loading,
+    CustomModal,
+    ErrorMessage
   },
   setup() {
     const isLoading = ref(false)
@@ -177,6 +211,7 @@ export default defineComponent({
     search()
 
     return {
+      showModal,
       isLoading,
       pageOnChange,
       search,
