@@ -84,7 +84,11 @@
                     <td>{{ item.name }}</td>
                     <td>{{ item.description }}</td>
                     <td>
-                      <button type="button" class="mr-1 btn btn-main-color02 outline-btn">
+                      <button
+                        type="button"
+                        class="mr-1 btn btn-main-color02 outline-btn"
+                        @click="openUpdateModel(item)"
+                      >
                         編輯
                       </button>
                       <button type="button" class="btn btn-red" @click="deleteProductType(item)">
@@ -138,6 +142,38 @@
           </button>
           <button type="button" class="btn btn-main-color01" @click="createProductType">
             新增
+          </button>
+        </div>
+      </div>
+    </div>
+  </custom-modal>
+  <custom-modal modalname="updateModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">更新分類</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-2">
+            <label>分類名稱</label>
+            <input class="form-control" v-model="reqUpdate.name" />
+            <error-message :errors="errorCreate.name" />
+          </div>
+          <div class="mb-2">
+            <label>描述</label>
+            <input class="form-control" v-model="reqUpdate.description" />
+            <error-message :errors="errorCreate.description" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="mr-1 btn btn-main-color02 outline-btn" data-dismiss="modal">
+            取消
+          </button>
+          <button type="button" class="btn btn-main-color01" @click="updateProductType">
+            更新
           </button>
         </div>
       </div>
@@ -227,14 +263,19 @@ export default defineComponent({
       errorCreate.value = {}
       showModal('createModal')
     }
+    const openUpdateModel = (item) => {
+      reqUpdate.value = Object.assign({}, item)
+      errorUpdate.value = {}
+      showModal('updateModal')
+    }
     const createProductType = async () => {
       const data = reqCreate.value
       try {
         var res = await HttpClient.post(
           import.meta.env.VITE_APP_AXIOS_PRODUCTTYPEMANAGE_CREATEPRODUCTTYPE,
           {
-            name: data?.name,
-            description: data?.description
+            name: data.name,
+            description: data.description
           }
         )
         hideModal('createModal')
@@ -245,10 +286,26 @@ export default defineComponent({
       }
     }
 
-    const updateProductType = () => {}
+    const updateProductType = async () => {
+      const data = reqUpdate.value
+      try {
+        var res = await HttpClient.post(
+          import.meta.env.VITE_APP_AXIOS_PRODUCTTYPEMANAGE_UPDATEPRODUCTTYPE,
+          {
+            id: data.id,
+            name: data.name,
+            description: data.description
+          }
+        )
+        hideModal('updateModal')
+        await MessageBox.showSuccessMessage('更新成功', false, 800)
+        fetchData()
+      } catch (ex) {
+        errorUpdate.value = ex?.response?.data?.errors ?? {}
+      }
+    }
     const deleteProductType = async (item) => {
-
-      if(!confirm('確定要刪除' + item.name)) return;
+      if (!confirm('確定要刪除' + item.name)) return
 
       try {
         var res = await HttpClient.post(
@@ -268,8 +325,10 @@ export default defineComponent({
     search()
 
     return {
+      openUpdateModel,
       openAddModel,
       createProductType,
+      updateProductType,
       deleteProductType,
       reqCreate,
       reqUpdate,

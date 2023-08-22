@@ -63,17 +63,26 @@ namespace OrderSystemPlus.BusinessActor
           );
         }
 
-        public async Task HandleAsync(List<ReqUpdateProductType> req)
+        public async Task HandleAsync(ReqUpdateProductType req)
         {
+            // TODO 重複檢查
+            //var isExist = (await _ProductTypeRepository.FindByOptionsAsync(name: req.)).Data.Any() && req.Name != ;
+            //if (isExist )
+            //    throw new BusinessException("已存在名稱");
+
             var now = DateTime.Now;
-            var dtoList = req.Select(s => new ProductTypeDto
-            {
-                Id = s.Id,
-                Name = s.Name,
-                Description = s.Description,
-                UpdatedOn = now,
-            }).ToList();
-            await _ProductTypeRepository.UpdateAsync(dtoList);
+            await _ProductTypeRepository.UpdateAsync(
+               new List<ProductTypeDto>
+               {
+                    new ProductTypeDto
+                    {
+                        Id = req.Id,
+                        Name = req.Name,
+                        Description = req.Description,
+                        UpdatedOn = now,
+                    }
+               }
+         );
         }
 
         public async Task HandleAsync(List<ReqDeleteProductType> req)

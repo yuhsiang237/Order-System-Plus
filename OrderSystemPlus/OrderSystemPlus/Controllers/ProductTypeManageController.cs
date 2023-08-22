@@ -32,7 +32,7 @@ namespace OrderSystemPlus.Controllers
         }
 
         [HttpPost("UpdateProductType")]
-        public async Task<IActionResult> UpdateProductType([FromBody] List<ReqUpdateProductType> req)
+        public async Task<IActionResult> UpdateProductType([FromBody] ReqUpdateProductType req)
         {
             await _ProductTypeHandler.HandleAsync(req);
             return StatusCode(200);
