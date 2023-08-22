@@ -10,7 +10,7 @@ class HttpClient {
     this.baseURL = baseURL
     this.axiosInstance = axios.create({
       baseURL: this.baseURL,
-      timeout: 600000,
+      timeout: 600000
     })
     this.axioswithCredentialsInstance = axios.create({
       baseURL: this.baseURL,
@@ -21,8 +21,8 @@ class HttpClient {
 
   public getConfig = (): AxiosRequestConfig => {
     const config = {} as AxiosRequestConfig
-    config.headers = {'Access-Control-Allow-Origin': '*',mode: 'no-cors'}
-    
+    config.headers = { 'Access-Control-Allow-Origin': '*', mode: 'no-cors' }
+
     const bearerToken = localStorage.getItem('accessToken')
     if (bearerToken) config.headers['Authorization'] = `Bearer ${bearerToken}`
     return config
