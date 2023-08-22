@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.BusinessActor;
@@ -40,18 +41,26 @@ namespace OrderSystemPlus.BusinessActor
             };
         }
 
-        public async Task HandleAsync(List<ReqCreateProductType> req)
+        public async Task HandleAsync(ReqCreateProductType req)
         {
+            var isExist = (await _ProductTypeRepository.FindByOptionsAsync(name: req.Name)).Data.Any();
+            if (isExist)
+                throw new BusinessException("已存在名稱");
+
             var now = DateTime.Now;
-            var dtoList = req.Select(s => new ProductTypeDto
-            {
-                Name = s.Name,
-                Description = s.Description,
-                CreatedOn = now,
-                UpdatedOn = now,
-                IsValid = true,
-            }).ToList();
-            await _ProductTypeRepository.InsertAsync(dtoList);
+            await _ProductTypeRepository.InsertAsync(
+                new List<ProductTypeDto>
+                {
+                    new ProductTypeDto
+                    {
+                        Name = req.Name,
+                        Description = req.Description,
+                        CreatedOn = now,
+                        UpdatedOn = now,
+                        IsValid = true,
+                    }
+                }
+          );
         }
 
         public async Task HandleAsync(List<ReqUpdateProductType> req)

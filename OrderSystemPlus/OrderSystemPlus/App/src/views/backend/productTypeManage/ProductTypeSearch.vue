@@ -56,7 +56,7 @@
         <div class="row my-3">
           <div class="col">
             <div class="text-right">
-              <button @click="showModal('createModal')" type="button" class="btn btn-main-color01">
+              <button @click="openAddModel" type="button" class="btn btn-main-color01">
                 新增分類
               </button>
             </div>
@@ -87,7 +87,7 @@
                       <button type="button" class="mr-1 btn btn-main-color02 outline-btn">
                         編輯
                       </button>
-                      <button type="button" class="btn btn-red">刪除</button>
+                      <button type="button" class="btn btn-red" @click="deleteProductType(item.id)">刪除</button>
                     </td>
                   </tr>
                 </tbody>
@@ -121,20 +121,20 @@
         <div class="modal-body">
           <div class="mb-2">
             <label>分類名稱</label>
-            <input class="form-control" />
-            <error-message />
+            <input class="form-control" v-model="reqCreate.name" />
+            <error-message :errors="errorCreate.name"/>
           </div>
           <div class="mb-2">
             <label>描述</label>
-            <input class="form-control" />
-            <error-message />
+            <input class="form-control"  v-model="reqCreate.description"/>
+            <error-message :errors="errorCreate.description"/>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="mr-1 btn btn-main-color02 outline-btn" data-dismiss="modal">
             取消
           </button>
-          <button type="button" class="btn btn-main-color01">新增</button>
+          <button type="button" class="btn btn-main-color01" @click="createProductType">新增</button>
         </div>
       </div>
     </div>
@@ -147,8 +147,9 @@ import HttpClient from '@/utils/HttpClient.ts'
 import { SortType } from '@/enums/SortType.ts'
 import Pagination from '@/components/commons/Pagination.vue'
 import Loading from 'vue-loading-overlay'
-import CustomModal, { toggleModal, showModal } from '@/components/commons/CustomModal.vue'
+import CustomModal, { toggleModal, showModal,hideModal } from '@/components/commons/CustomModal.vue'
 import ErrorMessage from '@/components/commons/ErrorMessage.vue'
+import MessageBox from '@/utils/MessageBox.ts'
 
 export default defineComponent({
   name: 'productTypeSearch',
@@ -171,6 +172,12 @@ export default defineComponent({
       { sortField: 'name', sortType: SortType.DESC, label: '分類名稱 高→低' },
       { sortField: 'name', sortType: SortType.ASC, label: '分類名稱 低→高' }
     ])
+
+    const reqCreate = ref({})
+    const errorCreate = ref({})
+
+    const reqUpdate = ref({})
+    const errorUpdate = ref({})
 
     const sortChange = async ($event) => {
       currentSort.value = Number($event.target.value)
@@ -207,10 +214,59 @@ export default defineComponent({
       isLoading.value = false
       console.log(res)
     }
+    const openAddModel = () =>{
+      reqCreate.value = 
+      { name:'',
+      description:''}
+      errorCreate.value = {}
+      showModal('createModal')
+    }
+    const createProductType = async() => {
+      const data = reqCreate.value
+      try {
+      var res = await HttpClient.post(
+        import.meta.env.VITE_APP_AXIOS_PRODUCTTYPEMANAGE_CREATEPRODUCTTYPE,
+          {
+            'name': data?.name,
+            'description': data?.description
+          }
+        )
+        hideModal('createModal')
+        await MessageBox.showSuccessMessage('建立成功', false,800)
+        search()
+      }catch(ex){
+        errorCreate.value = ex?.response?.data?.errors ?? {}
+      }
+    }
 
+    const updateProductType = () => {
+
+    }
+    const deleteProductType = async(id:number) => {
+      try {
+        // TODO YES NO
+      var res = await HttpClient.post(
+        import.meta.env.VITE_APP_AXIOS_PRODUCTTYPEMANAGE_DELETEPRODUCTTYPE,
+          [{
+            'id': id,
+          }]
+        )
+        await MessageBox.showSuccessMessage('刪除成功', false,800)
+        await fetchData()
+      }catch(ex){
+        errorCreate.value = ex?.response?.data?.errors ?? {}
+      }
+    }
     search()
 
     return {
+      openAddModel,
+      createProductType,
+      deleteProductType,
+      reqCreate,
+      reqUpdate,
+      errorCreate,
+      errorUpdate,
       showModal,
       isLoading,
       pageOnChange,
