@@ -87,7 +87,7 @@
                       <button type="button" class="mr-1 btn btn-main-color02 outline-btn">
                         編輯
                       </button>
-                      <button type="button" class="btn btn-red" @click="deleteProductType(item.id)">
+                      <button type="button" class="btn btn-red" @click="deleteProductType(item)">
                         刪除
                       </button>
                     </td>
@@ -246,14 +246,16 @@ export default defineComponent({
     }
 
     const updateProductType = () => {}
-    const deleteProductType = async (id: number) => {
+    const deleteProductType = async (item) => {
+
+      if(!confirm('確定要刪除' + item.name)) return;
+
       try {
-        // TODO YES NO
         var res = await HttpClient.post(
           import.meta.env.VITE_APP_AXIOS_PRODUCTTYPEMANAGE_DELETEPRODUCTTYPE,
           [
             {
-              id: id
+              id: item.id
             }
           ]
         )
