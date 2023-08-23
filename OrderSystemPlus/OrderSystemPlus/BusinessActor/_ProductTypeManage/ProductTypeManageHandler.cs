@@ -45,7 +45,7 @@ namespace OrderSystemPlus.BusinessActor
         {
             var isExist = (await _ProductTypeRepository.FindByOptionsAsync(name: req.Name)).Data.Any();
             if (isExist)
-                throw new BusinessException("已存在名稱");
+                throw new BusinessException("已存在相同名稱");
 
             var now = DateTime.Now;
             await _ProductTypeRepository.InsertAsync(
@@ -65,10 +65,9 @@ namespace OrderSystemPlus.BusinessActor
 
         public async Task HandleAsync(ReqUpdateProductType req)
         {
-            // TODO 重複檢查
-            //var isExist = (await _ProductTypeRepository.FindByOptionsAsync(name: req.)).Data.Any() && req.Name != ;
-            //if (isExist )
-            //    throw new BusinessException("已存在名稱");
+            var checkExistItem = (await _ProductTypeRepository.FindByOptionsAsync(name: req.Name)).Data.FirstOrDefault() ?? new ProductTypeDto();
+            if (req.Name == checkExistItem.Name && checkExistItem.Id != req.Id)
+                throw new BusinessException("已存在相同名稱");
 
             var now = DateTime.Now;
             await _ProductTypeRepository.UpdateAsync(

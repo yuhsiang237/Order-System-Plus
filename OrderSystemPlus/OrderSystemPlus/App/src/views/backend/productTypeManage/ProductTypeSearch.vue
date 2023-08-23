@@ -160,12 +160,12 @@
           <div class="mb-2">
             <label>分類名稱</label>
             <input class="form-control" v-model="reqUpdate.name" />
-            <error-message :errors="errorCreate.name" />
+            <error-message :errors="errorUpdate.name" />
           </div>
           <div class="mb-2">
             <label>描述</label>
             <input class="form-control" v-model="reqUpdate.description" />
-            <error-message :errors="errorCreate.description" />
+            <error-message :errors="errorUpdate.description" />
           </div>
         </div>
         <div class="modal-footer">
