@@ -60,7 +60,9 @@
                 <router-link class="nav-link text-dark" :to="{ name: 'productTypeSearch' }">
                   商品分類管理
                 </router-link>
-
+                <router-link class="nav-link text-dark" :to="{ name: 'productSearch' }">
+                  商品管理
+                </router-link>
                 <a
                   class="nav-link text-dark"
                   asp-area=""

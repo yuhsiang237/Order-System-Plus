@@ -3,6 +3,8 @@ import SignIn from '@/views/home/SignIn.vue'
 import SignUp from '@/views/home/SignUp.vue'
 import Dashboard from '@/views/home/Dashboard.vue'
 import ProductTypeSearch from '@/views/backend/productTypeManage/ProductTypeSearch.vue'
+import ProductSearch from '@/views/backend/productManage/ProductSearch.vue'
+
 import Backend from '@/views/Backend/Backend.vue'
 import HttpClient from '@/utils/HttpClient.ts'
 
@@ -43,6 +45,17 @@ const router = createRouter({
               path: 'productTypeSearch',
               name: 'productTypeSearch',
               component: ProductTypeSearch
+            }
+          ]
+        },
+        {
+          path: 'productManage',
+          name: 'productManage',
+          children: [
+            {
+              path: 'productSearch',
+              name: 'productSearch',
+              component: ProductSearch
             }
           ]
         }
