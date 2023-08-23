@@ -14,11 +14,21 @@
                   <div class="form-group form-row">
                     <div class="col">
                       <input
-                        id="input_name"
                         type="text"
                         class="form-control mr-2"
-                        name="searchStringName"
                         v-model="searchfilter.name"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm col-md-2 col-lg-2 col-xl-2">
+                  <label class="custom-label">商品編號</label>
+                  <div class="form-group form-row">
+                    <div class="col">
+                      <input
+                        type="text"
+                        class="form-control mr-2"
+                        v-model="searchfilter.number"
                       />
                     </div>
                   </div>

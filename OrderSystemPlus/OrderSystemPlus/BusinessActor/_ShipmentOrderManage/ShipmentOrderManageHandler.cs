@@ -91,7 +91,7 @@ namespace OrderSystemPlus.BusinessActor
                 {
                     var product = (await _productRepository
                         .FindByOptionsAsync(id: item.ProductId))
-                        .FirstOrDefault();
+                        .Data.FirstOrDefault();
 
                     if (product != null)
                     {

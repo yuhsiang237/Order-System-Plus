@@ -27,7 +27,14 @@ namespace OrderSystemPlus.BusinessActor
 
         public async Task<RspGetProductList> GetProductListAsync(ReqGetProductList req)
         {
-            var data = await _productRepository.FindByOptionsAsync(null, null, null);
+            var data = await _productRepository.FindByOptionsAsync(
+                likeName: req.Name,
+                likeNumber: req.Number, 
+                pageIndex: req.PageIndex,
+                pageSize: req.PageSize,
+                sortField: req.SortField,
+                sortType: req.SortType
+                );
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ProductDto, RspGetProductListItem>()
@@ -36,7 +43,7 @@ namespace OrderSystemPlus.BusinessActor
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
-            var rsp = mapper.Map<List<ProductDto>, List<RspGetProductListItem>>(data);
+            var rsp = mapper.Map<List<ProductDto>, List<RspGetProductListItem>>(data.Data);
 
             foreach (var item in rsp)
             {
@@ -53,13 +60,13 @@ namespace OrderSystemPlus.BusinessActor
             return new RspGetProductList
             {
                 Data = rsp,
-                TotalCount = rsp.Count(),
+                TotalCount = data.TotalCount,
             };
         }
 
         public async Task<RspGetProductInfo> GetProductInfoAsync(ReqGetProductInfo req)
         {
-            var data = (await _productRepository.FindByOptionsAsync(id: req.Id)).FirstOrDefault();
+            var data = (await _productRepository.FindByOptionsAsync(id: req.Id)).Data.FirstOrDefault();
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ProductDto, RspGetProductInfo>()
