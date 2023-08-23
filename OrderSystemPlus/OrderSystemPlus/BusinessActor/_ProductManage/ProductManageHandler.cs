@@ -25,18 +25,18 @@ namespace OrderSystemPlus.BusinessActor
             _productTypeRelationshipRepository = productTypeRelationshipRepository;
         }
 
-        public async Task<List<RspGetProductList>> GetProductListAsync(ReqGetProductList req)
+        public async Task<RspGetProductList> GetProductListAsync(ReqGetProductList req)
         {
             var data = await _productRepository.FindByOptionsAsync(null, null, null);
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ProductDto, RspGetProductList>()
+                cfg.CreateMap<ProductDto, RspGetProductListItem>()
                    .ForMember(dest => dest.Quantity, opt => opt.Ignore())
                    .ForMember(dest => dest.ProductTypeIds, opt => opt.Ignore());
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
-            var rsp = mapper.Map<List<ProductDto>, List<RspGetProductList>>(data);
+            var rsp = mapper.Map<List<ProductDto>, List<RspGetProductListItem>>(data);
 
             foreach (var item in rsp)
             {
@@ -50,7 +50,11 @@ namespace OrderSystemPlus.BusinessActor
                     ?.ToList();
             }
 
-            return rsp.ToList();
+            return new RspGetProductList
+            {
+                Data = rsp,
+                TotalCount = rsp.Count(),
+            };
         }
 
         public async Task<RspGetProductInfo> GetProductInfoAsync(ReqGetProductInfo req)

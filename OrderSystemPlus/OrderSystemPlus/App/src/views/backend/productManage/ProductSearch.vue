@@ -68,7 +68,9 @@
               <table class="table table-hover">
                 <thead>
                   <tr>
-                    <th>商品名稱</th>
+                    <th>名稱</th>
+                    <th>編號</th>
+                    <th>價格</th>
                     <th>描述</th>
                     <th>操作</th>
                   </tr>
@@ -82,6 +84,8 @@
                 <tbody v-if="isLoading == false">
                   <tr v-for="(item, index) in listData">
                     <td>{{ item.name }}</td>
+                    <td>{{ item.number }}</td>
+                    <td>{{ item.price }}</td>
                     <td>{{ item.description }}</td>
                     <td>
                       <button

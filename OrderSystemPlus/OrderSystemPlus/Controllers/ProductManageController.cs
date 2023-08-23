@@ -39,7 +39,7 @@ namespace OrderSystemPlus.Controllers
         }
 
         [HttpPost("GetProductList")]
-        public async Task<List<RspGetProductList>> GetProductList([FromBody] ReqGetProductList req)
+        public async Task<RspGetProductList> GetProductList([FromBody] ReqGetProductList req)
             => await _productHandler.GetProductListAsync(req);
         
         [HttpPost("GetProductInfo")]
