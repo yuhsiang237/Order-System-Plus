@@ -230,7 +230,9 @@ export default defineComponent({
       { sortField: 'number', sortType: SortType.DESC, label: '商品編號 高→低' },
       { sortField: 'number', sortType: SortType.ASC, label: '商品編號 低→高' },
       { sortField: 'name', sortType: SortType.DESC, label: '商品名稱 高→低' },
-      { sortField: 'name', sortType: SortType.ASC, label: '商品名稱 低→高' }
+      { sortField: 'name', sortType: SortType.ASC, label: '商品名稱 低→高' },
+      { sortField: 'price', sortType: SortType.DESC, label: '商品價格 高→低' },
+      { sortField: 'price', sortType: SortType.ASC, label: '商品價格 低→高' }
     ])
 
     const reqCreate = ref({})
