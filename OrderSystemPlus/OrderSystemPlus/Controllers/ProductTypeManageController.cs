@@ -18,7 +18,7 @@ namespace OrderSystemPlus.Controllers
         }
 
         [HttpPost("CreateProductType")]
-        public async Task<IActionResult> CreateProductType([FromBody] List<ReqCreateProductType> req)
+        public async Task<IActionResult> CreateProductType([FromBody] ReqCreateProductType req)
         {
             await _ProductTypeHandler.HandleAsync(req);
             return StatusCode(200);
@@ -32,14 +32,14 @@ namespace OrderSystemPlus.Controllers
         }
 
         [HttpPost("UpdateProductType")]
-        public async Task<IActionResult> UpdateProductType([FromBody] List<ReqUpdateProductType> req)
+        public async Task<IActionResult> UpdateProductType([FromBody] ReqUpdateProductType req)
         {
             await _ProductTypeHandler.HandleAsync(req);
             return StatusCode(200);
         }
 
         [HttpPost("GetProductTypeList")]
-        public async Task<List<RspGetProductTypeList>> GetProductTypeList([FromBody] ReqGetProductTypeList req)
+        public async Task<RspGetProductTypeList> GetProductTypeList([FromBody] ReqGetProductTypeList req)
             => await _ProductTypeHandler.GetProductTypeListAsync(req);
     }
 }

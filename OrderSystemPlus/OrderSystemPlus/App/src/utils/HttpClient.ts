@@ -21,7 +21,8 @@ class HttpClient {
 
   public getConfig = (): AxiosRequestConfig => {
     const config = {} as AxiosRequestConfig
-    config.headers = {}
+    config.headers = { 'Access-Control-Allow-Origin': '*', mode: 'no-cors' }
+
     const bearerToken = localStorage.getItem('accessToken')
     if (bearerToken) config.headers['Authorization'] = `Bearer ${bearerToken}`
     return config

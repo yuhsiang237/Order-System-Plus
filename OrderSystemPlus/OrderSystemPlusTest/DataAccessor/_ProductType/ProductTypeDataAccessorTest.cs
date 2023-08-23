@@ -26,19 +26,19 @@ namespace OrderSystemPlusTest.DataAccessor
         public async Task RunAsync()
         {
             await _repository.InsertAsync(new List<ProductTypeDto> { GetInsertModel() });
-            var insertResult = await _repository.FindByOptionsAsync(null, GetInsertModel().Name);
+            var (_, insertResult) = await _repository.FindByOptionsAsync(null, GetInsertModel().Name);
             insertResult.Count.Should().Be(1);
             insertResult.First().Name.Should().Be(GetInsertModel().Name);
             insertResult.First().Description.Should().Be(GetInsertModel().Description);
 
             await _repository.UpdateAsync(new List<ProductTypeDto> { GetUpdateModel(insertResult.First().Id) });
-            var updateResult = await _repository.FindByOptionsAsync(insertResult.First().Id);
+            var (_, updateResult) = await _repository.FindByOptionsAsync(insertResult.First().Id);
             updateResult.Count.Should().Be(1);
             updateResult.First().Name.Should().Be(GetUpdateModel(updateResult.First().Id).Name);
             updateResult.First().Description.Should().Be(GetUpdateModel(updateResult.First().Id).Description);
 
             await _repository.DeleteAsync(new List<ProductTypeDto> { GetDeleteModel(updateResult.First().Id) });
-            var deleteResult = await _repository.FindByOptionsAsync(updateResult.First().Id);
+            var (_, deleteResult) = await _repository.FindByOptionsAsync(updateResult.First().Id);
             deleteResult.Count.Should().Be(0);
         }
 

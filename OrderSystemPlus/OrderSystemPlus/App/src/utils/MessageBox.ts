@@ -20,8 +20,9 @@ function messageBox() {
 
     if (message) Object.assign(swalOptions, { text: message })
 
-    if (hasConfirm == false) Object.assign(swalOptions, { showConfirmButton: false })
-
+    if (hasConfirm == false) {
+      Object.assign(swalOptions, { showConfirmButton: false })
+    }
     if (timer) Object.assign(swalOptions, { timer: timer })
 
     return Swal.fire(swalOptions as SweetAlertOptions)

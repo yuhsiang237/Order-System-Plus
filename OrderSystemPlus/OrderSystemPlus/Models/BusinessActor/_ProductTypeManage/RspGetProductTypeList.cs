@@ -2,8 +2,7 @@
 {
     public class RspGetProductTypeList
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public int TotalCount { get; set; }
+        public List<RspGetProductTypeListItem> Data { get; set; }
     }
 }

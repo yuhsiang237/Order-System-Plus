@@ -93,7 +93,7 @@ builder.Services
 .Configure<CookiePolicyOptions>(options =>
 {
     options.MinimumSameSitePolicy = SameSiteMode.None;
-    options.HttpOnly = HttpOnlyPolicy.Always; // 确保设置为 Always
+    options.HttpOnly = HttpOnlyPolicy.Always;
 });
 
 

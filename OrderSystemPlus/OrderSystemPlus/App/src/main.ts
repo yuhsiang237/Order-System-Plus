@@ -1,4 +1,5 @@
 import './assets/css/style.css'
+import 'vue-loading-overlay/dist/css/index.css'
 
 import { createApp } from 'vue'
 

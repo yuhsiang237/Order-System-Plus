@@ -2,7 +2,6 @@
   <div class="container-fluid sign-in-page">
     Dashboard
     <div class="mb-3">
-      11
       <button class="btn btn-main-color01" @click="signOut">登出</button>
       <button class="btn btn-main-color01" @click="getUserList">fetch</button>
     </div>

@@ -8,6 +8,7 @@ using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.DataAccessor;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.Models.BusinessActor;
+using OrderSystemPlus.Enums;
 
 namespace OrderSystemPlusTest.BusinessActor
 {
@@ -26,17 +27,35 @@ namespace OrderSystemPlusTest.BusinessActor
         [Fact]
         public async Task ProductTypeCreate()
         {
+            _productRepository
+            .Setup(x => x.FindByOptionsAsync(
+                It.IsAny<int?>(),
+                It.IsAny<string?>(),
+                It.IsAny<string?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<string?>(),
+                It.IsAny<SortType?>()
+            ))
+            .ReturnsAsync((0,
+            new List<ProductTypeDto> {}));
+
             _productRepository.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductTypeDto>>()))
                 .ReturnsAsync(new List<int>());
 
-            await _handler.HandleAsync(new List<ReqCreateProductType>
+            await _handler.HandleAsync(new ReqCreateProductType
             {
-                new ReqCreateProductType
-                {
-                    Name = "productName",
-                    Description = "test",
-                }
+                Name = "productName",
+                Description = "test",
             });
+             _productRepository.Verify(x =>
+               x.FindByOptionsAsync(It.IsAny<int?>(),
+               It.IsAny<string?>(),
+               It.IsAny<string?>(),
+               It.IsAny<int?>(),
+               It.IsAny<int?>(),
+               It.IsAny<string?>(),
+               It.IsAny<SortType?>()), Times.Once());
             _productRepository.Verify(x => x.InsertAsync(It.IsAny<IEnumerable<ProductTypeDto>>()), Times.Once());
         }
 
@@ -44,32 +63,67 @@ namespace OrderSystemPlusTest.BusinessActor
         public async Task GetProductTypeListAsync()
         {
             _productRepository
-            .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>()))
-            .ReturnsAsync(new List<ProductTypeDto> {
+            .Setup(x => x.FindByOptionsAsync(
+                It.IsAny<int?>(),
+                It.IsAny<string?>(),
+                It.IsAny<string?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<string?>(),
+                It.IsAny<SortType?>()
+            ))
+            .ReturnsAsync((1,
+            new List<ProductTypeDto> {
                 new ProductTypeDto{
                     Name = "Test",
                     Description = "Test",
-                }});
+                }}));
 
             var rsp = await _handler.GetProductTypeListAsync(new ReqGetProductTypeList { });
-            _productRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>()), Times.Once());
+            _productRepository.Verify(x => 
+                x.FindByOptionsAsync(It.IsAny<int?>(),
+                It.IsAny<string?>(),
+                It.IsAny<string?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<string?>(),
+                It.IsAny<SortType?>()), Times.Once());
         }
 
         [Fact]
         public async Task ProductTypeUpdate()
         {
+            _productRepository
+              .Setup(x => x.FindByOptionsAsync(
+                  It.IsAny<int?>(),
+                  It.IsAny<string?>(),
+                  It.IsAny<string?>(),
+                  It.IsAny<int?>(),
+                  It.IsAny<int?>(),
+                  It.IsAny<string?>(),
+                  It.IsAny<SortType?>()
+              ))
+              .ReturnsAsync((0,
+              new List<ProductTypeDto> { }));
+
             _productRepository.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ProductTypeDto>>()))
             .ReturnsAsync(new List<int>());
 
-            await _handler.HandleAsync(new List<ReqUpdateProductType>
-            {
+            await _handler.HandleAsync(
                 new ReqUpdateProductType
                 {
                     Id = 1,
                     Name = "productName",
                     Description = "test",
-                }
-            });
+                });
+            _productRepository.Verify(x =>
+                x.FindByOptionsAsync(It.IsAny<int?>(),
+                It.IsAny<string?>(),
+                It.IsAny<string?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<string?>(),
+                It.IsAny<SortType?>()), Times.Once());
             _productRepository.Verify(x => x.UpdateAsync(It.IsAny<IEnumerable<ProductTypeDto>>()), Times.Once());
         }
 

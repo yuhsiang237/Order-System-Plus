@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.BusinessActor;
@@ -15,44 +16,72 @@ namespace OrderSystemPlus.BusinessActor
             _ProductTypeRepository = ProductTypeRepository;
         }
 
-        public async Task<List<RspGetProductTypeList>> GetProductTypeListAsync(ReqGetProductTypeList req)
+        public async Task<RspGetProductTypeList> GetProductTypeListAsync(ReqGetProductTypeList req)
         {
-            var data = await _ProductTypeRepository.FindByOptionsAsync(null, null);
+            var (totalCount, data) = await _ProductTypeRepository
+                                            .FindByOptionsAsync(likeName: req.Name,
+                                                                id: req.Id,
+                                                                pageIndex: req.PageIndex,
+                                                                pageSize: req.PageSize,
+                                                                sortField: req.SortField,
+                                                                sortType: req.SortType);
+
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ProductTypeDto, RspGetProductTypeList>();
+                cfg.CreateMap<ProductTypeDto, RspGetProductTypeListItem>();
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
-            var rsp = mapper.Map<List<ProductTypeDto>, List<RspGetProductTypeList>>(data);
-            return rsp.ToList();
+            var rsp = mapper.Map<List<ProductTypeDto>, List<RspGetProductTypeListItem>>(data);
+
+            return new RspGetProductTypeList
+            {
+                Data = rsp,
+                TotalCount = totalCount,
+            };
         }
 
-        public async Task HandleAsync(List<ReqCreateProductType> req)
+        public async Task HandleAsync(ReqCreateProductType req)
         {
+            var isExist = (await _ProductTypeRepository.FindByOptionsAsync(name: req.Name)).Data.Any();
+            if (isExist)
+                throw new BusinessException("已存在相同名稱");
+
             var now = DateTime.Now;
-            var dtoList = req.Select(s => new ProductTypeDto
-            {
-                Name = s.Name,
-                Description = s.Description,
-                CreatedOn = now,
-                UpdatedOn = now,
-                IsValid = true,
-            }).ToList();
-            await _ProductTypeRepository.InsertAsync(dtoList);
+            await _ProductTypeRepository.InsertAsync(
+                new List<ProductTypeDto>
+                {
+                    new ProductTypeDto
+                    {
+                        Name = req.Name,
+                        Description = req.Description,
+                        CreatedOn = now,
+                        UpdatedOn = now,
+                        IsValid = true,
+                    }
+                }
+          );
         }
 
-        public async Task HandleAsync(List<ReqUpdateProductType> req)
+        public async Task HandleAsync(ReqUpdateProductType req)
         {
+            var checkExistItem = (await _ProductTypeRepository.FindByOptionsAsync(name: req.Name)).Data.FirstOrDefault() ?? new ProductTypeDto();
+            if (req.Name == checkExistItem.Name && checkExistItem.Id != req.Id)
+                throw new BusinessException("已存在相同名稱");
+
             var now = DateTime.Now;
-            var dtoList = req.Select(s => new ProductTypeDto
-            {
-                Id = s.Id,
-                Name = s.Name,
-                Description = s.Description,
-                UpdatedOn = now,
-            }).ToList();
-            await _ProductTypeRepository.UpdateAsync(dtoList);
+            await _ProductTypeRepository.UpdateAsync(
+               new List<ProductTypeDto>
+               {
+                    new ProductTypeDto
+                    {
+                        Id = req.Id,
+                        Name = req.Name,
+                        Description = req.Description,
+                        UpdatedOn = now,
+                    }
+               }
+         );
         }
 
         public async Task HandleAsync(List<ReqDeleteProductType> req)
