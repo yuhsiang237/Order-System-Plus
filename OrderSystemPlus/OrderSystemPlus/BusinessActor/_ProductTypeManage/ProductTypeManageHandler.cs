@@ -19,7 +19,7 @@ namespace OrderSystemPlus.BusinessActor
         public async Task<RspGetProductTypeList> GetProductTypeListAsync(ReqGetProductTypeList req)
         {
             var (totalCount, data) = await _ProductTypeRepository
-                                            .FindByOptionsAsync(name: req.Name,
+                                            .FindByOptionsAsync(likeName: req.Name,
                                                                 id: req.Id,
                                                                 pageIndex: req.PageIndex,
                                                                 pageSize: req.PageSize,

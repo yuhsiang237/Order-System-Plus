@@ -31,6 +31,7 @@ namespace OrderSystemPlusTest.BusinessActor
             .Setup(x => x.FindByOptionsAsync(
                 It.IsAny<int?>(),
                 It.IsAny<string?>(),
+                It.IsAny<string?>(),
                 It.IsAny<int?>(),
                 It.IsAny<int?>(),
                 It.IsAny<string?>(),
@@ -50,6 +51,7 @@ namespace OrderSystemPlusTest.BusinessActor
              _productRepository.Verify(x =>
                x.FindByOptionsAsync(It.IsAny<int?>(),
                It.IsAny<string?>(),
+               It.IsAny<string?>(),
                It.IsAny<int?>(),
                It.IsAny<int?>(),
                It.IsAny<string?>(),
@@ -63,6 +65,7 @@ namespace OrderSystemPlusTest.BusinessActor
             _productRepository
             .Setup(x => x.FindByOptionsAsync(
                 It.IsAny<int?>(),
+                It.IsAny<string?>(),
                 It.IsAny<string?>(),
                 It.IsAny<int?>(),
                 It.IsAny<int?>(),
@@ -80,6 +83,7 @@ namespace OrderSystemPlusTest.BusinessActor
             _productRepository.Verify(x => 
                 x.FindByOptionsAsync(It.IsAny<int?>(),
                 It.IsAny<string?>(),
+                It.IsAny<string?>(),
                 It.IsAny<int?>(),
                 It.IsAny<int?>(),
                 It.IsAny<string?>(),
@@ -92,6 +96,7 @@ namespace OrderSystemPlusTest.BusinessActor
             _productRepository
               .Setup(x => x.FindByOptionsAsync(
                   It.IsAny<int?>(),
+                  It.IsAny<string?>(),
                   It.IsAny<string?>(),
                   It.IsAny<int?>(),
                   It.IsAny<int?>(),
@@ -113,6 +118,7 @@ namespace OrderSystemPlusTest.BusinessActor
                 });
             _productRepository.Verify(x =>
                 x.FindByOptionsAsync(It.IsAny<int?>(),
+                It.IsAny<string?>(),
                 It.IsAny<string?>(),
                 It.IsAny<int?>(),
                 It.IsAny<int?>(),

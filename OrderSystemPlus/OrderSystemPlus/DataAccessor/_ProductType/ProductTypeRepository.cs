@@ -14,6 +14,7 @@ namespace OrderSystemPlus.DataAccessor
         public async Task<(int TotalCount, List<ProductTypeDto> Data)> FindByOptionsAsync(
             int? id = null,
             string? name = null,
+            string? likeName = null,
             int? pageIndex = null,
             int? pageSize = null,
             string? sortField = null,
@@ -28,6 +29,8 @@ namespace OrderSystemPlus.DataAccessor
                 conditions.Add("[Id] = @Id");
             if (!string.IsNullOrEmpty(name))
                 conditions.Add("[Name] = @Name");
+            if (!string.IsNullOrEmpty(likeName))
+                conditions.Add("[Name] LIKE @LikeName");
 
             var totalCountSql = GetTotalCountStatement(conditions);
 
@@ -48,6 +51,7 @@ namespace OrderSystemPlus.DataAccessor
                 {
                     IsValid = true,
                     Name = name,
+                    LikeName = "%" + likeName + "%",
                     Id = id,
                 })).First();
 
@@ -55,6 +59,7 @@ namespace OrderSystemPlus.DataAccessor
                 {
                     IsValid = true,
                     Name = name,
+                    LikeName = "%" + likeName + "%",
                     Id = id,
                 })).ToList();
             }

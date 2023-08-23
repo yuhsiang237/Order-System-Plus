@@ -40,6 +40,7 @@ namespace OrderSystemPlus.DataAccessor
         Task<(int TotalCount, List<ProductTypeDto> Data)> FindByOptionsAsync(
             int? id = null, 
             string? name = null,
+            string? likeName = null,
             int? pageIndex = null,
             int? pageSize = null,
             string? sortField = null,
