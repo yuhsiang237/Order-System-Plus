@@ -18,7 +18,7 @@ namespace OrderSystemPlus.Controllers
         }
 
         [HttpPost("CreateProduct")]
-        public async Task<IActionResult> CreateProduct([FromBody] List<ReqCreateProduct> req)
+        public async Task<IActionResult> CreateProduct([FromBody] ReqCreateProduct req)
         {
             await _productHandler.HandleAsync(req);
             return StatusCode(200);

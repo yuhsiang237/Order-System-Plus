@@ -87,19 +87,22 @@ namespace OrderSystemPlus.BusinessActor
             return rsp;
         }
 
-        public async Task HandleAsync(List<ReqCreateProduct> req)
+        public async Task HandleAsync(ReqCreateProduct req)
         {
             var now = DateTime.Now;
-            var dtoList = req.Select(s => new ProductDto
+            var dtoList = new List<ProductDto>
             {
-                Name = s.Name,
-                Number = s.Number,
-                Price = s.Price,
-                Description = s.Description,
-                CreatedOn = now,
-                UpdatedOn = now,
-                IsValid = true,
-            }).ToList();
+            new ProductDto
+                        {
+                            Name = req.Name,
+                            Number = req.Number,
+                            Price = req.Price,
+                            Description = req.Description,
+                            CreatedOn = now,
+                            UpdatedOn = now,
+                            IsValid = true,
+                        }
+            };
 
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             var productIds = await _productRepository.InsertAsync(dtoList);
@@ -107,7 +110,7 @@ namespace OrderSystemPlus.BusinessActor
             for (var i = 0; i < productIds.Count; i++)
             {
                 var ProductTypeIds =
-                 req[i].ProductTypeIds?.Select(productTypeId =>
+                 req.ProductTypeIds?.Select(productTypeId =>
                      new ProductTypeRelationshipDto
                      {
                          ProductId = productIds[i],
@@ -127,7 +130,7 @@ namespace OrderSystemPlus.BusinessActor
                 {
                     ProductId = productIds[i],
                     Type = AdjustProductInventoryType.Force,
-                    AdjustQuantity = req[i].Quantity,
+                    AdjustQuantity = req.Quantity,
                     Description = "商品建立庫存。"
                 });
             }
