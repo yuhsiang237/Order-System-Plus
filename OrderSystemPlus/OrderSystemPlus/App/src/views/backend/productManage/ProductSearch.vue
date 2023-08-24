@@ -13,11 +13,7 @@
                   <label class="custom-label">商品名稱</label>
                   <div class="form-group form-row">
                     <div class="col">
-                      <input
-                        type="text"
-                        class="form-control mr-2"
-                        v-model="searchfilter.name"
-                      />
+                      <input type="text" class="form-control mr-2" v-model="searchfilter.name" />
                     </div>
                   </div>
                 </div>
@@ -25,11 +21,7 @@
                   <label class="custom-label">商品編號</label>
                   <div class="form-group form-row">
                     <div class="col">
-                      <input
-                        type="text"
-                        class="form-control mr-2"
-                        v-model="searchfilter.number"
-                      />
+                      <input type="text" class="form-control mr-2" v-model="searchfilter.number" />
                     </div>
                   </div>
                 </div>
@@ -145,6 +137,35 @@
             <error-message :errors="errorCreate.name" />
           </div>
           <div class="mb-2">
+            <label>商品編號</label>
+            <input class="form-control" v-model="reqCreate.number" />
+            <error-message :errors="errorCreate.number" />
+          </div>
+          <div class="mb-2">
+            <label>商品價格</label>
+            <input class="form-control" v-model="reqCreate.price" />
+            <error-message :errors="errorCreate.price" />
+          </div>
+          <div class="mb-2">
+            <label>商品分類</label>
+            <VueMultiselect
+              v-model="reqCreate.productTypeIds"
+              :options="productTypeOption"
+              :multiple="true"
+              :taggable="true"
+              placeholder="請選擇"
+              label="name"
+              track-by="id"
+            >
+            </VueMultiselect>
+            <error-message :errors="errorCreate.ProductTypeIds" />
+          </div>
+          <div class="mb-2">
+            <label>商品庫存</label>
+            <input class="form-control" v-model="reqCreate.quantity" />
+            <error-message :errors="errorCreate.quantity" />
+          </div>
+          <div class="mb-2">
             <label>描述</label>
             <input class="form-control" v-model="reqCreate.description" />
             <error-message :errors="errorCreate.description" />
@@ -208,6 +229,7 @@ import CustomModal, {
 } from '@/components/commons/CustomModal.vue'
 import ErrorMessage from '@/components/commons/ErrorMessage.vue'
 import MessageBox from '@/utils/MessageBox.ts'
+import VueMultiselect from 'vue-multiselect'
 
 export default defineComponent({
   name: 'productTypeSearch',
@@ -215,7 +237,8 @@ export default defineComponent({
     Pagination,
     Loading,
     CustomModal,
-    ErrorMessage
+    ErrorMessage,
+    VueMultiselect
   },
   setup() {
     const isLoading = ref(false)
@@ -234,7 +257,7 @@ export default defineComponent({
       { sortField: 'price', sortType: SortType.DESC, label: '商品價格 高→低' },
       { sortField: 'price', sortType: SortType.ASC, label: '商品價格 低→高' }
     ])
-
+    const productTypeOption = ref([])
     const reqCreate = ref({})
     const errorCreate = ref({})
 
@@ -261,24 +284,36 @@ export default defineComponent({
     }
     const fetchData = async () => {
       isLoading.value = true
-      var res = await HttpClient.post(
-        import.meta.env.VITE_APP_AXIOS_PRODUCTMANAGE_GETPRODUCTLIST,
-        {
-          name: searchfilter.value?.name,
-          number: searchfilter.value?.number,
-          pageSize: pageSize.value,
-          pageIndex: pageIndex.value,
-          sortField: sortData.value[currentSort.value]?.sortField,
-          sortType: sortData.value[currentSort.value]?.sortType
-        }
-      )
+      var res = await HttpClient.post(import.meta.env.VITE_APP_AXIOS_PRODUCTMANAGE_GETPRODUCTLIST, {
+        name: searchfilter.value?.name,
+        number: searchfilter.value?.number,
+        pageSize: pageSize.value,
+        pageIndex: pageIndex.value,
+        sortField: sortData.value[currentSort.value]?.sortField,
+        sortType: sortData.value[currentSort.value]?.sortType
+      })
+
+      productTypeOption.value = (
+        await HttpClient.post(
+          import.meta.env.VITE_APP_AXIOS_PRODUCTTYPEMANAGE_GETPRODUCTTYPELIST,
+          {}
+        )
+      ).data
+
       totalCount.value = res.totalCount
       listData.value = res.data
       isLoading.value = false
       console.log(res)
     }
     const openAddModel = () => {
-      reqCreate.value = { name: '', description: '' }
+      reqCreate.value = {
+        name: '',
+        number: '',
+        description: '',
+        price: null,
+        quantity: null,
+        productTypeIds: []
+      }
       errorCreate.value = {}
       showModal('createModal')
     }
@@ -290,11 +325,19 @@ export default defineComponent({
     const createProductType = async () => {
       const data = reqCreate.value
       try {
-        var res = await HttpClient.post(
+        const productTypeIds = []
+        reqCreate.value.productTypeIds.forEach((item) => {
+          productTypeIds.push(item.id)
+        })
+        const res = await HttpClient.post(
           import.meta.env.VITE_APP_AXIOS_PRODUCTMANAGE_CREATEPRODUCT,
           {
             name: data.name,
-            description: data.description
+            number: data.number,
+            description: data.description,
+            price: data.price,
+            quantity: data.quantity,
+            productTypeIds: productTypeIds
           }
         )
         hideModal('createModal')
@@ -344,6 +387,7 @@ export default defineComponent({
     search()
 
     return {
+      productTypeOption,
       openUpdateModel,
       openAddModel,
       createProductType,

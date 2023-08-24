@@ -37,5 +37,6 @@
         /// 產品類別
         /// </summary>
         public List<int?> ProductTypeIds { get; set; }
+
     }
 }

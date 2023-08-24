@@ -1,5 +1,6 @@
 import './assets/css/style.css'
 import 'vue-loading-overlay/dist/css/index.css'
+import 'vue-multiselect/dist/vue-multiselect.css'
 
 import { createApp } from 'vue'
 

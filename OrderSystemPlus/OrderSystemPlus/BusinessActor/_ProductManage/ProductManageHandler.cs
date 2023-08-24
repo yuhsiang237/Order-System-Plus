@@ -89,6 +89,10 @@ namespace OrderSystemPlus.BusinessActor
 
         public async Task HandleAsync(ReqCreateProduct req)
         {
+            var isExist = (await _productRepository.FindByOptionsAsync(number: req.Number)).Data.Any();
+            if (isExist)
+                throw new BusinessException("已存在相同產品編號");
+
             var now = DateTime.Now;
             var dtoList = new List<ProductDto>
             {
@@ -96,7 +100,7 @@ namespace OrderSystemPlus.BusinessActor
                         {
                             Name = req.Name,
                             Number = req.Number,
-                            Price = req.Price,
+                            Price = req.Price.Value,
                             Description = req.Description,
                             CreatedOn = now,
                             UpdatedOn = now,
