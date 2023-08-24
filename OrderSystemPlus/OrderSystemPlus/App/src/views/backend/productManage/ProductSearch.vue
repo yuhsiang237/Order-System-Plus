@@ -147,7 +147,7 @@
           </div>
           <div class="mb-2">
             <label>商品價格</label>
-            <input class="form-control" v-model="reqCreate.price" />
+            <input class="form-control" type="number" v-model="reqCreate.price" />
             <error-message :errors="errorCreate.price" />
           </div>
           <div class="mb-2">
@@ -200,6 +200,35 @@
             <label>商品名稱</label>
             <input class="form-control" v-model="reqUpdate.name" />
             <error-message :errors="errorUpdate.name" />
+          </div>
+          <div class="mb-2">
+            <label>商品編號</label>
+            <input class="form-control" v-model="reqUpdate.number" />
+            <error-message :errors="errorUpdate.number" />
+          </div>
+          <div class="mb-2">
+            <label>商品價格</label>
+            <input class="form-control" type="number" v-model="reqUpdate.price" />
+            <error-message :errors="errorUpdate.price" />
+          </div>
+          <div class="mb-2">
+            <label>商品分類</label>
+            <VueMultiselect
+              v-model="reqUpdate.productTypeIds"
+              :options="productTypeOption"
+              :multiple="true"
+              :taggable="true"
+              placeholder="請選擇"
+              label="name"
+              track-by="id"
+            >
+            </VueMultiselect>
+            <error-message :errors="errorUpdate.ProductTypeIds" />
+          </div>
+          <div class="mb-2">
+            <label>商品庫存</label>
+            <div>{{ reqUpdate.quantity }}</div>
+            <error-message :errors="errorUpdate.quantity" />
           </div>
           <div class="mb-2">
             <label>描述</label>
@@ -307,7 +336,6 @@ export default defineComponent({
       totalCount.value = res.totalCount
       listData.value = res.data
       isLoading.value = false
-      console.log(res)
     }
     const openAddModel = () => {
       reqCreate.value = {
@@ -323,6 +351,15 @@ export default defineComponent({
     }
     const openUpdateModel = (item) => {
       reqUpdate.value = Object.assign({}, item)
+      reqUpdate.value.productTypeIds = []
+      item.productTypeIds.forEach((f) => {
+        var target = productTypeOption.value.find((x) => x.id == f)
+        if (target)
+          reqUpdate.value.productTypeIds.push({
+            name: target.name,
+            id: target.id
+          })
+      })
       errorUpdate.value = {}
       showModal('updateModal')
     }
@@ -339,7 +376,7 @@ export default defineComponent({
             name: data.name,
             number: data.number,
             description: data.description,
-            price: data.price,
+            price: Number(data.price),
             quantity: data.quantity,
             productTypeIds: productTypeIds
           }
@@ -355,12 +392,19 @@ export default defineComponent({
     const updateProductType = async () => {
       const data = reqUpdate.value
       try {
+        const productTypeIds = []
+        reqUpdate.value.productTypeIds.forEach((item) => {
+          productTypeIds.push(item.id)
+        })
         var res = await HttpClient.post(
           import.meta.env.VITE_APP_AXIOS_PRODUCTMANAGE_UPDATEPRODUCT,
           {
             id: data.id,
             name: data.name,
-            description: data.description
+            number: data.number,
+            description: data.description,
+            price: Number(data.price),
+            productTypeIds: productTypeIds
           }
         )
         hideModal('updateModal')

@@ -153,25 +153,29 @@ namespace OrderSystemPlus.BusinessActor
             scope.Complete();
         }
 
-        public async Task HandleAsync(List<ReqUpdateProduct> req)
+        public async Task HandleAsync(ReqUpdateProduct req)
         {
+            var checkExistItem = (await _productRepository.FindByOptionsAsync(number: req.Number)).Data.FirstOrDefault() ?? new ProductDto();
+            if (req.Number == checkExistItem.Number && checkExistItem.Id != req.Id)
+                throw new BusinessException("已存在相同編號");
+
             var now = DateTime.Now;
-            var dtoList = req.Select(s => new ProductDto
+            var dtoList = new List<ProductDto> { new ProductDto
             {
-                Id = s.Id,
-                Name = s.Name,
-                Number = s.Number,
-                Price = s.Price,
-                Description = s.Description,
+                Id = req.Id,
+                Name = req.Name,
+                Number = req.Number,
+                Price = req.Price,
+                Description = req.Description,
                 UpdatedOn = now,
-            }).ToList();
+            }};
 
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             var productTypeRelationshipDtoList = new List<ProductTypeRelationshipDto>();
             for (var i = 0; i < dtoList.Count; i++)
             {
                 var ProductTypeIds =
-                req[i].ProductTypeIds?.Select(productTypeId =>
+                req.ProductTypeIds?.Select(productTypeId =>
                     new ProductTypeRelationshipDto
                     {
                         ProductId = dtoList[i].Id,

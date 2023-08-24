@@ -13,6 +13,7 @@ public static class ValidatorConfiguration
             .AddTransient<IValidator<ReqDeleteUser>, ReqDeleteUserValidator>()
             .AddTransient<IValidator<ReqCreateProductType>, ReqCreateProductTypeValidator>()
             .AddTransient<IValidator<ReqUpdateProductType>, ReqUpdateProductTypeValidator>()
-            .AddTransient<IValidator<ReqCreateProduct>, ReqCreateProductValidator>();
+            .AddTransient<IValidator<ReqCreateProduct>, ReqCreateProductValidator>()
+            .AddTransient<IValidator<ReqUpdateProduct>, ReqUpdateProductValidator>();
     }
 }
