@@ -12,16 +12,18 @@ namespace OrderSystemPlus.BusinessActor
     {
         private readonly IProductRepository _productRepository;
         private readonly IProductTypeRelationshipRepository _productTypeRelationshipRepository;
-
+        private readonly IProductTypeRepository _productTypeRepository;
         private readonly IProductInventoryManageHandler _productInventoryManageHandler;
 
         public ProductManageHandler(
             IProductInventoryManageHandler productInventoryControlHandler,
             IProductRepository productRepository,
+            IProductTypeRepository productTypeRepository,
             IProductTypeRelationshipRepository productTypeRelationshipRepository)
         {
             _productInventoryManageHandler = productInventoryControlHandler;
             _productRepository = productRepository;
+            _productTypeRepository = productTypeRepository;
             _productTypeRelationshipRepository = productTypeRelationshipRepository;
         }
 
@@ -29,7 +31,7 @@ namespace OrderSystemPlus.BusinessActor
         {
             var data = await _productRepository.FindByOptionsAsync(
                 likeName: req.Name,
-                likeNumber: req.Number, 
+                likeNumber: req.Number,
                 pageIndex: req.PageIndex,
                 pageSize: req.PageSize,
                 sortField: req.SortField,
@@ -39,11 +41,14 @@ namespace OrderSystemPlus.BusinessActor
             {
                 cfg.CreateMap<ProductDto, RspGetProductListItem>()
                    .ForMember(dest => dest.Quantity, opt => opt.Ignore())
-                   .ForMember(dest => dest.ProductTypeIds, opt => opt.Ignore());
+                   .ForMember(dest => dest.ProductTypeIds, opt => opt.Ignore())
+                   .ForMember(dest => dest.ProductTypeNames, opt => opt.Ignore());
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
             var rsp = mapper.Map<List<ProductDto>, List<RspGetProductListItem>>(data.Data);
+
+            var productTypeOption = (await _productTypeRepository.FindByOptionsAsync()).Data.ToList();
 
             foreach (var item in rsp)
             {
@@ -55,6 +60,9 @@ namespace OrderSystemPlus.BusinessActor
                 item.ProductTypeIds = (await _productTypeRelationshipRepository.FindByOptionsAsync(productId: item.Id))
                     ?.Select(s => s?.ProductTypeId)
                     ?.ToList();
+                item.ProductTypeNames = item.ProductTypeIds?.Select(s =>
+                                        productTypeOption.Find(x => x.Id == s.Value)?.Name).ToList() ??
+                                        new List<string?>();
             }
 
             return new RspGetProductList

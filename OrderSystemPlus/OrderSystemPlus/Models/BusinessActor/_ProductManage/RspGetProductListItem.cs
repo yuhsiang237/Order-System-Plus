@@ -37,6 +37,10 @@
         /// 產品類別
         /// </summary>
         public List<int?> ProductTypeIds { get; set; }
-
+        
+        /// <summary>
+        /// 產品類別
+        /// </summary>
+        public List<string> ProductTypeNames { get; set; }
     }
 }

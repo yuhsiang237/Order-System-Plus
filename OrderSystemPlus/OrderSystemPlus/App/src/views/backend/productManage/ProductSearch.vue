@@ -72,6 +72,7 @@
                   <tr>
                     <th>名稱</th>
                     <th>編號</th>
+                    <th>分類</th>
                     <th>價格</th>
                     <th>描述</th>
                     <th>操作</th>
@@ -87,6 +88,9 @@
                   <tr v-for="(item, index) in listData">
                     <td>{{ item.name }}</td>
                     <td>{{ item.number }}</td>
+                    <td>
+                      {{ item?.productTypeNames.join('、') }}
+                    </td>
                     <td>{{ item.price }}</td>
                     <td>{{ item.description }}</td>
                     <td>
