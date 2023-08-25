@@ -26,7 +26,7 @@ namespace OrderSystemPlusTest.DataAccessor
         public async Task RunAsync()
         {
             await _repository.InsertAsync(new List<ProductDto> { GetInsertModel() });
-            var insertResult = await _repository.FindByOptionsAsync(null, GetInsertModel().Name, GetInsertModel().Number);
+            var (_,insertResult) = await _repository.FindByOptionsAsync(null, GetInsertModel().Name, GetInsertModel().Number);
             insertResult.Count.Should().Be(1);
             insertResult.First().Name.Should().Be(GetInsertModel().Name);
             insertResult.First().Description.Should().Be(GetInsertModel().Description);
@@ -34,7 +34,7 @@ namespace OrderSystemPlusTest.DataAccessor
             insertResult.First().Price.Should().Be(GetInsertModel().Price);
 
             await _repository.UpdateAsync(new List<ProductDto> { GetUpdateModel(insertResult.First().Id) });
-            var updateResult = await _repository.FindByOptionsAsync(insertResult.First().Id, null, null);
+            var (_,updateResult) = await _repository.FindByOptionsAsync(insertResult.First().Id, null, null);
             updateResult.Count.Should().Be(1);
             updateResult.First().Name.Should().Be(GetUpdateModel(updateResult.First().Id).Name);
             updateResult.First().Description.Should().Be(GetUpdateModel(updateResult.First().Id).Description);
@@ -42,7 +42,7 @@ namespace OrderSystemPlusTest.DataAccessor
             updateResult.First().Price.Should().Be(GetUpdateModel(updateResult.First().Id).Price);
 
             await _repository.DeleteAsync(new List<ProductDto> { GetDeleteModel(updateResult.First().Id) });
-            var deleteResult = await _repository.FindByOptionsAsync(updateResult.First().Id, null, null);
+            var (_,deleteResult) = await _repository.FindByOptionsAsync(updateResult.First().Id, null, null);
             deleteResult.Count.Should().Be(0);
         }
 

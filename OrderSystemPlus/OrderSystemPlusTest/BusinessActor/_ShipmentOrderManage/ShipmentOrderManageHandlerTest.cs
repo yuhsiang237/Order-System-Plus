@@ -8,6 +8,7 @@ using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.DataAccessor;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.Models.BusinessActor;
+using OrderSystemPlus.Enums;
 
 namespace OrderSystemPlusTest.BusinessActor
 {
@@ -36,15 +37,24 @@ namespace OrderSystemPlusTest.BusinessActor
                 .ReturnsAsync(new List<ShipmentOrderDto> { });
             _productInventoryHandler.Setup(x => x.HandleAsync(It.IsAny<List<ReqUpdateProductInventory>>())).ReturnsAsync(true);
             _productRepository
-               .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
-               .ReturnsAsync(new List<ProductDto> {
-                    new ProductDto{
-                        Id = 1,
+          .Setup(x => x.FindByOptionsAsync(
+          It.IsAny<int?>(),
+          It.IsAny<string?>(),
+          It.IsAny<string?>(),
+          It.IsAny<string?>(),
+          It.IsAny<string?>(),
+          It.IsAny<int?>(),
+          It.IsAny<int?>(),
+          It.IsAny<string?>(),
+          It.IsAny<SortType?>()))
+          .ReturnsAsync((1, new List<ProductDto> {
+                new ProductDto{
+                   Id = 1,
                         Name = "Test",
                         Description = "Test",
                         Number = "TEST",
                         Price = 500,
-                    }});
+                }}));
             _shipmentOrderRepository.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ShipmentOrderDto>>()))
                 .ReturnsAsync(new List<string> { "S20230621D1BCF3" });
             await _handler.HandleAsync(new ReqCreateShipmentOrder
@@ -65,7 +75,16 @@ namespace OrderSystemPlusTest.BusinessActor
                               }
             });
             _shipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>()), Times.Once());
-            _productRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
+            _productRepository.Verify(x => x.FindByOptionsAsync(
+                      It.IsAny<int?>(),
+                      It.IsAny<string?>(),
+                      It.IsAny<string?>(),
+                      It.IsAny<string?>(),
+                      It.IsAny<string?>(),
+                      It.IsAny<int?>(),
+                      It.IsAny<int?>(),
+                      It.IsAny<string?>(),
+                      It.IsAny<SortType?>()), Times.Once()); 
             _productInventoryHandler.Verify(x => x.HandleAsync(It.IsAny<List<ReqUpdateProductInventory>>()), Times.Once());
             _shipmentOrderRepository.Verify(x => x.InsertAsync(It.IsAny<IEnumerable<ShipmentOrderDto>>()), Times.Once());
         }
