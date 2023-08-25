@@ -75,14 +75,23 @@ namespace OrderSystemPlusTest.BusinessActor
         public async Task UpdateProductInventory()
         {
             _productRepository
-           .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
-           .ReturnsAsync(new List<ProductDto> {
+           .Setup(x => x.FindByOptionsAsync(
+           It.IsAny<int?>(),
+           It.IsAny<string?>(),
+           It.IsAny<string?>(),
+           It.IsAny<string?>(),
+           It.IsAny<string?>(),
+           It.IsAny<int?>(),
+           It.IsAny<int?>(),
+           It.IsAny<string?>(),
+           It.IsAny<SortType?>()))
+           .ReturnsAsync((1, new List<ProductDto> {
                 new ProductDto{
-                    Id = 99999,
+                       Id = 99999,
                     Name = "Test",
                     Description = "Test",
                     Number = "TEST",
-                }});
+                }}));
 
             _productInventoryRepository.Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<int?>()))
                 .ReturnsAsync(new List<ProductInventoryDto>
@@ -108,7 +117,16 @@ namespace OrderSystemPlusTest.BusinessActor
                     Type = AdjustProductInventoryType.Force,
                 }
             });
-            _productRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
+            _productRepository.Verify(x => x.FindByOptionsAsync(
+                      It.IsAny<int?>(),
+                      It.IsAny<string?>(),
+                      It.IsAny<string?>(),
+                      It.IsAny<string?>(),
+                      It.IsAny<string?>(),
+                      It.IsAny<int?>(),
+                      It.IsAny<int?>(),
+                      It.IsAny<string?>(),
+                      It.IsAny<SortType?>()), Times.Once()); 
             _productInventoryRepository.Verify(x => x.InsertAsync(It.IsAny<List<ProductInventoryDto>>()), Times.Once());
             _productInventoryRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<int?>()), Times.Once());
         }

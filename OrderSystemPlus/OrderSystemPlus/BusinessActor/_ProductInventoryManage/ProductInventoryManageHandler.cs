@@ -120,7 +120,7 @@ namespace OrderSystemPlus.BusinessActor
 
         private async Task<bool> isProductExist(int productId)
         {
-            return (await _productRepository.FindByOptionsAsync(id: productId)).Any();
+            return (await _productRepository.FindByOptionsAsync(id: productId)).Data.Any();
         }
     }
 }

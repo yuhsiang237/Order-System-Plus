@@ -12,31 +12,43 @@ namespace OrderSystemPlus.BusinessActor
     {
         private readonly IProductRepository _productRepository;
         private readonly IProductTypeRelationshipRepository _productTypeRelationshipRepository;
-
+        private readonly IProductTypeRepository _productTypeRepository;
         private readonly IProductInventoryManageHandler _productInventoryManageHandler;
 
         public ProductManageHandler(
             IProductInventoryManageHandler productInventoryControlHandler,
             IProductRepository productRepository,
+            IProductTypeRepository productTypeRepository,
             IProductTypeRelationshipRepository productTypeRelationshipRepository)
         {
             _productInventoryManageHandler = productInventoryControlHandler;
             _productRepository = productRepository;
+            _productTypeRepository = productTypeRepository;
             _productTypeRelationshipRepository = productTypeRelationshipRepository;
         }
 
-        public async Task<List<RspGetProductList>> GetProductListAsync(ReqGetProductList req)
+        public async Task<RspGetProductList> GetProductListAsync(ReqGetProductList req)
         {
-            var data = await _productRepository.FindByOptionsAsync(null, null, null);
+            var data = await _productRepository.FindByOptionsAsync(
+                likeName: req.Name,
+                likeNumber: req.Number,
+                pageIndex: req.PageIndex,
+                pageSize: req.PageSize,
+                sortField: req.SortField,
+                sortType: req.SortType
+                );
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ProductDto, RspGetProductList>()
+                cfg.CreateMap<ProductDto, RspGetProductListItem>()
                    .ForMember(dest => dest.Quantity, opt => opt.Ignore())
-                   .ForMember(dest => dest.ProductTypeIds, opt => opt.Ignore());
+                   .ForMember(dest => dest.ProductTypeIds, opt => opt.Ignore())
+                   .ForMember(dest => dest.ProductTypeNames, opt => opt.Ignore());
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
-            var rsp = mapper.Map<List<ProductDto>, List<RspGetProductList>>(data);
+            var rsp = mapper.Map<List<ProductDto>, List<RspGetProductListItem>>(data.Data);
+
+            var productTypeOption = (await _productTypeRepository.FindByOptionsAsync()).Data.ToList();
 
             foreach (var item in rsp)
             {
@@ -48,14 +60,21 @@ namespace OrderSystemPlus.BusinessActor
                 item.ProductTypeIds = (await _productTypeRelationshipRepository.FindByOptionsAsync(productId: item.Id))
                     ?.Select(s => s?.ProductTypeId)
                     ?.ToList();
+                item.ProductTypeNames = item.ProductTypeIds?.Select(s =>
+                                        productTypeOption.Find(x => x.Id == s.Value)?.Name).ToList() ??
+                                        new List<string?>();
             }
 
-            return rsp.ToList();
+            return new RspGetProductList
+            {
+                Data = rsp,
+                TotalCount = data.TotalCount,
+            };
         }
 
         public async Task<RspGetProductInfo> GetProductInfoAsync(ReqGetProductInfo req)
         {
-            var data = (await _productRepository.FindByOptionsAsync(id: req.Id)).FirstOrDefault();
+            var data = (await _productRepository.FindByOptionsAsync(id: req.Id)).Data.FirstOrDefault();
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ProductDto, RspGetProductInfo>()
@@ -76,19 +95,26 @@ namespace OrderSystemPlus.BusinessActor
             return rsp;
         }
 
-        public async Task HandleAsync(List<ReqCreateProduct> req)
+        public async Task HandleAsync(ReqCreateProduct req)
         {
+            var isExist = (await _productRepository.FindByOptionsAsync(number: req.Number)).Data.Any();
+            if (isExist)
+                throw new BusinessException("已存在相同產品編號");
+
             var now = DateTime.Now;
-            var dtoList = req.Select(s => new ProductDto
+            var dtoList = new List<ProductDto>
             {
-                Name = s.Name,
-                Number = s.Number,
-                Price = s.Price,
-                Description = s.Description,
-                CreatedOn = now,
-                UpdatedOn = now,
-                IsValid = true,
-            }).ToList();
+            new ProductDto
+                        {
+                            Name = req.Name,
+                            Number = req.Number,
+                            Price = req.Price.Value,
+                            Description = req.Description,
+                            CreatedOn = now,
+                            UpdatedOn = now,
+                            IsValid = true,
+                        }
+            };
 
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             var productIds = await _productRepository.InsertAsync(dtoList);
@@ -96,7 +122,7 @@ namespace OrderSystemPlus.BusinessActor
             for (var i = 0; i < productIds.Count; i++)
             {
                 var ProductTypeIds =
-                 req[i].ProductTypeIds?.Select(productTypeId =>
+                 req.ProductTypeIds?.Select(productTypeId =>
                      new ProductTypeRelationshipDto
                      {
                          ProductId = productIds[i],
@@ -116,7 +142,7 @@ namespace OrderSystemPlus.BusinessActor
                 {
                     ProductId = productIds[i],
                     Type = AdjustProductInventoryType.Force,
-                    AdjustQuantity = req[i].Quantity,
+                    AdjustQuantity = req.Quantity,
                     Description = "商品建立庫存。"
                 });
             }
@@ -127,25 +153,29 @@ namespace OrderSystemPlus.BusinessActor
             scope.Complete();
         }
 
-        public async Task HandleAsync(List<ReqUpdateProduct> req)
+        public async Task HandleAsync(ReqUpdateProduct req)
         {
+            var checkExistItem = (await _productRepository.FindByOptionsAsync(number: req.Number)).Data.FirstOrDefault() ?? new ProductDto();
+            if (req.Number == checkExistItem.Number && checkExistItem.Id != req.Id)
+                throw new BusinessException("已存在相同編號");
+
             var now = DateTime.Now;
-            var dtoList = req.Select(s => new ProductDto
+            var dtoList = new List<ProductDto> { new ProductDto
             {
-                Id = s.Id,
-                Name = s.Name,
-                Number = s.Number,
-                Price = s.Price,
-                Description = s.Description,
+                Id = req.Id,
+                Name = req.Name,
+                Number = req.Number,
+                Price = req.Price,
+                Description = req.Description,
                 UpdatedOn = now,
-            }).ToList();
+            }};
 
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             var productTypeRelationshipDtoList = new List<ProductTypeRelationshipDto>();
             for (var i = 0; i < dtoList.Count; i++)
             {
                 var ProductTypeIds =
-                req[i].ProductTypeIds?.Select(productTypeId =>
+                req.ProductTypeIds?.Select(productTypeId =>
                     new ProductTypeRelationshipDto
                     {
                         ProductId = dtoList[i].Id,
