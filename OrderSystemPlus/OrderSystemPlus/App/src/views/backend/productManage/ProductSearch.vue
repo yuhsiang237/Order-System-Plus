@@ -265,7 +265,7 @@ import MessageBox from '@/utils/MessageBox.ts'
 import VueMultiselect from 'vue-multiselect'
 
 export default defineComponent({
-  name: 'productTypeSearch',
+  name: 'productSearch',
   components: {
     Pagination,
     Loading,
