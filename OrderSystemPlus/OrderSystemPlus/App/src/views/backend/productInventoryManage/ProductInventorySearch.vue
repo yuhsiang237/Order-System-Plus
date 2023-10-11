@@ -87,13 +87,11 @@
                     </td>
                     <td>{{ item.description }}</td>
                     <td>
-                      <button
-                        type="button"
-                        class="mr-1 btn btn-main-color02 outline-btn"
-                        @click="openUpdateModel(item)"
-                      >
-                        編輯
-                      </button>
+                      <router-link 
+                      class="mr-1 btn btn-main-color02 outline-btn"
+                      :to="{ name: 'productInventoryEdit', query: { id: item.id } }">
+                        管理
+                      </router-link>
                     </td>
                   </tr>
                 </tbody>

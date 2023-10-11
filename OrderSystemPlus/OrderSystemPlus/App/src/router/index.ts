@@ -5,6 +5,7 @@ import Dashboard from '@/views/home/Dashboard.vue'
 import ProductTypeSearch from '@/views/backend/productTypeManage/ProductTypeSearch.vue'
 import ProductSearch from '@/views/backend/productManage/ProductSearch.vue'
 import ProductInventorySearch from '@/views/backend/productInventoryManage/ProductInventorySearch.vue'
+import ProductInventoryEdit from '@/views/backend/productInventoryManage/ProductInventoryEdit.vue'
 
 import Backend from '@/views/Backend/Backend.vue'
 import HttpClient from '@/utils/HttpClient.ts'
@@ -68,9 +69,14 @@ const router = createRouter({
               path: 'productInventorySearch',
               name: 'productInventorySearch',
               component: ProductInventorySearch
+            },
+            {
+              path: 'productInventoryEdit',
+              name: 'productInventoryEdit',
+              component: ProductInventoryEdit
             }
           ]
-        }
+        },
       ]
     }
   ]
