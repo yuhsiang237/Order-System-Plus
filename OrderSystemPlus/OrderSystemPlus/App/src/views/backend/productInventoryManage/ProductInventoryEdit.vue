@@ -9,15 +9,15 @@
         <div class="row" id="Form">
             <div class="col-6 mb-3">
                 <label>商品名稱</label>
-                <div>@ViewData["Name"]</div>
+                <div>{{productInfoData.name}}</div>
             </div>
             <div class="col-6 mb-3">
                 <label>商品編號</label>
-                <div>@ViewData["Number"]</div>
+                <div>{{productInfoData.number}}</div>
             </div>
             <div class="col-6 mb-3">
                 <label>目前數量</label>
-                <div>@ViewData["CurrentUnit"]</div>
+                <div>{{productInfoData.quantity}}</div>
             </div>
         </div>
         <div class="row">
@@ -97,12 +97,20 @@ export default defineComponent({
     const route = useRoute();
     const productId = ref(route.query.id);
     const historyList = ref([])
+    const productInfoData = ref([])
+
     const fetchData = async () => {
       isLoading.value = true
-      var res = await HttpClient.post(import.meta.env.VITE_APP_AXIOS_PRODUCTINVENTORYMANAGE_GETPRODUCTINVENTORYHISTORYLIST, {
-        productId:productId.value
-      })
-      historyList.value = res
+      var res = await Promise.all([
+        await HttpClient.post(import.meta.env.VITE_APP_AXIOS_PRODUCTINVENTORYMANAGE_GETPRODUCTINVENTORYHISTORYLIST, {
+          productId:productId.value
+        }),
+        await HttpClient.post(import.meta.env.VITE_APP_AXIOS_PRODUCTMANAGE_GETPRODUCTINFO, {
+          id:productId.value
+        })
+      ])
+      historyList.value = res[0]
+      productInfoData.value = res[1]
       isLoading.value = false
     }
     fetchData()
@@ -110,6 +118,7 @@ export default defineComponent({
       isLoading,
       DateTool,
       historyList,
+      productInfoData
     }
   }
 })
