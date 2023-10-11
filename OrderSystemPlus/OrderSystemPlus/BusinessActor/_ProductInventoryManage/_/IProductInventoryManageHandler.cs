@@ -7,5 +7,6 @@ namespace OrderSystemPlus.BusinessActor
         Task<List<RspGetProductInventoryHistoryList>> GetProductInventoryHistoryListAsync(ReqGetProductInventoryHistoryList req);
         Task<decimal?> GetProductCurrentTotalQuantityAsync(ReqGetProductCurrentTotalQuantity req);
         Task<bool> HandleAsync(List<ReqUpdateProductInventory> req);
+        Task<RspGetProductInventoryList> GetProductInventoryListAsync(ReqGetProductInventoryList req);
     }
 }

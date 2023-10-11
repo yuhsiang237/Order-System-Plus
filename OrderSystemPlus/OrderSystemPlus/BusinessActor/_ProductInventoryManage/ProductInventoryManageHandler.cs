@@ -1,4 +1,5 @@
-﻿using OrderSystemPlus.DataAccessor;
+﻿using AutoMapper;
+using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Enums;
 using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Models.DataAccessor;
@@ -9,16 +10,67 @@ namespace OrderSystemPlus.BusinessActor
     {
         private readonly IProductInventoryRepository _productInventoryRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IProductTypeRelationshipRepository _productTypeRelationshipRepository;
+        private readonly IProductTypeRepository _productTypeRepository;
+
         private static SemaphoreSlim _updateProductInventorySemaphoreSlim;
         public ProductInventoryManageHandler(
             IProductInventoryRepository productInventoryRepository,
-            IProductRepository productRepository)
+            IProductRepository productRepository,
+            IProductTypeRepository productTypeRepository,
+            IProductTypeRelationshipRepository productTypeRelationshipRepository)
         {
             _updateProductInventorySemaphoreSlim = new SemaphoreSlim(1, 1);
             _productInventoryRepository = productInventoryRepository;
             _productRepository = productRepository;
+            _productTypeRepository = productTypeRepository;
+            _productTypeRelationshipRepository = productTypeRelationshipRepository;
         }
+        public async Task<RspGetProductInventoryList> GetProductInventoryListAsync(ReqGetProductInventoryList req)
+        {
+            
+            var data = await _productRepository.FindByOptionsAsync(
+                likeName: req.Name,
+                likeNumber: req.Number,
+                pageIndex: req.PageIndex,
+                pageSize: req.PageSize,
+                sortField: req.SortField,
+                sortType: req.SortType
+                );
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ProductDto, RspGetProductInventoryListItem>()
+                   .ForMember(dest => dest.Quantity, opt => opt.Ignore())
+                   .ForMember(dest => dest.ProductTypeIds, opt => opt.Ignore())
+                   .ForMember(dest => dest.ProductTypeNames, opt => opt.Ignore());
+            });
+            config.AssertConfigurationIsValid();
+            var mapper = config.CreateMapper();
+            var rsp = mapper.Map<List<ProductDto>, List<RspGetProductInventoryListItem>>(data.Data);
 
+            var productTypeOption = (await _productTypeRepository.FindByOptionsAsync()).Data.ToList();
+
+            foreach (var item in rsp)
+            {
+                item.Quantity = await GetProductCurrentTotalQuantityAsync(new ReqGetProductCurrentTotalQuantity
+                {
+                    ProductId = item.Id,
+                });
+
+                item.ProductTypeIds = (await _productTypeRelationshipRepository.FindByOptionsAsync(productId: item.Id))
+                    ?.Select(s => s?.ProductTypeId)
+                    ?.ToList();
+                item.ProductTypeNames = item.ProductTypeIds?.Select(s =>
+                                        productTypeOption.Find(x => x.Id == s.Value)?.Name).ToList() ??
+                                        new List<string?>();
+            }
+
+            return new RspGetProductInventoryList
+            {
+                Data = rsp,
+                TotalCount = data.TotalCount,
+            };
+        }
         public async Task<bool> HandleAsync(List<ReqUpdateProductInventory> req)
         {
             await _updateProductInventorySemaphoreSlim.WaitAsync();
