@@ -17,7 +17,6 @@ namespace OrderSystemPlusTest.BusinessActor
         private IProductManageHandler _handler;
         private readonly Mock<IProductRepository> _productRepository;
         private readonly Mock<IProductTypeRepository> _productTypeRepository;
-
         private readonly Mock<IProductInventoryManageHandler> _productInventoryHandler;
         private readonly Mock<IProductTypeRelationshipRepository> _productTypeRelationshipRepository;
 

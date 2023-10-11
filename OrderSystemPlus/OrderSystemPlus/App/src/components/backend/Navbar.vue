@@ -63,14 +63,9 @@
                 <router-link class="nav-link text-dark" :to="{ name: 'productSearch' }">
                   商品管理
                 </router-link>
-                <a
-                  class="nav-link text-dark"
-                  asp-area=""
-                  asp-controller="Inventory"
-                  asp-action="Search"
-                >
+                <router-link class="nav-link text-dark" :to="{ name: 'productInventorySearch' }">
                   商品庫存管理
-                </a>
+                </router-link>
               </div>
             </li>
 
