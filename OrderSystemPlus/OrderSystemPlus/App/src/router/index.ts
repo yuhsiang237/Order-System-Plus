@@ -76,7 +76,7 @@ const router = createRouter({
               component: ProductInventoryEdit
             }
           ]
-        },
+        }
       ]
     }
   ]

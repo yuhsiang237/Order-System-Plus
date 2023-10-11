@@ -56,8 +56,7 @@
 
       <div class="container">
         <div class="row my-3">
-          <div class="col">
-          </div>
+          <div class="col"></div>
         </div>
         <div class="row">
           <div class="col">
@@ -87,9 +86,10 @@
                     </td>
                     <td>{{ item.description }}</td>
                     <td>
-                      <router-link 
-                      class="mr-1 btn btn-main-color02 outline-btn"
-                      :to="{ name: 'productInventoryEdit', query: { id: item.id } }">
+                      <router-link
+                        class="mr-1 btn btn-main-color02 outline-btn"
+                        :to="{ name: 'productInventoryEdit', query: { id: item.id } }"
+                      >
                         管理
                       </router-link>
                     </td>
