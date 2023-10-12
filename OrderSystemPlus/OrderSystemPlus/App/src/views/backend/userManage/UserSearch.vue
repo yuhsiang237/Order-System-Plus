@@ -47,9 +47,7 @@
       </div>
 
       <div class="container">
-        <div class="row my-3">
-        
-        </div>
+        <div class="row my-3"></div>
         <div class="row">
           <div class="col">
             <div class="table-responsive" id="productTable">
@@ -72,11 +70,11 @@
                     <td>{{ item.account }}</td>
                     <td>
                       <router-link
-                      class="mr-1 btn btn-main-color02 outline-btn"
-                      :to="{ name: 'userEdit', query: { id: item.id } }"
-                    >
-                    編輯
-                    </router-link>
+                        class="mr-1 btn btn-main-color02 outline-btn"
+                        :to="{ name: 'userEdit', query: { id: item.id } }"
+                      >
+                        編輯
+                      </router-link>
                     </td>
                   </tr>
                 </tbody>
@@ -98,7 +96,6 @@
       </div>
     </div>
   </div>
- 
 </template>
 
 <script lang="ts">
@@ -138,9 +135,8 @@ export default defineComponent({
       { sortField: 'account', sortType: SortType.DESC, label: '帳號 高→低' },
       { sortField: 'account', sortType: SortType.ASC, label: '帳號 低→高' },
       { sortField: 'name', sortType: SortType.DESC, label: '姓名 高→低' },
-      { sortField: 'name', sortType: SortType.ASC, label: '姓名 低→高' },
+      { sortField: 'name', sortType: SortType.ASC, label: '姓名 低→高' }
     ])
-
 
     const sortChange = async ($event) => {
       currentSort.value = Number($event.target.value)
@@ -173,7 +169,7 @@ export default defineComponent({
       listData.value = res.data
       isLoading.value = false
     }
-  
+
     search()
 
     return {

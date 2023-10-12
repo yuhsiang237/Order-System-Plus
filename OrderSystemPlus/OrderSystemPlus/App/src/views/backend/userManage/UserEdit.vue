@@ -10,7 +10,7 @@
         <div class="col-12 col-md-6">
           <div class="mb-2">
             <label>帳號</label>
-            <div>{{userInfoData.account}}</div>
+            <div>{{ userInfoData.account }}</div>
           </div>
           <div class="mb-2">
             <label>姓名</label>
@@ -23,18 +23,13 @@
             <error-message :errors="errors.email" />
           </div>
         </div>
-       
       </div>
       <div class="row">
         <div class="col-12">
           <div class="text-right my-3">
-            <button
-            @click="updateUser"
-            type="button"
-            class="btn btn-main-color01 mr-2"
-          >
-            更新
-          </button>
+            <button @click="updateUser" type="button" class="btn btn-main-color01 mr-2">
+              更新
+            </button>
             <button
               onclick="history.go(-1);"
               type="button"
@@ -85,27 +80,24 @@ export default defineComponent({
     const fetchData = async () => {
       isLoading.value = true
       var res = await Promise.all([
-        await HttpClient.post(
-          import.meta.env.VITE_APP_AXIOS_USERMANAGE_GETUSERINFO,
-          {
-            id: userId.value
-          }
-        )
+        await HttpClient.post(import.meta.env.VITE_APP_AXIOS_USERMANAGE_GETUSERINFO, {
+          id: userId.value
+        })
       ])
       userInfoData.value = res[0]
       isLoading.value = false
     }
     fetchData()
-    
-    const updateUser= async () => {
+
+    const updateUser = async () => {
       try {
         const m = userInfoData.value
         const response = await HttpClient.post(
           import.meta.env.VITE_APP_AXIOS_USERMANAGE_UPDATEUSER,
           {
-            id:m.id,
+            id: m.id,
             name: m.name,
-            email: m.email,
+            email: m.email
           }
         )
         await MessageBox.showSuccessMessage('更新成功')
