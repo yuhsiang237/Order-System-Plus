@@ -7,36 +7,34 @@
         </div>
       </div>
       <div class="row" id="Form">
+        <div class="col-12 col-md-6">
+          <div class="mb-2">
+            <label>帳號</label>
+            <div>{{userInfoData.account}}</div>
+          </div>
+          <div class="mb-2">
+            <label>姓名</label>
+            <input class="form-control" v-model="userInfoData.name" />
+            <error-message :errors="errors.name" />
+          </div>
+          <div class="mb-3">
+            <label>信箱</label>
+            <input class="form-control" v-model="userInfoData.email" />
+            <error-message :errors="errors.email" />
+          </div>
+        </div>
        
       </div>
       <div class="row">
         <div class="col-12">
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <th>異動時間</th>
-                <th>異動數量</th>
-                <th>異動描述</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in historyList">
-                <td>
-                  {{ DateTool.toDateString(item.createdOn) }}
-                </td>
-                <td>
-                  <span v-if="item.adjustQuantity >= 0">+</span>
-                  <span v-if="item.adjustQuantity < 0">-</span>{{ item.adjustQuantity }}
-                </td>
-                <td>
-                  {{ item.remark }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-12">
           <div class="text-right my-3">
+            <button
+            @click="updateUser"
+            type="button"
+            class="btn btn-main-color01 mr-2"
+          >
+            更新
+          </button>
             <button
               onclick="history.go(-1);"
               type="button"
@@ -82,6 +80,7 @@ export default defineComponent({
     const route = useRoute()
     const userId = ref(route.query.id)
     const userInfoData = ref({})
+    const errors = ref({})
 
     const fetchData = async () => {
       isLoading.value = true
@@ -97,10 +96,31 @@ export default defineComponent({
       isLoading.value = false
     }
     fetchData()
+    
+    const updateUser= async () => {
+      try {
+        const m = userInfoData.value
+        const response = await HttpClient.post(
+          import.meta.env.VITE_APP_AXIOS_USERMANAGE_UPDATEUSER,
+          {
+            id:m.id,
+            name: m.name,
+            email: m.email,
+          }
+        )
+        await MessageBox.showSuccessMessage('更新成功')
+        errors.value = {}
+      } catch (ex) {
+        errors.value = ex?.response?.data?.errors ?? {}
+      }
+    }
+
     return {
       isLoading,
       DateTool,
-      userInfoData
+      userInfoData,
+      updateUser,
+      errors
     }
   }
 })
