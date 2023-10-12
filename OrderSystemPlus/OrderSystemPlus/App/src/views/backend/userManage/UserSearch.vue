@@ -71,12 +71,12 @@
                     <td>{{ item.name }}</td>
                     <td>{{ item.account }}</td>
                     <td>
-                      <button
-                        type="button"
-                        class="mr-1 btn btn-main-color02 outline-btn"
-                      >
-                        編輯
-                      </button>
+                      <router-link
+                      class="mr-1 btn btn-main-color02 outline-btn"
+                      :to="{ name: 'userEdit', query: { id: item.id } }"
+                    >
+                    編輯
+                    </router-link>
                     </td>
                   </tr>
                 </tbody>
