@@ -3,13 +3,12 @@ using System.Threading.Tasks;
 
 using Xunit;
 using Moq;
-using FluentAssertions;
 
 using OrderSystemPlus.DataAccessor;
 using OrderSystemPlus.Models.DataAccessor;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.Models.BusinessActor;
-using OrderSystemPlus.Utils.JwtHelper;
+using OrderSystemPlus.Enums;
 
 namespace OrderSystemPlusTest.BusinessActor
 {
@@ -33,8 +32,11 @@ namespace OrderSystemPlusTest.BusinessActor
                 .ReturnsAsync(1);
 
             _userRepository
-           .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
-           .ReturnsAsync(new List<UserDto> {});
+           .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+             It.IsAny<int?>(),
+             It.IsAny<string?>(),
+             It.IsAny<SortType?>()))
+           .ReturnsAsync((0,new List<UserDto> {}));
 
             await _handler.HandleAsync(new ReqCreateUser
             {
@@ -43,7 +45,10 @@ namespace OrderSystemPlusTest.BusinessActor
                 Account = "TEST",
                 Password = "Test"
             });
-            _userRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
+            _userRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+             It.IsAny<int?>(),
+             It.IsAny<string?>(),
+             It.IsAny<SortType?>()), Times.Once());
             _userRepository.Verify(x => x.InsertAsync(It.IsAny<UserDto>()), Times.Once());
         }
 
@@ -51,28 +56,40 @@ namespace OrderSystemPlusTest.BusinessActor
         public async Task GetUserListAsync()
         {
             _userRepository
-            .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
-            .ReturnsAsync(new List<UserDto> {
+            .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+             It.IsAny<int?>(),
+             It.IsAny<string?>(),
+             It.IsAny<SortType?>()))
+            .ReturnsAsync((1,new List<UserDto> {
                 new UserDto{
                     Name = "Test",
-                }});
+                }}));
 
             var rsp = await _handler.GetUserListAsync(new ReqGetUserList { });
-            _userRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
+            _userRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+             It.IsAny<int?>(),
+             It.IsAny<string?>(),
+             It.IsAny<SortType?>()), Times.Once());
         }
 
         [Fact]
         public async Task GetUserInfoAsync()
         {
             _userRepository
-            .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
-            .ReturnsAsync(new List<UserDto> {
+            .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+             It.IsAny<int?>(),
+             It.IsAny<string?>(),
+             It.IsAny<SortType?>()))
+            .ReturnsAsync((1,new List<UserDto> {
                 new UserDto{
                     Name = "Test",
-                }});
+                }}));
 
             var rsp = await _handler.GetUserInfoAsync(new ReqGetUserInfo { });
-            _userRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
+            _userRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+             It.IsAny<int?>(),
+             It.IsAny<string?>(),
+             It.IsAny<SortType?>()), Times.Once());
         }
 
         [Fact]

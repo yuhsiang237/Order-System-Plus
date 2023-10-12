@@ -21,22 +21,32 @@ namespace OrderSystemPlus.BusinessActor
             _userRepository = userRepository;
         }
 
-        public async Task<List<RspGetUserList>> GetUserListAsync(ReqGetUserList req)
+        public async Task<RspGetUserList> GetUserListAsync(ReqGetUserList req)
         {
-            var data = await _userRepository.FindByOptionsAsync(null, null, null);
+            var data = await _userRepository.FindByOptionsAsync(
+              account:req.Account,
+              pageIndex: req.PageIndex,
+              pageSize: req.PageSize,
+              sortField: req.SortField,
+              sortType: req.SortType
+              );
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<UserDto, RspGetUserList>();
+                cfg.CreateMap<UserDto, RspGetUserListItem>();
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
-            var rsp = mapper.Map<List<UserDto>, List<RspGetUserList>>(data);
-            return rsp.ToList();
+            var rsp = mapper.Map<List<UserDto>, List<RspGetUserListItem>>(data.Data);
+            return new RspGetUserList
+            {
+                Data = rsp,
+                TotalCount = data.TotalCount,
+            };
         }
 
         public async Task<RspGetUserInfo> GetUserInfoAsync(ReqGetUserInfo req)
         {
-            var data = (await _userRepository.FindByOptionsAsync(id: req.Id)).FirstOrDefault();
+            var data = (await _userRepository.FindByOptionsAsync(id: req.Id)).Data.FirstOrDefault();
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<UserDto, RspGetUserInfo>();
@@ -55,8 +65,8 @@ namespace OrderSystemPlus.BusinessActor
                 var result = default(int);
                 var now = DateTime.Now;
                 var hashSalt = HashSaltTool.Generate(req.Password);
-                var isExist = (await _userRepository.FindByOptionsAsync(null, null, req.Account))
-                            .ToList()
+                var isExist = (await _userRepository.FindByOptionsAsync(account: req.Account))
+                            .Data.ToList()
                             .Any();
                 if (isExist)
                     throw new BusinessException("使用者已存在");

@@ -47,7 +47,7 @@ namespace OrderSystemPlus.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("GetUserList")]
-        public async Task<List<RspGetUserList>> GetUserList([FromBody] ReqGetUserList req)
+        public async Task<RspGetUserList> GetUserList([FromBody] ReqGetUserList req)
             => await _userHandler.GetUserListAsync(req);
     }
 }

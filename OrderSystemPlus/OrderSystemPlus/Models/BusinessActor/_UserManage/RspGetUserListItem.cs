@@ -1,6 +1,6 @@
 ﻿namespace OrderSystemPlus.Models.BusinessActor
 {
-    public class RspGetUserList
+    public class RspGetUserListItem
     {
         public int Id { get; set; }
         public string Name { get; set; }
