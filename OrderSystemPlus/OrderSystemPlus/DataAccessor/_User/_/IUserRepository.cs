@@ -1,4 +1,5 @@
-﻿using OrderSystemPlus.Models.DataAccessor;
+﻿using OrderSystemPlus.Enums;
+using OrderSystemPlus.Models.DataAccessor;
 
 namespace OrderSystemPlus.DataAccessor
 {
@@ -33,6 +34,13 @@ namespace OrderSystemPlus.DataAccessor
         /// <param name="email"></param>
         /// <param name="account"></param>
         /// <returns></returns>
-        Task<List<UserDto>> FindByOptionsAsync(int? id = null, string? email = null, string? account = null);
+        Task<(int TotalCount, List<UserDto> Data)> FindByOptionsAsync(
+            int? id = null, 
+            string? email = null,
+            string? account = null,
+            int? pageIndex = null,
+            int? pageSize = null,
+            string? sortField = null,
+            SortType? sortType = null);
     }
 }

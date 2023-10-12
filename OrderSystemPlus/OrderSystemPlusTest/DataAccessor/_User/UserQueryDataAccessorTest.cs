@@ -32,16 +32,16 @@ namespace OrderSystemPlusTest.DataAccessor
             var insertResult = await _repository.FindByOptionsAsync(
                 email: GetInsertModel().Email,
                 account: GetInsertModel().Account);
-            insertResult.Count.Should().Be(1);
+            insertResult.Data.Count.Should().Be(1);
 
-            await _repository.UpdateAsync(new List<UserDto> { GetUpdateModel(insertResult.First().Id) });
-            var updateResult = await _repository.FindByOptionsAsync(insertResult.First().Id, null, null);
-            updateResult.Count.Should().Be(1);
-            updateResult.First().Name.Should().Be("UpdateTest");
+            await _repository.UpdateAsync(new List<UserDto> { GetUpdateModel(insertResult.Data.First().Id) });
+            var updateResult = await _repository.FindByOptionsAsync(insertResult.Data.First().Id, null, null);
+            updateResult.Data.Count.Should().Be(1);
+            updateResult.Data.First().Name.Should().Be("UpdateTest");
 
-            await _repository.DeleteAsync(new List<UserDto> { GetDeleteModel(insertResult.First().Id) });
-            var deleteResult = await _repository.FindByOptionsAsync(id: insertResult.First().Id);
-            deleteResult.Count.Should().Be(0);
+            await _repository.DeleteAsync(new List<UserDto> { GetDeleteModel(insertResult.Data.First().Id) });
+            var deleteResult = await _repository.FindByOptionsAsync(id: insertResult.Data.First().Id);
+            deleteResult.Data.Count.Should().Be(0);
         }
 
         public UserDto GetInsertModel() =>

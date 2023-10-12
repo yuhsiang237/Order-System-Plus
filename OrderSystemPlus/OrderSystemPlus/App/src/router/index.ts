@@ -6,6 +6,8 @@ import ProductTypeSearch from '@/views/backend/productTypeManage/ProductTypeSear
 import ProductSearch from '@/views/backend/productManage/ProductSearch.vue'
 import ProductInventorySearch from '@/views/backend/productInventoryManage/ProductInventorySearch.vue'
 import ProductInventoryEdit from '@/views/backend/productInventoryManage/ProductInventoryEdit.vue'
+import UserSearch from '@/views/backend/userManage/UserSearch.vue'
+import UserEdit from '@/views/backend/userManage/UserEdit.vue'
 
 import Backend from '@/views/Backend/Backend.vue'
 import HttpClient from '@/utils/HttpClient.ts'
@@ -58,6 +60,22 @@ const router = createRouter({
               path: 'productSearch',
               name: 'productSearch',
               component: ProductSearch
+            }
+          ]
+        },
+        {
+          path: 'userManage',
+          name: 'userManage',
+          children: [
+            {
+              path: 'userSearch',
+              name: 'userSearch',
+              component: UserSearch
+            },
+            {
+              path: 'userEdit',
+              name: 'userEdit',
+              component: UserEdit
             }
           ]
         },

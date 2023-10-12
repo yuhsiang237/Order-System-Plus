@@ -34,8 +34,8 @@ namespace OrderSystemPlus.BusinessActor
 
         public async Task<(string AccessToken, string RefreshToken)> HandleAsync(ReqSignIn req)
         {
-            var user = (await _userRepository.FindByOptionsAsync(null, null, req.Account))
-                .FirstOrDefault() ?? new UserDto();
+            var user = (await _userRepository.FindByOptionsAsync(account:req.Account))
+                .Data.FirstOrDefault() ?? new UserDto();
             var isValid = HashSaltTool.Validate(req.Password,
                                                     user.Salt,
                                                     user.Password);

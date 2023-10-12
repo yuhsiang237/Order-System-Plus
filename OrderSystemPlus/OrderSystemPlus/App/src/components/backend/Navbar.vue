@@ -36,9 +36,9 @@
                 >基本資料管理</a
               >
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuBasicLink">
-                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Search">
-                  使用者管理
-                </a>
+                <router-link class="nav-link text-dark" :to="{ name: 'userSearch' }">
+                  商品分類管理
+                </router-link>
 
                 <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="Search">
                   權限角色管理

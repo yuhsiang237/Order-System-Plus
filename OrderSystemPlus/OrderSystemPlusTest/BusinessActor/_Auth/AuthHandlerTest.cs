@@ -11,6 +11,7 @@ using OrderSystemPlus.Models.DataAccessor;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.Models.BusinessActor;
 using OrderSystemPlus.Utils.JwtHelper;
+using OrderSystemPlus.Enums;
 
 namespace OrderSystemPlusTest.BusinessActor
 {
@@ -44,13 +45,20 @@ namespace OrderSystemPlusTest.BusinessActor
         {
 
             _userRepository
-            .Setup(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()))
-            .ReturnsAsync(new List<UserDto> {
+            .Setup(x => x.FindByOptionsAsync(
+                It.IsAny<int?>(), 
+                It.IsAny<string?>(), 
+                It.IsAny<string?>(), 
+                It.IsAny<int?>(),
+             It.IsAny<int?>(),
+             It.IsAny<string?>(),
+             It.IsAny<SortType?>()))
+            .ReturnsAsync((1,new List<UserDto> {
                 new UserDto{
                     Account = "testAccount",
                     Password = "ZvczkadhFgUUPBY3r5N5f5RGFvCb4s3ptNzB3OoQWLpN5iBe5uPUrMvDsIR7hsUPSJktB2mvta+YzxICKYQO0Q==",
                     Salt = "*lZzd8@KB8*[/v]"
-                }});
+                }}));
 
             _jwtHelpMock
                 .Setup(x => x.GenerateAccessToken(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int>()))
@@ -69,7 +77,10 @@ namespace OrderSystemPlusTest.BusinessActor
 
             _jwtHelpMock.Verify(x => x.GenerateAccessToken(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int>()), Times.Once());
             _jwtHelpMock.Verify(x => x.GenerateRefreshToken(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int>()), Times.Once());
-            _userRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
+            _userRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<int?>(), It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+             It.IsAny<int?>(),
+             It.IsAny<string?>(),
+             It.IsAny<SortType?>()), Times.Once());
         }
 
         [Fact]
