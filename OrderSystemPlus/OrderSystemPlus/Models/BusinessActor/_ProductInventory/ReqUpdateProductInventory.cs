@@ -7,6 +7,6 @@ namespace OrderSystemPlus.Models.BusinessActor
         public AdjustProductInventoryType Type { get; set; }
         public int? ProductId { get; set; }
         public decimal? AdjustQuantity { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
 }

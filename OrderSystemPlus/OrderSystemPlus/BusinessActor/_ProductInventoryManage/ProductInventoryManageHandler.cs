@@ -74,6 +74,7 @@ namespace OrderSystemPlus.BusinessActor
         public async Task<bool> HandleAsync(List<ReqUpdateProductInventory> req)
         {
             await _updateProductInventorySemaphoreSlim.WaitAsync();
+      
             try
             {
                 var dtoList = new List<ProductInventoryDto>();
@@ -122,8 +123,8 @@ namespace OrderSystemPlus.BusinessActor
                             PrevTotalQuantity = currentQuantity,
                             AdjustQuantity = calcQuantity.Value,
                             AdjustProductInventoryType = AdjustProductInventoryType.Force,
-                            Remark = item.Description + $"調整庫存: {currentQuantity}=>{calcQuantity}。",
-                            TotalQuantity = calcQuantity.Value,
+                            Remark = item.Description + $"調整庫存: {currentQuantity}=>{item.AdjustQuantity}。",
+                            TotalQuantity = item.AdjustQuantity,
                             CreatedOn = now,
                             UpdatedOn = now,
                             IsValid = true,
