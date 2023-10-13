@@ -23,15 +23,15 @@
       <div class="row">
         <div class="col-12 text-right">
           <button
-          type="button"
-          class="mr-1 btn btn-main-color02 outline-btn"
-          @click="openUpdateModel"
-        >
-          手動調整庫存
-        </button>
+            type="button"
+            class="mr-1 btn btn-main-color02 outline-btn"
+            @click="openUpdateModel"
+          >
+            手動調整庫存
+          </button>
         </div>
       </div>
-     
+
       <div class="row">
         <div class="col-12">
           <table class="table table-hover">
@@ -47,9 +47,7 @@
                 <td>
                   {{ DateTool.toDateString(item.createdOn) }}
                 </td>
-                <td>
-                  <span v-if="item.adjustQuantity >= 0">+</span>{{ item.adjustQuantity }}
-                </td>
+                <td><span v-if="item.adjustQuantity >= 0">+</span>{{ item.adjustQuantity }}</td>
                 <td>
                   {{ item.remark }}
                 </td>
@@ -82,24 +80,36 @@
           <div class="modal-body">
             <div class="mb-2">
               <label>調整方式</label>
-              <vue-multiselect v-model="reqUpdate.type"   deselect-label=""
-              track-by="value" label="label" placeholder="Select one" :options="adjustProductInventoryTypeOption" :searchable="true" :allow-empty="false">
+              <vue-multiselect
+                v-model="reqUpdate.type"
+                deselect-label=""
+                track-by="value"
+                label="label"
+                placeholder="Select one"
+                :options="adjustProductInventoryTypeOption"
+                :searchable="true"
+                :allow-empty="false"
+              >
               </vue-multiselect>
-              <error-message :errors='errorUpdate["x[0].type"]' />
+              <error-message :errors="errorUpdate['x[0].type']" />
             </div>
             <div class="mb-2">
               <label>數量</label>
               <input class="form-control" v-model="reqUpdate.adjustQuantity" />
-              <error-message :errors='errorUpdate["x[0].adjustQuantity"]' />
+              <error-message :errors="errorUpdate['x[0].adjustQuantity']" />
             </div>
             <div class="mb-2">
               <label>描述</label>
               <input class="form-control" v-model="reqUpdate.description" />
-              <error-message :errors='errorUpdate["x[0].description"]' />
+              <error-message :errors="errorUpdate['x[0].description']" />
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="mr-1 btn btn-main-color02 outline-btn" data-dismiss="modal">
+            <button
+              type="button"
+              class="mr-1 btn btn-main-color02 outline-btn"
+              data-dismiss="modal"
+            >
               取消
             </button>
             <button type="button" class="btn btn-main-color01" @click="updateInventory">
@@ -148,10 +158,12 @@ export default defineComponent({
 
     const reqUpdate = ref({})
     const errorUpdate = ref({})
-    const adjustProductInventoryTypeOption = ref(Array.from(AdjustProductInventoryTypeMap.entries()).map(([key, value]) => ({
+    const adjustProductInventoryTypeOption = ref(
+      Array.from(AdjustProductInventoryTypeMap.entries()).map(([key, value]) => ({
         label: value,
         value: key.toString()
-      })))
+      }))
+    )
 
     const fetchData = async () => {
       isLoading.value = true
@@ -172,21 +184,23 @@ export default defineComponent({
     }
 
     const openUpdateModel = () => {
-      reqUpdate.value = {type:adjustProductInventoryTypeOption.value[0]}
+      reqUpdate.value = { type: adjustProductInventoryTypeOption.value[0] }
       errorUpdate.value = {}
       showModal('updateModal')
     }
-    const updateInventory = async() =>{
+    const updateInventory = async () => {
       const data = reqUpdate.value
       try {
         var res = await HttpClient.post(
           import.meta.env.VITE_APP_AXIOS_PRODUCTINVENTORYMANAGE_UPDATEPRODUCTINVENTORY,
-          [{
-            "type": Number(data?.type?.value),
-            "productId": productId.value,
-            "adjustQuantity":  Number(data?.adjustQuantity),
-            "description": data.description
-          }]
+          [
+            {
+              type: Number(data?.type?.value),
+              productId: productId.value,
+              adjustQuantity: Number(data?.adjustQuantity),
+              description: data.description
+            }
+          ]
         )
         hideModal('updateModal')
         await MessageBox.showSuccessMessage('更新成功', false, 800)
