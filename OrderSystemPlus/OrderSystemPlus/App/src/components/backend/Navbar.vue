@@ -37,7 +37,7 @@
               >
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuBasicLink">
                 <router-link class="nav-link text-dark" :to="{ name: 'userSearch' }">
-                  商品分類管理
+                  使用者管理
                 </router-link>
 
                 <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="Search">
