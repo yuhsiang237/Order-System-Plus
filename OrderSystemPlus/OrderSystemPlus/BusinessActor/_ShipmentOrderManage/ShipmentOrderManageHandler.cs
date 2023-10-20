@@ -26,22 +26,34 @@ namespace OrderSystemPlus.BusinessActor
             _productRepository = productRepository;
             _productInventoryManageHandler = productInventoryManageHandler;
         }
-        public async Task<List<RspGetShipmentOrderList>> GetShipmentOrderListAsync(ReqGetShipmentOrderList req)
+        public async Task<RspGetShipmentOrderList> GetShipmentOrderListAsync(ReqGetShipmentOrderList req)
         {
-            var data = await _ShipmentOrderRepository.FindByOptionsAsync();
+            var data = await _ShipmentOrderRepository.FindByOptionsAsync(
+                orderNumber:req.OrderNumber,
+                pageIndex: req.PageIndex,
+                pageSize: req.PageSize,
+                sortField: req.SortField,
+                sortType: req.SortType);
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ShipmentOrderDto, RspGetShipmentOrderList>();
+                cfg.CreateMap<ShipmentOrderDto, RspGetShipmentOrderListItem>();
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
-            var rsp = mapper.Map<List<ShipmentOrderDto>, List<RspGetShipmentOrderList>>(data.Data);
-            return rsp;
+            var rsp = mapper.Map<List<ShipmentOrderDto>, List<RspGetShipmentOrderListItem>>(data.Data);
+            
+            return new RspGetShipmentOrderList
+            {
+                TotalCount = data.TotalCount,
+                Data = rsp,
+            };
         }
 
         public async Task<RspGetShipmentOrderInfo> GetShipmentOrderInfoAsync(ReqGetShipmentOrderInfo req)
         {
-            var data = (await _ShipmentOrderRepository.FindByOptionsAsync(orderNumber: req.OrderNumber)).Data.FirstOrDefault();
+            var data = (await _ShipmentOrderRepository.FindByOptionsAsync(
+                orderNumber: req.OrderNumber
+                )).Data.FirstOrDefault();
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ShipmentOrderDto, RspGetShipmentOrderInfo>();
