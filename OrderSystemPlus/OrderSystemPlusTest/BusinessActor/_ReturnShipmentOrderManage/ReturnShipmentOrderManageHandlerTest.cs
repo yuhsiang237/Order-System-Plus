@@ -231,7 +231,10 @@ namespace OrderSystemPlusTest.BusinessActor
                It.IsAny<int?>(),
                It.IsAny<string?>(),
                It.IsAny<SortType?>()), Times.Once());
-            _returnShipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
+            _returnShipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+               It.IsAny<int?>(),
+               It.IsAny<string?>(),
+               It.IsAny<SortType?>()), Times.Once());
             _shipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<int?>(),
                It.IsAny<int?>(),
                It.IsAny<string?>(),
