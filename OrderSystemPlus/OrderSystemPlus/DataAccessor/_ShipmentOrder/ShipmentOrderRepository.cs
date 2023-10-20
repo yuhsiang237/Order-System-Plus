@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 using System.Transactions;
 
 using Dapper;
-
+using OrderSystemPlus.Enums;
 using OrderSystemPlus.Models;
 using OrderSystemPlus.Models.DataAccessor;
 
@@ -11,51 +11,49 @@ namespace OrderSystemPlus.DataAccessor
 {
     public class ShipmentOrderRepository : IShipmentOrderRepository
     {
-        public async Task<List<ShipmentOrderDto>> FindByOptionsAsync(string? orderNumber = null)
+        public async Task<(int TotalCount, List<ShipmentOrderDto> Data)> FindByOptionsAsync(
+            string? orderNumber = null,
+            int? pageIndex = null,
+            int? pageSize = null,
+            string? sortField = null,
+            SortType? sortType = null)
         {
-            string sql = @"
-                           SELECT
-                                [OrderNumber]
-                                ,[TotalAmount]
-                                ,[RecipientName]
-                                ,[OperatorUserId]
-                                ,[Status]
-                                ,[FinishDate]
-                                ,[DeliveryDate]
-                                ,[Address]
-                                ,[Remark]
-                                ,[CreatedOn]
-                                ,[UpdatedOn]
-                                ,[IsValid]
-                           FROM [dbo].[ShipmentOrder]";
-
             var conditions = new List<string>
             {
                 "[IsValid] = @IsValid",
             };
-
             if (!string.IsNullOrEmpty(orderNumber))
                 conditions.Add("[OrderNumber] = @OrderNumber");
 
-            if (conditions.Any())
-                sql = string.Concat(sql, $" WHERE {string.Join(" AND ", conditions)}");
+            var totalCountSql = GetTotalCountStatement(conditions);
+            var sorts = new List<string>();
+            if (!string.IsNullOrEmpty(sortField))
+                sorts.Add($"[{sortField.ToUpper()}] {Enum.GetName(typeof(SortType), sortType)}");
+            else
+                sorts.Add($"[CreatedOn] DESC");
 
-            var result = default(List<ShipmentOrderDto>);
+            var dataSql = GetDataStatement(conditions, sorts, pageIndex, pageSize);
+
+            var rspData = default(List<ShipmentOrderDto>);
+            var rspTotalCount = default(int);
+
             using (SqlConnection conn = new SqlConnection(DBConnection.GetConnectionString()))
             {
-                result = (await conn.QueryAsync<ShipmentOrderDto>(sql, new
+                var reqParams = new
                 {
                     IsValid = true,
                     OrderNumber = orderNumber,
-                })).ToList();
+                };
+                rspTotalCount = (await conn.QueryAsync<int>(totalCountSql, reqParams)).First();
+                rspData = (await conn.QueryAsync<ShipmentOrderDto>(dataSql, reqParams)).ToList();
             }
 
-            result.ForEach(x =>
+            rspData.ForEach(x =>
             {
                 x.Details = GetDetails(x.OrderNumber);
             });
 
-            return result;
+            return (rspTotalCount, rspData);
         }
 
         public List<ShipmentOrderDetailDto> GetDetails(string orderNumber)
@@ -244,6 +242,61 @@ namespace OrderSystemPlus.DataAccessor
                 await conn.ExecuteAsync(sql, model);
                 await conn.ExecuteAsync(sqlDetail, model);
             }
+        }
+        /// <summary>
+        /// GetDataStatement
+        /// </summary>
+        /// <param name="conditions"></param>
+        /// <param name="sorts"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        private string GetDataStatement(
+            List<string> conditions,
+            List<string> sorts,
+            int? pageIndex,
+            int? pageSize)
+        {
+            var sql = @"SELECT
+                            [OrderNumber]
+                            ,[TotalAmount]
+                            ,[RecipientName]
+                            ,[OperatorUserId]
+                            ,[Status]
+                            ,[FinishDate]
+                            ,[DeliveryDate]
+                            ,[Address]
+                            ,[Remark]
+                            ,[CreatedOn]
+                            ,[UpdatedOn]
+                            ,[IsValid]
+                           FROM [dbo].[ShipmentOrder]";
+
+            if (conditions.Any())
+                sql = string.Concat(sql, $" WHERE {string.Join(" AND ", conditions)}");
+            if (sorts.Any())
+                sql = string.Concat(sql, Environment.NewLine, " ORDER BY ", string.Join(" , ", sorts));
+            if (pageIndex > 0 || pageSize > 0)
+                sql = string.Concat(sql, Environment.NewLine, " OFFSET ", (pageIndex - 1) * pageSize, " ROWS FETCH NEXT ", pageSize, " ROWS ONLY");
+
+            return sql;
+        }
+
+        /// <summary>
+        /// GetTotalCountStatement
+        /// </summary>
+        /// <param name="conditions"></param>
+        /// <returns></returns>
+        private string GetTotalCountStatement(List<string> conditions)
+        {
+            var sql = @"SELECT
+                              COUNT([OrderNumber])
+                           FROM [dbo].[ShipmentOrder]";
+
+            if (conditions.Any())
+                sql = string.Concat(sql, $" WHERE {string.Join(" AND ", conditions)}");
+
+            return sql;
         }
     }
 }
