@@ -9,6 +9,7 @@ using OrderSystemPlus.Models.DataAccessor;
 using OrderSystemPlus.BusinessActor;
 using OrderSystemPlus.Models.BusinessActor;
 using System;
+using OrderSystemPlus.Enums;
 
 namespace OrderSystemPlusTest.BusinessActor
 {
@@ -62,8 +63,11 @@ namespace OrderSystemPlusTest.BusinessActor
                 });
 
             _returnShipmentOrderRepository
-             .Setup(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>()))
-             .ReturnsAsync(new List<ReturnShipmentOrderDto> { });
+             .Setup(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+               It.IsAny<int?>(),
+               It.IsAny<string?>(),
+               It.IsAny<SortType?>()))
+             .ReturnsAsync((0, new List<ReturnShipmentOrderDto> { }));
 
             _productInventoryHandler.Setup(x => x.HandleAsync(It.IsAny<List<ReqUpdateProductInventory>>())).ReturnsAsync(true);
             _returnShipmentOrderRepository.Setup(x => x.InsertAsync(It.IsAny<IEnumerable<ReturnShipmentOrderDto>>())).ReturnsAsync(new List<string>
@@ -91,31 +95,47 @@ namespace OrderSystemPlusTest.BusinessActor
             _productInventoryHandler.Verify(x => x.HandleAsync(It.IsAny<List<ReqUpdateProductInventory>>()), Times.Once());
             _shipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>()), Times.Once());
             _returnShipmentOrderRepository
-              .Verify(x => x.FindByOptionsAsync(null, shipmentOrderNumber), Times.Once());
+              .Verify(x => x.FindByOptionsAsync(null, shipmentOrderNumber, It.IsAny<int?>(),
+               It.IsAny<int?>(),
+               It.IsAny<string?>(),
+               It.IsAny<SortType?>()
+                  ), Times.Once());
         }
 
         [Fact]
         public async Task GetReturnShipmentOrderListAsync()
         {
             _returnShipmentOrderRepository
-                  .Setup(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>()))
-                  .ReturnsAsync(new List<ReturnShipmentOrderDto> { });
+                  .Setup(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+               It.IsAny<int?>(),
+               It.IsAny<string?>(),
+               It.IsAny<SortType?>()))
+                  .ReturnsAsync((0, new List<ReturnShipmentOrderDto> { }));
 
             await _handler.GetReturnShipmentOrderListAsync(new ReqGetReturnShipmentOrderList
             { });
 
-            _returnShipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
+            _returnShipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+               It.IsAny<int?>(),
+               It.IsAny<string?>(),
+               It.IsAny<SortType?>()), Times.Once());
         }
 
         [Fact]
         public async Task GetReturnShipmentOrderInfoAsync()
         {
             _returnShipmentOrderRepository
-              .Setup(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>()))
-              .ReturnsAsync(new List<ReturnShipmentOrderDto> { });
+              .Setup(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+               It.IsAny<int?>(),
+               It.IsAny<string?>(),
+               It.IsAny<SortType?>()))
+              .ReturnsAsync((0, new List<ReturnShipmentOrderDto> { }));
             await _handler.GetReturnShipmentOrderInfoAsync(new ReqGetReturnShipmentOrderInfo
             { });
-            _returnShipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
+            _returnShipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+               It.IsAny<int?>(),
+               It.IsAny<string?>(),
+               It.IsAny<SortType?>()), Times.Once());
         }
 
         [Theory]
@@ -123,8 +143,11 @@ namespace OrderSystemPlusTest.BusinessActor
         public async Task ReturnShipmentOrderUpdate(string returnShipmentOrderNumber, string shipmentOrderNumber)
         {
             _returnShipmentOrderRepository
-             .Setup(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>()))
-             .ReturnsAsync(new List<ReturnShipmentOrderDto> {
+             .Setup(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+               It.IsAny<int?>(),
+               It.IsAny<string?>(),
+               It.IsAny<SortType?>()))
+             .ReturnsAsync((1, new List<ReturnShipmentOrderDto> {
                  new ReturnShipmentOrderDto{
                      ReturnShipmentOrderNumber = returnShipmentOrderNumber,
                      ShipmentOrderNumber = shipmentOrderNumber,
@@ -144,7 +167,7 @@ namespace OrderSystemPlusTest.BusinessActor
                          }
                      }
                  }
-             });
+             }));
 
             _shipmentOrderRepository
                 .Setup(x => x.FindByOptionsAsync(It.IsAny<string?>()))
@@ -195,7 +218,10 @@ namespace OrderSystemPlusTest.BusinessActor
             });
 
             _productInventoryHandler.Verify(x => x.HandleAsync(It.IsAny<List<ReqUpdateProductInventory>>()), Times.Once());
-            _returnShipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>()), Times.Once());
+            _returnShipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<int?>(),
+               It.IsAny<int?>(),
+               It.IsAny<string?>(),
+               It.IsAny<SortType?>()), Times.Once());
             _shipmentOrderRepository.Verify(x => x.FindByOptionsAsync(It.IsAny<string?>()), Times.Once());
             _returnShipmentOrderRepository.Verify(x => x.UpdateAsync(It.IsAny<IEnumerable<ReturnShipmentOrderDto>>()), Times.Once());
         }

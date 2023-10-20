@@ -32,15 +32,15 @@ namespace OrderSystemPlusTest.DataAccessor
         {
             await _repository.InsertAsync(new List<ReturnShipmentOrderDto> { GetInsertModel() });
             var insertResult = await _repository.FindByOptionsAsync(GetInsertModel().ReturnShipmentOrderNumber);
-            insertResult.Count.Should().Be(1);
-            insertResult.First().ReturnShipmentOrderNumber.Should().Be(GetInsertModel().ReturnShipmentOrderNumber);
-            insertResult.First().ShipmentOrderNumber.Should().Be(GetInsertModel().ShipmentOrderNumber);
-            insertResult.First().TotalReturnAmount.Should().Be(GetInsertModel().TotalReturnAmount);
-            insertResult.First().ReturnDate.Should().Be(GetInsertModel().ReturnDate);
-            insertResult.First().Remark.Should().Be(GetInsertModel().Remark);
-            insertResult.First().OperatorUserId.Should().Be(GetInsertModel().OperatorUserId);
+            insertResult.Data.Count.Should().Be(1);
+            insertResult.Data.First().ReturnShipmentOrderNumber.Should().Be(GetInsertModel().ReturnShipmentOrderNumber);
+            insertResult.Data.First().ShipmentOrderNumber.Should().Be(GetInsertModel().ShipmentOrderNumber);
+            insertResult.Data.First().TotalReturnAmount.Should().Be(GetInsertModel().TotalReturnAmount);
+            insertResult.Data.First().ReturnDate.Should().Be(GetInsertModel().ReturnDate);
+            insertResult.Data.First().Remark.Should().Be(GetInsertModel().Remark);
+            insertResult.Data.First().OperatorUserId.Should().Be(GetInsertModel().OperatorUserId);
 
-            var insertDetailResult = insertResult.First().Details.First();
+            var insertDetailResult = insertResult.Data.First().Details.First();
             insertDetailResult.ReturnShipmentOrderNumber.Should().Be(GetInsertModel().Details.First().ReturnShipmentOrderNumber);
             insertDetailResult.ShipmentOrderDetailId.Should().Be(GetInsertModel().Details.First().ShipmentOrderDetailId);
             insertDetailResult.ReturnProductQuantity.Should().Be(GetInsertModel().Details.First().ReturnProductQuantity);
@@ -49,20 +49,20 @@ namespace OrderSystemPlusTest.DataAccessor
 
             await _repository.UpdateAsync(new List<ReturnShipmentOrderDto> { GetUpdateModel() });
             var updateResult = await _repository.FindByOptionsAsync(GetUpdateModel().ReturnShipmentOrderNumber);
-            updateResult.First().ReturnShipmentOrderNumber.Should().Be(GetUpdateModel().ReturnShipmentOrderNumber);
-            updateResult.First().ShipmentOrderNumber.Should().Be(GetUpdateModel().ShipmentOrderNumber);
-            updateResult.First().TotalReturnAmount.Should().Be(GetUpdateModel().TotalReturnAmount);
-            updateResult.First().ReturnDate.Should().Be(GetUpdateModel().ReturnDate);
-            updateResult.First().Remark.Should().Be(GetUpdateModel().Remark);
-            updateResult.First().OperatorUserId.Should().Be(GetUpdateModel().OperatorUserId);
+            updateResult.Data.First().ReturnShipmentOrderNumber.Should().Be(GetUpdateModel().ReturnShipmentOrderNumber);
+            updateResult.Data.First().ShipmentOrderNumber.Should().Be(GetUpdateModel().ShipmentOrderNumber);
+            updateResult.Data.First().TotalReturnAmount.Should().Be(GetUpdateModel().TotalReturnAmount);
+            updateResult.Data.First().ReturnDate.Should().Be(GetUpdateModel().ReturnDate);
+            updateResult.Data.First().Remark.Should().Be(GetUpdateModel().Remark);
+            updateResult.Data.First().OperatorUserId.Should().Be(GetUpdateModel().OperatorUserId);
 
-            var updateDetailResult = updateResult.First().Details.First();
+            var updateDetailResult = updateResult.Data.First().Details.First();
             updateDetailResult.Remarks.Should().Be(GetUpdateModel().Details.First().Remarks);
             updateDetailResult.ReturnProductQuantity.Should().Be(GetUpdateModel().Details.First().ReturnProductQuantity);
 
             await _repository.DeleteAsync(new List<ReturnShipmentOrderDto> { GetDeleteModel() });
             var deleteResult = await _repository.FindByOptionsAsync(_returnShipmentOrderNumber);
-            deleteResult.Count.Should().Be(0);
+            deleteResult.Data.Count.Should().Be(0);
         }
 
         public ReturnShipmentOrderDto GetInsertModel() =>
