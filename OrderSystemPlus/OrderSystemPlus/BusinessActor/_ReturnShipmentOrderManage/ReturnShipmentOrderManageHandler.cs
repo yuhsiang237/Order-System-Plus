@@ -26,22 +26,32 @@ namespace OrderSystemPlus.BusinessActor
             _shipmentOrderRepository = shipmentOrderRepository;
             _productInventoryManageHandler = productInventoryManageHandler;
         }
-        public async Task<List<RspGetReturnShipmentOrderList>> GetReturnShipmentOrderListAsync(ReqGetReturnShipmentOrderList req)
+        public async Task<RspGetReturnShipmentOrderList> GetReturnShipmentOrderListAsync(ReqGetReturnShipmentOrderList req)
         {
-            var data = await _returnShipmentOrderRepository.FindByOptionsAsync();
+            var data = await _returnShipmentOrderRepository.FindByOptionsAsync(
+                returnShipmentOrderNumber: req.ReturnShipmentOrderNumber,
+                shipmentOrderNumber: req.shipmentOrderNumber,
+                pageIndex: req.PageIndex,
+                pageSize: req.PageSize,
+                sortField: req.SortField,
+                sortType: req.SortType);
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ReturnShipmentOrderDto, RspGetReturnShipmentOrderList>();
+                cfg.CreateMap<ReturnShipmentOrderDto, RspGetReturnShipmentOrderListItem>();
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
-            var rsp = mapper.Map<List<ReturnShipmentOrderDto>, List<RspGetReturnShipmentOrderList>>(data);
-            return rsp;
+            var rsp = mapper.Map<List<ReturnShipmentOrderDto>, List<RspGetReturnShipmentOrderListItem>>(data.Data);
+            return new RspGetReturnShipmentOrderList
+            {
+                Data = rsp,
+                TotalCount = data.TotalCount,
+            };
         }
 
         public async Task<RspGetReturnShipmentOrderInfo> GetReturnShipmentOrderInfoAsync(ReqGetReturnShipmentOrderInfo req)
         {
-            var data = (await _returnShipmentOrderRepository.FindByOptionsAsync(returnShipmentOrderNumber: req.ReturnShipmentOrderNumber)).FirstOrDefault();
+            var data = (await _returnShipmentOrderRepository.FindByOptionsAsync(returnShipmentOrderNumber: req.ReturnShipmentOrderNumber)).Data.FirstOrDefault();
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ReturnShipmentOrderDto, RspGetReturnShipmentOrderInfo>();
@@ -63,7 +73,7 @@ namespace OrderSystemPlus.BusinessActor
                 var shipmentOrder = (await _shipmentOrderRepository.FindByOptionsAsync(req.ShipmentOrderNumber)).Data.FirstOrDefault();
                 if (shipmentOrder == null)
                     throw new Exception("shipmentOrder not found");
-                var isExistReturnShipmentOrder = (await _returnShipmentOrderRepository.FindByOptionsAsync(shipmentOrderNumber: shipmentOrder.OrderNumber)).Any();
+                var isExistReturnShipmentOrder = (await _returnShipmentOrderRepository.FindByOptionsAsync(shipmentOrderNumber: shipmentOrder.OrderNumber)).Data.Any();
                 if (isExistReturnShipmentOrder)
                     throw new Exception("returnShipmentOrder has been created");
 
@@ -72,7 +82,7 @@ namespace OrderSystemPlus.BusinessActor
                 while (string.IsNullOrEmpty(returnShipmentOrderNumber))
                 {
                     var newOrderNumber = OrderNumberTool.GenerateNumber(OrderNumberTool.Type.ReturnShipment);
-                    var isExistOrderNumber = (await _returnShipmentOrderRepository.FindByOptionsAsync(newOrderNumber)).Any();
+                    var isExistOrderNumber = (await _returnShipmentOrderRepository.FindByOptionsAsync(newOrderNumber)).Data.Any();
                     if (isExistOrderNumber == false)
                         returnShipmentOrderNumber = newOrderNumber;
                 }
@@ -154,7 +164,7 @@ namespace OrderSystemPlus.BusinessActor
                 var now = DateTime.Now;
                 // 1. get returnShipmentOrder
                 var returnShipmentOrderDto = (await _returnShipmentOrderRepository.FindByOptionsAsync(req.ReturnShipmentOrderNumber))
-                    .ToList()
+                    .Data.ToList()
                     .First();
                 if (returnShipmentOrderDto == null)
                     throw new Exception("returnShipmentOrder not found");
@@ -190,7 +200,7 @@ namespace OrderSystemPlus.BusinessActor
 
                     if (o.ReturnProductQuantity.Value != reqDetail.ReturnProductQuantity.Value)
                     {
-                        var diffReturnProductQuantity =  reqDetail.ReturnProductQuantity - o.ReturnProductQuantity;
+                        var diffReturnProductQuantity = reqDetail.ReturnProductQuantity - o.ReturnProductQuantity;
 
                         reqUpdateProductInventoryList.Add(new ReqUpdateProductInventory
                         {
