@@ -32,7 +32,7 @@ namespace OrderSystemPlus.Controllers
         }
 
         [HttpPost("GetShipmentOrderList")]
-        public async Task<List<RspGetShipmentOrderList>> GetShipmentOrderList([FromBody] ReqGetShipmentOrderList req)
+        public async Task<RspGetShipmentOrderList> GetShipmentOrderList([FromBody] ReqGetShipmentOrderList req)
         {
             var rsp = await _shipmentOrderHandler.GetShipmentOrderListAsync(req);
             return rsp;
