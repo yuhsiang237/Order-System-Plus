@@ -26,17 +26,27 @@ namespace OrderSystemPlus.BusinessActor
             _shipmentOrderRepository = shipmentOrderRepository;
             _productInventoryManageHandler = productInventoryManageHandler;
         }
-        public async Task<List<RspGetReturnShipmentOrderList>> GetReturnShipmentOrderListAsync(ReqGetReturnShipmentOrderList req)
+        public async Task<RspGetReturnShipmentOrderList> GetReturnShipmentOrderListAsync(ReqGetReturnShipmentOrderList req)
         {
-            var data = await _returnShipmentOrderRepository.FindByOptionsAsync();
+            var data = await _returnShipmentOrderRepository.FindByOptionsAsync(
+                returnShipmentOrderNumber: req.ReturnShipmentOrderNumber,
+                shipmentOrderNumber: req.shipmentOrderNumber,
+                pageIndex: req.PageIndex,
+                pageSize: req.PageSize,
+                sortField: req.SortField,
+                sortType: req.SortType);
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ReturnShipmentOrderDto, RspGetReturnShipmentOrderList>();
+                cfg.CreateMap<ReturnShipmentOrderDto, RspGetReturnShipmentOrderListItem>();
             });
             config.AssertConfigurationIsValid();
             var mapper = config.CreateMapper();
-            var rsp = mapper.Map<List<ReturnShipmentOrderDto>, List<RspGetReturnShipmentOrderList>>(data.Data);
-            return rsp;
+            var rsp = mapper.Map<List<ReturnShipmentOrderDto>, List<RspGetReturnShipmentOrderListItem>>(data.Data);
+            return new RspGetReturnShipmentOrderList
+            {
+                Data = rsp,
+                TotalCount = data.TotalCount,
+            };
         }
 
         public async Task<RspGetReturnShipmentOrderInfo> GetReturnShipmentOrderInfoAsync(ReqGetReturnShipmentOrderInfo req)
@@ -190,7 +200,7 @@ namespace OrderSystemPlus.BusinessActor
 
                     if (o.ReturnProductQuantity.Value != reqDetail.ReturnProductQuantity.Value)
                     {
-                        var diffReturnProductQuantity =  reqDetail.ReturnProductQuantity - o.ReturnProductQuantity;
+                        var diffReturnProductQuantity = reqDetail.ReturnProductQuantity - o.ReturnProductQuantity;
 
                         reqUpdateProductInventoryList.Add(new ReqUpdateProductInventory
                         {

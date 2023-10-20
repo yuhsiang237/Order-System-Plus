@@ -8,6 +8,6 @@ namespace OrderSystemPlus.BusinessActor
         Task HandleAsync(ReqUpdateReturnShipmentOrder req);
         Task HandleAsync(ReqDeleteReturnShipmentOrder req);
         Task<RspGetReturnShipmentOrderInfo> GetReturnShipmentOrderInfoAsync(ReqGetReturnShipmentOrderInfo req);
-        Task<List<RspGetReturnShipmentOrderList>> GetReturnShipmentOrderListAsync(ReqGetReturnShipmentOrderList req);
+        Task<RspGetReturnShipmentOrderList> GetReturnShipmentOrderListAsync(ReqGetReturnShipmentOrderList req);
     }
 }
