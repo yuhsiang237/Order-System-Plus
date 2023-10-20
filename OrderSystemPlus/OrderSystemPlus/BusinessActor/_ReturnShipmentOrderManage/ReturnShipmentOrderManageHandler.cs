@@ -70,7 +70,7 @@ namespace OrderSystemPlus.BusinessActor
             {
                 var now = DateTime.Now;
                 // 1. Find target shipmentOrder & check unique
-                var shipmentOrder = (await _shipmentOrderRepository.FindByOptionsAsync(req.ShipmentOrderNumber)).FirstOrDefault();
+                var shipmentOrder = (await _shipmentOrderRepository.FindByOptionsAsync(req.ShipmentOrderNumber)).Data.FirstOrDefault();
                 if (shipmentOrder == null)
                     throw new Exception("shipmentOrder not found");
                 var isExistReturnShipmentOrder = (await _returnShipmentOrderRepository.FindByOptionsAsync(shipmentOrderNumber: shipmentOrder.OrderNumber)).Data.Any();
@@ -175,7 +175,7 @@ namespace OrderSystemPlus.BusinessActor
 
                 // 3. update returnShipmentOrder detail
                 var totalReturnAmount = default(decimal);
-                var shipmentOrderDetails = (await _shipmentOrderRepository.FindByOptionsAsync(returnShipmentOrderDto.ShipmentOrderNumber))
+                var shipmentOrderDetails = (await _shipmentOrderRepository.FindByOptionsAsync(returnShipmentOrderDto.ShipmentOrderNumber)).Data
                     ?.ToList()
                     ?.FirstOrDefault()
                     ?.Details ?? new List<ShipmentOrderDetailDto>();
