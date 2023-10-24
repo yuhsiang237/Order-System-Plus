@@ -80,14 +80,9 @@
                 >訂單管理</a
               >
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuOrderLink">
-                <a
-                  class="nav-link text-dark"
-                  asp-area=""
-                  asp-controller="Order"
-                  asp-action="SearchShipmentOrder"
-                >
+                <router-link class="nav-link text-dark" :to="{ name: 'shipmentOrderSearch' }">
                   出貨單管理
-                </a>
+                </router-link>
 
                 <a
                   class="nav-link text-dark"

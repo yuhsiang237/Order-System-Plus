@@ -1,4 +1,6 @@
-﻿namespace OrderSystemPlus.Models.BusinessActor
+﻿using OrderSystemPlus.Enums;
+
+namespace OrderSystemPlus.Models.BusinessActor
 {
     /// <summary>
     /// RspGetShipmentOrderListItem
@@ -9,7 +11,8 @@
         public decimal? TotalAmount { get; set; }
         public string? RecipientName { get; set; }
         public int? OperatorUserId { get; set; }
-        public int? Status { get; set; }
+        public ShipmentOrderStatus? Status { get; set; }
+        public string StatusName => EnumExtension.GetDisplayName(Status);
         public DateTime? FinishDate { get; set; }
         public DateTime? DeliveryDate { get; set; }
         public string Address { get; set; }
