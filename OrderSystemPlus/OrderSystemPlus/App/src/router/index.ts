@@ -8,6 +8,7 @@ import ProductInventorySearch from '@/views/backend/productInventoryManage/Produ
 import ProductInventoryEdit from '@/views/backend/productInventoryManage/ProductInventoryEdit.vue'
 import UserSearch from '@/views/backend/userManage/UserSearch.vue'
 import UserEdit from '@/views/backend/userManage/UserEdit.vue'
+import ShipmentOrderSearch from '@/views/backend/ShipmentOrderManage/ShipmentOrderSearch.vue'
 
 import Backend from '@/views/Backend/Backend.vue'
 import HttpClient from '@/utils/HttpClient.ts'
@@ -92,6 +93,17 @@ const router = createRouter({
               path: 'productInventoryEdit',
               name: 'productInventoryEdit',
               component: ProductInventoryEdit
+            }
+          ]
+        },
+        {
+          path: 'shipmentOrderManage',
+          name: 'shipmentOrderManage',
+          children: [
+            {
+              path: 'shipmentOrderSearch',
+              name: 'shipmentOrderSearch',
+              component: ShipmentOrderSearch
             }
           ]
         }

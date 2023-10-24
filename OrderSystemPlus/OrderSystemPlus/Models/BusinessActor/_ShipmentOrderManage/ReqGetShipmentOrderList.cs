@@ -7,7 +7,7 @@ namespace OrderSystemPlus.Models.BusinessActor
     /// </summary>
     public class ReqGetShipmentOrderList
     {
-        public string OrderNumber { get; set; }
+        public string? OrderNumber { get; set; }
 
         public int? PageIndex { get; set; }
         public int? PageSize { get; set; }
