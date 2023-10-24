@@ -30,7 +30,7 @@ namespace OrderSystemPlus.BusinessActor
         {
             var data = await _returnShipmentOrderRepository.FindByOptionsAsync(
                 returnShipmentOrderNumber: req.ReturnShipmentOrderNumber,
-                shipmentOrderNumber: req.shipmentOrderNumber,
+                shipmentOrderNumber: req.ShipmentOrderNumber,
                 pageIndex: req.PageIndex,
                 pageSize: req.PageSize,
                 sortField: req.SortField,
