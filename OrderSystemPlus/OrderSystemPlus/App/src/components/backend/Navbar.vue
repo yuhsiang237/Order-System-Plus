@@ -83,15 +83,9 @@
                 <router-link class="nav-link text-dark" :to="{ name: 'shipmentOrderSearch' }">
                   出貨單管理
                 </router-link>
-
-                <a
-                  class="nav-link text-dark"
-                  asp-area=""
-                  asp-controller="Order"
-                  asp-action="SearchReturnShipmentOrder"
-                >
+                <router-link class="nav-link text-dark" :to="{ name: 'returnShipmentOrderSearch' }">
                   退貨單管理
-                </a>
+                </router-link>
               </div>
             </li>
           </ul>
