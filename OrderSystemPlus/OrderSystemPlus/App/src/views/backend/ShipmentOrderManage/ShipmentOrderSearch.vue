@@ -51,7 +51,18 @@
       </div>
 
       <div class="container">
-        <div class="row my-3"></div>
+        <div class="row my-3">
+          <div class="col">
+            <div class="text-right">
+              <router-link
+                class="btn btn-main-color01"
+                :to="{ name: 'shipmentOrderEdit', query: { action: 'create' } }"
+              >
+                新增出貨單
+              </router-link>
+            </div>
+          </div>
+        </div>
         <div class="row">
           <div class="col">
             <div class="table-responsive" id="productTable">
@@ -83,7 +94,7 @@
                     <td>
                       <router-link
                         class="mr-1 btn btn-main-color02 outline-btn"
-                        :to="{ name: 'userEdit', query: { id: item.id } }"
+                        :to="{ name: 'shipmentOrderEdit', query: { action: 'edit' } }"
                       >
                         編輯
                       </router-link>
