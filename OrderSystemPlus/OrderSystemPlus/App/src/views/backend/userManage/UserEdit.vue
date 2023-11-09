@@ -1,5 +1,11 @@
 <template>
   <div class="container">
+    <loading
+      v-model:active="isLoading"
+      :can-cancel="false"
+      :on-cancel="onCancel"
+      :is-full-page="true"
+    />
     <div class="page p-5">
       <div class="row">
         <div class="col-12">

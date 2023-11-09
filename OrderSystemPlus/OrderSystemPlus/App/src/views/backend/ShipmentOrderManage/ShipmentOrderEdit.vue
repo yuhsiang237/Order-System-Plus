@@ -1,191 +1,212 @@
 <template>
-  <div v-if="action == 'create'" class="container">
-    <div class="page mt-5 p-5">
-      <div class="row">
-        <div class="col-12">
-          <h1 class="mb-4 main-color01">出貨單新增</h1>
-        </div>
-      </div>
-      <div class="row" id="Form">
-        <div class="col-12 col-md-6 mb-3">
-          <label>出貨單編號</label>
-          <input disabled type="text" class="form-control" />
-        </div>
-        <div class="col-12 col-md-6 mb-3">
-          <label>出貨日</label>
-          <date-picker
-            class="form-control"
-            placeholder="選擇出貨日"
-            date-format="yy-mm-dd"
-            v-model="DeliveryDate"
-          ></date-picker>
-        </div>
-        <div class="col-12 col-md-6 mb-3">
-          <label>出貨地址</label>
-          <input class="form-control" placeholder="地址" type="text" v-model="Address" />
-        </div>
-        <div class="col-12 col-md-6 mb-3">
-          <label>完成日</label>
-        </div>
-        <div class="col-12 col-md-6 mb-3">
-          <label>總金額(自動計算)</label>
-          <input type="text" class="form-control" />
-        </div>
-        <div class="col-12 col-md-6 mb-3">
-          <label>簽收者</label>
-          <input type="text" class="form-control" />
-        </div>
-        <div class="col-12 mb-3">
-          <label>備註</label>
-          <textarea class="form-control"></textarea>
-        </div>
-      </div>
-    </div>
-    <div class="page p-5">
-      <div class="row">
-        <div class="col-12">
-          <div>
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>(商品編號)商品名稱</th>
-                  <th>價格</th>
-                  <th>數量</th>
-                  <th>備註</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in OrderDetails">
-                  <td>
-                    <span v-text="index + 1"></span>
-                  </td>
-                  <td>
-                    (<span v-text="item.ProductNumber"></span>)
-                    <span v-text="item.ProductName"></span>
-                  </td>
-                  <td>
-                    <span v-text="item.ProductPrice"></span>
-                  </td>
-                  <td>
-                    <span v-text="item.ProductUnit"></span>
-                  </td>
-                  <td>
-                    <span v-text="item.ProductRemarks"></span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+  <div>
+    <loading
+      v-model:active="isLoading"
+      :can-cancel="false"
+      :on-cancel="onCancel"
+      :is-full-page="true"
+    />
+    <div v-if="action == 'create'" class="container">
+      <div class="page mt-5 p-5">
+        <div class="row">
+          <div class="col-12">
+            <h1 class="mb-4 main-color01">出貨單新增</h1>
           </div>
         </div>
-        <div class="col-12">
-          <div class="text-right my-3">
-            <button @click="updateUser" type="button" class="btn btn-main-color01 mr-2">
-              新增
-            </button>
-            <button
-              onclick="history.go(-1);"
-              type="button"
-              class="btn btn-main-color02 outline-btn"
-            >
-              返回
-            </button>
+        <div class="row" id="Form">
+          <div class="col-12 col-md-6 mb-3">
+            <label>出貨單編號</label>
+            <input disabled type="text" value="系統自動產生" class="form-control" />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label>出貨日</label>
+            <date-picker
+              class="form-control"
+              placeholder="選擇出貨日"
+              date-format="yy-mm-dd"
+              v-model="DeliveryDate"
+            ></date-picker>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label>出貨地址</label>
+            <input
+              class="form-control"
+              placeholder="地址"
+              type="text"
+              v-model="shipmentOrderData.address"
+            />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label>完成日</label>
+            <input
+              class="form-control"
+              placeholder="地址"
+              type="text"
+              v-model="shipmentOrderData.finishDate"
+            />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label>總金額(自動計算)</label>
+            <input type="text" class="form-control" />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label>簽收者</label>
+            <input type="text" class="form-control" v-model="shipmentOrderData.recipientName" />
+          </div>
+          <div class="col-12 mb-3">
+            <label>備註</label>
+            <textarea class="form-control" v-model="shipmentOrderData.remark"></textarea>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div v-if="action == 'edit'" class="container">
-    <div class="page mt-5 p-5">
-      <div class="row">
-        <div class="col-12">
-          <h1 class="mb-4 main-color01">出貨單編輯</h1>
-        </div>
-      </div>
-      <div class="row" id="Form">
-        <div class="col-12 col-md-6 mb-3">
-          <label>出貨單編號</label>
-          <input disabled type="text" class="form-control" />
-        </div>
-        <div class="col-12 col-md-6 mb-3">
-          <label>出貨日</label>
-          <date-picker
-            class="form-control"
-            placeholder="選擇出貨日"
-            date-format="yy-mm-dd"
-            v-model="DeliveryDate"
-          ></date-picker>
-        </div>
-        <div class="col-12 col-md-6 mb-3">
-          <label>出貨地址</label>
-          <input class="form-control" placeholder="地址" type="text" v-model="Address" />
-        </div>
-        <div class="col-12 col-md-6 mb-3">
-          <label>完成日</label>
-        </div>
-        <div class="col-12 col-md-6 mb-3">
-          <label>總金額(自動計算)</label>
-          <input type="text" class="form-control" />
-        </div>
-        <div class="col-12 col-md-6 mb-3">
-          <label>簽收者</label>
-          <input type="text" class="form-control" />
-        </div>
-        <div class="col-12 mb-3">
-          <label>備註</label>
-          <textarea class="form-control"></textarea>
-        </div>
-      </div>
-    </div>
-    <div class="page p-5">
-      <div class="row">
-        <div class="col-12">
-          <div>
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>(商品編號)商品名稱</th>
-                  <th>價格</th>
-                  <th>數量</th>
-                  <th>備註</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in OrderDetails">
-                  <td>
-                    <span v-text="index + 1"></span>
-                  </td>
-                  <td>
-                    (<span v-text="item.ProductNumber"></span>)
-                    <span v-text="item.ProductName"></span>
-                  </td>
-                  <td>
-                    <span v-text="item.ProductPrice"></span>
-                  </td>
-                  <td>
-                    <span v-text="item.ProductUnit"></span>
-                  </td>
-                  <td>
-                    <span v-text="item.ProductRemarks"></span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      <div class="page p-5">
+        <div class="row">
+          <div class="col-12">
+            <div>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>(商品編號)商品名稱</th>
+                    <th>價格</th>
+                    <th>數量</th>
+                    <th>備註</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in shipmentOrderData.details">
+                    <td>
+                      <span v-text="index + 1"></span>
+                    </td>
+                    <td>
+                      (<span v-text="item.ProductNumber"></span>)
+                      <span v-text="item.ProductName"></span>
+                    </td>
+                    <td>
+                      <span v-text="item.ProductPrice"></span>
+                    </td>
+                    <td>
+                      <input type="number" class="form-control" v-model="item.productQuantity" />
+                    </td>
+                    <td>
+                      <div>
+                        <input type="text" class="form-control" v-model="item.remarks" />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="text-right my-3">
+              <button @click="updateUser" type="button" class="btn btn-main-color01 mr-2">
+                新增
+              </button>
+              <button
+                onclick="history.go(-1);"
+                type="button"
+                class="btn btn-main-color02 outline-btn"
+              >
+                返回
+              </button>
+            </div>
           </div>
         </div>
-        <div class="col-12">
-          <div class="text-right my-3">
-            <button @click="updateUser" type="button" class="btn btn-main-color01 mr-2">
-              更新
-            </button>
-            <button
-              onclick="history.go(-1);"
-              type="button"
-              class="btn btn-main-color02 outline-btn"
-            >
-              返回
-            </button>
+      </div>
+    </div>
+    <div v-if="action == 'edit'" class="container">
+      <div class="page mt-5 p-5">
+        <div class="row">
+          <div class="col-12">
+            <h1 class="mb-4 main-color01">出貨單編輯</h1>
+          </div>
+        </div>
+        <div class="row" id="Form">
+          <div class="col-12 col-md-6 mb-3">
+            <label>出貨單編號</label>
+            <input disabled type="text" class="form-control" />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label>出貨日</label>
+            <date-picker
+              class="form-control"
+              placeholder="選擇出貨日"
+              date-format="yy-mm-dd"
+              v-model="DeliveryDate"
+            ></date-picker>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label>出貨地址</label>
+            <input class="form-control" placeholder="地址" type="text" v-model="Address" />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label>完成日</label>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label>總金額(自動計算)</label>
+            <input type="text" class="form-control" />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label>簽收者</label>
+            <input type="text" class="form-control" />
+          </div>
+          <div class="col-12 mb-3">
+            <label>備註</label>
+            <textarea class="form-control"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="page p-5">
+        <div class="row">
+          <div class="col-12">
+            <div>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>(商品編號)商品名稱</th>
+                    <th>價格</th>
+                    <th>數量</th>
+                    <th>備註</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in shipmentOrderData.details">
+                    <td>
+                      <span v-text="index + 1"></span>
+                    </td>
+                    <td>
+                      (<span v-text="item.ProductNumber"></span>)
+                      <span v-text="item.ProductName"></span>
+                    </td>
+                    <td>
+                      <span v-text="item.ProductPrice"></span>
+                    </td>
+                    <td>
+                      <span v-text="item.ProductUnit"></span>
+                    </td>
+                    <td>
+                      <span v-text="item.ProductRemarks"></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="text-right my-3">
+              <button @click="updateUser" type="button" class="btn btn-main-color01 mr-2">
+                更新
+              </button>
+              <button
+                onclick="history.go(-1);"
+                type="button"
+                class="btn btn-main-color02 outline-btn"
+              >
+                返回
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -211,7 +232,7 @@ import VueMultiselect from 'vue-multiselect'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
-  name: 'user-edit',
+  name: 'shipmentorder-edit',
   components: {
     Pagination,
     Loading,
@@ -225,6 +246,20 @@ export default defineComponent({
     const userId = ref(route.query.id)
     const action = ref(route.query.action)
     const userInfoData = ref({})
+    const shipmentOrderData = ref({
+      recipientName: 'string',
+      finishDate: '2023-11-09T02:42:37.578Z',
+      deliveryDate: '2023-11-09T02:42:37.578Z',
+      address: 'string',
+      remark: 'string',
+      details: [
+        {
+          productId: 0,
+          productQuantity: 5,
+          remarks: 'string'
+        }
+      ]
+    })
     const errors = ref({})
 
     const fetchData = async () => {
@@ -263,7 +298,8 @@ export default defineComponent({
       userInfoData,
       updateUser,
       errors,
-      action
+      action,
+      shipmentOrderData
     }
   }
 })
